@@ -108,14 +108,62 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
   </div>
 
   <!-- Governance -->
-  <div class="fade-in">
-    <h2 class="text-lg font-bold mb-3">Governance Proposals</h2>
+  <div class="fade-in" id="governanceSection">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold">Governance Proposals</h2>
+      <button id="submitProposalBtn" onclick="toggleProposalForm()" class="btn-mint text-xs px-4 py-2 rounded-xl flex items-center gap-1.5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Submit Proposal
+      </button>
+    </div>
     <div class="grid grid-cols-2 gap-4" id="proposalGrid">
       <div class="proposal-card glass p-4" data-idx="0"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-12 Adjust Fee Split</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:84%"></div></div><span class="text-xs font-bold">84%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(0,'CIP-12 Adjust Fee Split')">Vote</button></div>
       <div class="proposal-card glass p-4" data-idx="1"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-11 Onboard Solana</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:95%"></div></div><span class="text-xs font-bold">95%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(1,'CIP-11 Onboard Solana')">Vote</button></div>
       <div class="proposal-card glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-10 Increase Node Rewards</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-red-500" style="width:28%"></div></div><span class="text-xs font-bold gold">28%</span></div><div class="text-xs text-red-400 font-medium">Rejected</div></div>
       <div class="proposal-card glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-9 Regional DAO</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-green-500" style="width:97%"></div></div><span class="text-xs font-bold green">97%</span></div><div class="text-xs text-green-400 font-medium">Passed</div></div>
     </div>
+  </div>
+
+  <!-- Proposal Form (hidden by default) -->
+  <div id="proposalFormContainer" class="hidden fade-in">
+    <div class="bg-white/[.03] backdrop-blur-xl border border-white/[.06] rounded-2xl p-6">
+      <h3 class="text-lg font-bold mb-5 brand">New Proposal</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-[#64748b] mb-1.5 font-medium">Proposal Title</label>
+          <input id="propTitle" type="text" placeholder="e.g. CIP-13 Adjust Treasury Split" class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-[#e2e8f0] placeholder:text-[#475569] outline-none focus:border-[#00e5ff]/50 focus:shadow-[0_0_12px_rgba(0,229,255,.12)] transition-all">
+        </div>
+        <div>
+          <label class="block text-xs text-[#64748b] mb-1.5 font-medium">Description</label>
+          <textarea id="propDesc" rows="3" placeholder="Describe your proposal in detail..." class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-[#e2e8f0] placeholder:text-[#475569] outline-none focus:border-[#00e5ff]/50 focus:shadow-[0_0_12px_rgba(0,229,255,.12)] transition-all resize-none"></textarea>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-[#64748b] mb-1.5 font-medium">Proposal Type</label>
+            <select id="propType" class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-[#e2e8f0] outline-none focus:border-[#00e5ff]/50 focus:shadow-[0_0_12px_rgba(0,229,255,.12)] transition-all cursor-pointer">
+              <option value="Fee Adjustment">Fee Adjustment</option>
+              <option value="Protocol Upgrade">Protocol Upgrade</option>
+              <option value="Treasury">Treasury</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-[#64748b] mb-1.5 font-medium">Applicant Address</label>
+            <input id="propAddress" type="text" value="0x1234...5678" placeholder="0x..." class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-[#e2e8f0] placeholder:text-[#475569] outline-none focus:border-[#00e5ff]/50 focus:shadow-[0_0_12px_rgba(0,229,255,.12)] transition-all jet">
+          </div>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+          <button onclick="submitProposal()" class="btn-mint px-6 py-2.5 rounded-xl text-sm">Submit</button>
+          <button onclick="toggleProposalForm()" class="px-6 py-2.5 rounded-xl text-sm text-[#94a3b8] bg-white/[.04] border border-white/[.08] hover:bg-white/[.08] hover:text-white transition-all">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white/[.04] backdrop-blur-xl border border-white/[.08] rounded-xl px-5 py-3 shadow-2xl fade-in flex items-center gap-3">
+    <span class="w-5 h-5 rounded-full bg-[#00ff88]/20 flex items-center justify-center text-[#00ff88] text-xs">✓</span>
+    <span id="toastMsg" class="text-sm text-[#e2e8f0]"></span>
   </div>
 
   <!-- Recent Activity -->
@@ -203,6 +251,34 @@ function mintIdentity(id) {
       </div>
     </div>
   `;
+}
+
+function toggleProposalForm() {
+  const container = document.getElementById('proposalFormContainer');
+  const btn = document.getElementById('submitProposalBtn');
+  container.classList.toggle('hidden');
+  if(!container.classList.contains('hidden')) {
+    container.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function submitProposal() {
+  const title = document.getElementById('propTitle').value.trim();
+  const desc = document.getElementById('propDesc').value.trim();
+  const type = document.getElementById('propType').value;
+  if(!title) { document.getElementById('propTitle').focus(); return; }
+  document.getElementById('propTitle').value = '';
+  document.getElementById('propDesc').value = '';
+  document.getElementById('propType').value = 'Fee Adjustment';
+  document.getElementById('proposalFormContainer').classList.add('hidden');
+  showToast('Proposal submitted to governance queue');
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(()=>el.classList.add('hidden'), 3000);
 }
 
 function openVote(idx, title) {
