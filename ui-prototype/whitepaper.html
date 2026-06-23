@@ -13,7 +13,7 @@ tailwind.config={theme:{extend:{colors:{'deep':{DEFAULT:'#0a0a0f',lighter:'#1111
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 :root{--brand:#00e5ff;--brand-glow:rgba(0,229,255,0.3)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
+body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden}
 .cursor{pointer-events:none;position:fixed;top:0;left:0;z-index:9999;mix-blend-mode:screen;transition:transform 0.15s ease-out}
 .cursor-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;box-shadow:0 0 12px var(--brand-glow),0 0 24px var(--brand-glow)}
 .cursor-ring{width:30px;height:30px;border:1.5px solid rgba(0,229,255,0.5);border-radius:50%;transform:translate(-50%,-50%) scale(1);transition:transform 0.2s ease,border-color 0.2s ease}
@@ -26,19 +26,57 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
 .section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.3),transparent)}
 .gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 </style>
+<meta name="description" content="CONTRA Whitepaper — Decentralized AI × Web3 Consulting Global Platform. Token Economy v7, Platform Architecture, Roadmap.">
+<meta property="og:title" content="CONTRA — Technical Whitepaper">
+<meta property="og:description" content="AI Consulting Global Platform. Decentralized · AI-Powered · 130 Countries.">
+<meta property="og:type" content="article">
+<meta name="color-scheme" content="dark">
+<style>
+.mobile-sidebar{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:rgba(10,10,15,0.97);backdrop-filter:blur(24px)}
+.mobile-sidebar.open{display:flex;flex-direction:column;padding:80px 24px 24px;overflow-y:auto}
+.hamburger{display:none;position:fixed;top:16px;right:16px;z-index:60;width:40px;height:40px;background:rgba(17,17,24,0.8);backdrop-filter:blur(12px);border:1px solid rgba(0,229,255,0.2);border-radius:10px;align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:18px;height:2px;background:#00e5ff;transition:all 0.3s;border-radius:1px}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(2.5px,2.5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(2.5px,-2.5px)}
+@media(max-width:1023px){.hamburger{display:flex}}
+.table-scroll-wrapper{position:relative}
+.table-scroll-wrapper::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(90deg,transparent,rgba(10,10,15,0.8));pointer-events:none;transition:opacity 0.3s}
+.table-scroll-wrapper.no-overflow::after{opacity:0}
+.sidebar-link.active{color:#00e5ff !important;background:rgba(0,229,255,0.08)}
+.skip-link{position:absolute;top:-100px;left:8px;z-index:100;background:#00e5ff;color:#000;padding:8px 16px;border-radius:0 0 8px 8px;font-family:'JetBrains Mono',monospace;font-size:12px;transition:top 0.2s}
+.skip-link:focus{top:0}
+*:focus-visible{outline:2px solid #00e5ff;outline-offset:2px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){.cursor{display:none}#starfield{display:none}.animate-fade-in-up{animation:none;opacity:1}.animate-float{animation:none}.glow-card{transition:none}}
+</style>
 </head>
 <body>
+<a href="#s1" class="skip-link">Skip to content</a>
+<div class="hamburger" id="hamburger" onclick="document.getElementById('mobile-nav').classList.toggle('open');this.classList.toggle('open')"><span></span><span></span><span></span></div>
 <div class="cursor cursor-dot" id="cursor-dot" style="transform:translate(-50%,-50%)"></div>
 <div class="cursor cursor-ring" id="cursor-ring" style="transform:translate(-50%,-50%)"></div>
 <canvas id="starfield"></canvas>
+<div class="mobile-sidebar glass border-r border-white/5" id="mobile-nav">
+  <h3 class="text-brand font-display text-sm mb-6">Contents</h3>
+  <nav class="space-y-2 text-sm font-mono">
+    <a href="#s1" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="document.getElementById('mobile-nav').classList.remove('open');document.getElementById('hamburger').classList.remove('open')">1. Overview</a>
+    <a href="#s2" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">2. Industry Pain Points</a>
+    <a href="#s3" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">3. Platform Architecture</a>
+    <a href="#s4" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">4. Core Features</a>
+    <a href="#s5" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">5. Security & Privacy</a>
+    <a href="#s6" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">6. Token Economy v7</a>
+    <a href="#s7" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">7. Roadmap</a>
+    <a href="#s8" class="block py-3 px-4 text-gray-300 hover:text-brand hover:bg-brand/5 rounded text-sm" onclick="closeMobileNav()">8. Team & Compliance</a>
+  </nav>
+</div>
 
 <main class="relative z-10">
   <div class="flex">
     <!-- Sidebar -->
     <aside class="hidden lg:block w-56 fixed left-0 top-0 h-screen glass border-r border-white/5 p-6 pt-24 z-20 overflow-y-auto">
-      <h3 class="text-brand font-display text-sm mb-6">Chapters</h3>
+      <h3 class="text-brand font-display text-sm mb-6">Contents</h3>
       <nav class="space-y-1 text-sm font-mono">
-        <a href="#s1" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">1. Overview</a><a href="#s2" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">2. Industry Pain Points</a><a href="#s3" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">3. Platform Architecture</a><a href="#s4" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">4. Core Features</a><a href="#s5" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">5. Security & Privacy</a><a href="#s6" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">6. Token Economy v7</a><a href="#s7" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">7. Roadmap</a><a href="#s8" class="block py-2 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">8. Team & Compliance</a>
+        <a href="#s1" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">1. Overview</a><a href="#s2" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">2. Industry Pain Points</a><a href="#s3" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">3. Platform Architecture</a><a href="#s4" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">4. Core Features</a><a href="#s5" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">5. Security & Privacy</a><a href="#s6" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">6. Token Economy v7</a><a href="#s7" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">7. Roadmap</a><a href="#s8" class="sidebar-link block py-1.5 px-3 text-gray-400 hover:text-brand hover:bg-brand/5 rounded transition-colors text-xs">8. Team & Compliance</a>
       </nav>
     </aside>
 
@@ -56,7 +94,7 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
       <section id="s2" class="px-6 py-16"><div class="section-divider mb-12"></div>
         <div class="max-w-4xl mx-auto">
           <h2 class="text-3xl font-display font-bold mb-8"><span class="text-brand">02</span> Industry Pain Points</h2>
-          <div class="overflow-x-auto"><table class="w-full text-sm">
+          <div class="overflow-x-auto table-scroll-wrapper"><table class="w-full text-sm">
             <thead><tr class="border-b border-white/10 text-left text-gray-400 font-mono text-xs">
               <th class="py-3 px-4">Dimension</th><th class="py-3 px-4">Expert Side</th><th class="py-3 px-4">User Side</th>
             </tr></thead>
@@ -86,7 +124,7 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
         <div class="max-w-4xl mx-auto">
           <h2 class="text-3xl font-display font-bold mb-8"><span class="text-brand">04</span> Core Features</h2>
           <div class="space-y-4">
-            <div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">AI Automated Vetting</h4><p class="text-gray-300 text-sm mb-2">Upload docs → IPFS → Smart contract → AI assessment → Auto-mint NFT badge</p><p class="text-gray-600 text-xs font-mono">No human approval needed</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">Decentralized Project Management</h4><p class="text-gray-300 text-sm mb-2">Escrow smart contracts hold funds. Milestone-based release. Dispute arbitration by DAO.</p><p class="text-gray-600 text-xs font-mono">Code replaces middleman</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">E2E Encrypted Communication</h4><p class="text-gray-300 text-sm mb-2">Public-key encryption, forward secrecy, zero-access key management, self-destruct messages.</p><p class="text-gray-600 text-xs font-mono">Full privacy by design</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">Federated AI Training</h4><p class="text-gray-300 text-sm mb-2">Local training on node data, parameter aggregation via smart contracts, global model update.</p><p class="text-gray-600 text-xs font-mono">Raw data never leaves device</p></div>
+            <div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">AI Automated Vetting</h4><p class="text-gray-300 text-sm mb-2">Upload docs → IPFS → Smart contract → AI assessment → Auto-mint NFT badge</p><p class="text-gray-500 text-xs font-mono">No human approval needed</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">Decentralized Project Management</h4><p class="text-gray-300 text-sm mb-2">Escrow smart contracts hold funds. Milestone-based release. Dispute arbitration by DAO.</p><p class="text-gray-500 text-xs font-mono">Code replaces middleman</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">E2E Encrypted Communication</h4><p class="text-gray-300 text-sm mb-2">Public-key encryption, forward secrecy, zero-access key management, self-destruct messages.</p><p class="text-gray-500 text-xs font-mono">Full privacy by design</p></div><div class="glow-card p-5"><h4 class="text-brand font-display text-sm mb-1">Federated AI Training</h4><p class="text-gray-300 text-sm mb-2">Local training on node data, parameter aggregation via smart contracts, global model update.</p><p class="text-gray-500 text-xs font-mono">Raw data never leaves device</p></div>
           </div>
         </div>
       </section>
@@ -111,7 +149,7 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
           </div>
 
           <div class="grid sm:grid-cols-3 gap-4 mb-8">
-            <div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">C-End Zero-Mining</div><div class="text-2xl font-display text-brand-400">50%</div><div class="text-xs text-gray-400 mb-2">3.75B CAI</div><div class="text-xs text-gray-600">User mining + invitation rewards</div></div><div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">Institutional</div><div class="text-2xl font-display text-purple-400">30%</div><div class="text-xs text-gray-400 mb-2">2.25B CAI</div><div class="text-xs text-gray-600">12-month cliff, then 24-month linear</div></div><div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">Founding Team</div><div class="text-2xl font-display text-amber-400">20%</div><div class="text-xs text-gray-400 mb-2">1.5B CAI</div><div class="text-xs text-gray-600">1% per 20K registrations, 2M=100%</div></div>
+            <div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">C-End Zero-Mining</div><div class="text-2xl font-display text-brand-400">50%</div><div class="text-xs text-gray-400 mb-2">3.75B CAI</div><div class="text-xs text-gray-500">User mining + invitation rewards</div></div><div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">Institutional</div><div class="text-2xl font-display text-purple-400">30%</div><div class="text-xs text-gray-400 mb-2">2.25B CAI</div><div class="text-xs text-gray-500">12-month cliff, then 24-month linear</div></div><div class="glow-card p-5 text-center"><div class="text-xs font-mono text-gray-500 mb-1">Founding Team</div><div class="text-2xl font-display text-amber-400">20%</div><div class="text-xs text-gray-400 mb-2">1.5B CAI</div><div class="text-xs text-gray-500">1% per 20K registrations, 2M=100%</div></div>
           </div>
 
           <div class="glow-card p-5 mb-6">
@@ -126,12 +164,12 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
             <div class="grid grid-cols-5 gap-2 text-center text-xs font-mono">
               <div class="bg-white/3 rounded p-2"><div class="text-gray-500">Day 1</div><div class="text-gray-400">2 exp</div><div class="text-brand font-bold">$0.0001</div></div><div class="bg-white/3 rounded p-2"><div class="text-gray-500">Day 5</div><div class="text-gray-400">12 exp</div><div class="text-brand font-bold">$0.001</div></div><div class="bg-white/3 rounded p-2"><div class="text-gray-500">Day 10</div><div class="text-gray-400">36 exp</div><div class="text-brand font-bold">$0.0042</div></div><div class="bg-white/3 rounded p-2"><div class="text-gray-500">Day 15</div><div class="text-gray-400">72 exp</div><div class="text-brand font-bold">$0.0098</div></div><div class="bg-white/3 rounded p-2"><div class="text-gray-500">Day 20</div><div class="text-gray-400">100 exp</div><div class="text-brand font-bold">$0.01</div></div>
             </div>
-            <p class="text-gray-600 text-xs mt-3">100 experts × 5,000 USDC = 500,000 USDC buy power. Pool: 500K USDC + 50M CAI @ $0.01. FDV: $75M.</p>
+            <p class="text-gray-500 text-xs mt-3">100 experts × 5,000 USDC = 500,000 USDC buy power. Pool: 500K USDC + 50M CAI @ $0.01. FDV: $75M.</p>
           </div>
 
           <div class="glow-card p-5 mb-6">
             <h4 class="text-brand font-display text-sm mb-4">36-Month Price Trajectory</h4>
-            <div class="overflow-x-auto"><table class="w-full text-xs font-mono">
+            <div class="overflow-x-auto table-scroll-wrapper"><table class="w-full text-xs font-mono">
               <thead><tr class="text-gray-500 text-left border-b border-white/5">
                 <th class="py-2 pr-3">Month</th><th class="py-2 pr-3">Experts</th><th class="py-2 pr-3">Registered</th><th class="py-2 pr-3">Circulating</th><th class="py-2 pr-3">Price</th><th class="py-2">FDV</th>
               </tr></thead>
@@ -139,12 +177,12 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
                 <tr class="border-b border-white/5"><td class="py-2 pr-3">M0</td><td class="py-2 pr-3">100</td><td class="py-2 pr-3">12.5K</td><td class="py-2 pr-3">55M CAI</td><td class="py-2 pr-3">$0.01</td><td class="py-2 pr-3">$75M</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M6</td><td class="py-2 pr-3">9,000</td><td class="py-2 pr-3">900K</td><td class="py-2 pr-3">500M</td><td class="py-2 pr-3">$0.12</td><td class="py-2 pr-3">$9B</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M12</td><td class="py-2 pr-3">72,000</td><td class="py-2 pr-3">7.2M</td><td class="py-2 pr-3">2.5B</td><td class="py-2 pr-3">$0.47</td><td class="py-2 pr-3">$35B</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M16</td><td class="py-2 pr-3">120,000</td><td class="py-2 pr-3">12M ⭐</td><td class="py-2 pr-3">4.5B</td><td class="py-2 pr-3">$0.68</td><td class="py-2 pr-3">$51B</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M24</td><td class="py-2 pr-3">175,000</td><td class="py-2 pr-3">17.5M</td><td class="py-2 pr-3">8.5B</td><td class="py-2 pr-3">$0.98</td><td class="py-2 pr-3">$73B</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M36</td><td class="py-2 pr-3">198,000</td><td class="py-2 pr-3">19.8M</td><td class="py-2 pr-3">12B</td><td class="py-2 pr-3">$1.12</td><td class="py-2 pr-3">$84B</td></tr>
               </tbody>
             </table></div>
-            <p class="text-gray-600 text-xs mt-3">⭐ 20M registered reached at Month 16. Total expert buy power: 1B USDC. Supply/demand ratio always >1.5.</p>
+            <p class="text-gray-500 text-xs mt-3">⭐ 20M registered reached at Month 16. Total expert buy power: 1B USDC. Supply/demand ratio always >1.5.</p>
           </div>
 
           <div class="glow-card p-5">
             <h4 class="text-brand font-display text-sm mb-4">Loyal User vs Pure Dumper: 36-Month Outcome</h4>
-            <div class="overflow-x-auto"><table class="w-full text-xs font-mono">
+            <div class="overflow-x-auto table-scroll-wrapper"><table class="w-full text-xs font-mono">
               <thead><tr class="text-gray-500 text-left border-b border-white/5">
                 <th class="py-2 pr-3">Time</th><th class="py-2 pr-3">Loyal Holds</th><th class="py-2 pr-3">Loyal Value</th><th class="py-2 pr-3">Dumper Holds</th><th class="py-2 pr-3">Dumper Value</th><th class="py-2">Gap</th>
               </tr></thead>
@@ -152,7 +190,7 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
                 <tr class="border-b border-white/5"><td class="py-2 pr-3">Day 20</td><td class="py-2 pr-3">578 CAI</td><td class="py-2 pr-3">$5.78</td><td class="py-2 pr-3">72 CAI</td><td class="py-2 pr-3">$0.72</td><td class="py-2 pr-3">8×</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M6</td><td class="py-2 pr-3">3,200</td><td class="py-2 pr-3">$384</td><td class="py-2 pr-3">72</td><td class="py-2 pr-3">$8.64</td><td class="py-2 pr-3">44×</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M12</td><td class="py-2 pr-3">6,500</td><td class="py-2 pr-3">$3,055</td><td class="py-2 pr-3">72</td><td class="py-2 pr-3">$33.84</td><td class="py-2 pr-3">90×</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M24</td><td class="py-2 pr-3">10,500</td><td class="py-2 pr-3">$10,290</td><td class="py-2 pr-3">72</td><td class="py-2 pr-3">$70.56</td><td class="py-2 pr-3">146×</td></tr><tr class="border-b border-white/5"><td class="py-2 pr-3">M36</td><td class="py-2 pr-3">14,500</td><td class="py-2 pr-3">$16,240</td><td class="py-2 pr-3">72</td><td class="py-2 pr-3">$80.64</td><td class="py-2 pr-3">201×</td></tr>
               </tbody>
             </table></div>
-            <p class="text-gray-600 text-xs mt-3">Dumper = sold 50% on Day 20, no more mining, no staking. Loyal = daily mining + staking compound.</p>
+            <p class="text-gray-500 text-xs mt-3">Dumper = sold 50% on Day 20, no more mining, no staking. Loyal = daily mining + staking compound.</p>
           </div>
         </div>
       </section>
@@ -175,7 +213,7 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
         </div>
       </section>
 
-      <footer class="px-6 py-12 text-center"><div class="section-divider mb-8"></div><p class="text-gray-600 text-xs font-mono">CONTRA © 2026 · Singapore · Code is Law</p></footer>
+      <footer class="px-6 py-12 text-center"><div class="section-divider mb-8"></div><p class="text-gray-500 text-xs font-mono">CONTRA © 2026 · Singapore · Code is Law</p></footer>
     </div>
   </div>
 </main>
@@ -189,14 +227,19 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
   function init(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.5,twinkle:Math.random()*Math.PI*2,speed:Math.random()*0.02+0.005})}
   resize();init();
   window.addEventListener('resize',()=>{resize();init()});
-  function draw(){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.twinkle+=s.speed;const a=0.3+Math.sin(s.twinkle)*0.3;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,255,'+a.toFixed(2)+')';ctx.fill()});requestAnimationFrame(draw)}
+  if(window.matchMedia("(prefers-reduced-motion:reduce)").matches){canvas.style.display="none";return}function draw(){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.twinkle+=s.speed;const a=0.3+Math.sin(s.twinkle)*0.3;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,255,'+a.toFixed(2)+')';ctx.fill()});requestAnimationFrame(draw)}
   draw();
   const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
   let mx=0,my=0;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
   function anim(){dot.style.transform='translate('+(mx-3)+'px,'+(my-3)+'px)';ring.style.transform='translate('+(mx-15)+'px,'+(my-15)+'px)';requestAnimationFrame(anim)}
   anim();
-  document.querySelectorAll('a,button,.glow-card,.hvr').forEach(el=>{el.addEventListener('mouseenter',()=>ring.classList.add('hover'));el.addEventListener('mouseleave',()=>ring.classList.remove('hover'))});
+  function closeMobileNav(){document.getElementById('mobile-nav').classList.remove('open');document.getElementById('hamburger').classList.remove('open')}
+// Scroll-spy
+(function(){const links=document.querySelectorAll('.sidebar-link');const sections=[];links.forEach(l=>{const id=l.getAttribute('href');if(id){const el=document.querySelector(id);if(el)sections.push({el,link:l})}});const ob=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));sections.find(s=>s.el===e.target)?.link.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});sections.forEach(s=>ob.observe(s.el))})();
+// Table scroll indicators
+document.querySelectorAll('.overflow-x-auto').forEach(wrapper=>{const obs=new ResizeObserver(()=>{wrapper.classList.toggle('no-overflow',wrapper.scrollWidth<=wrapper.clientWidth+2)});obs.observe(wrapper);wrapper.addEventListener('scroll',()=>{wrapper.classList.toggle('no-overflow',wrapper.scrollLeft+wrapper.clientWidth>=wrapper.scrollWidth-2)})});
+document.querySelectorAll('a,button,.glow-card,.hvr').forEach(el=>{el.addEventListener('mouseenter',()=>ring.classList.add('hover'));el.addEventListener('mouseleave',()=>ring.classList.remove('hover'))});
 })();
 </script>
 
