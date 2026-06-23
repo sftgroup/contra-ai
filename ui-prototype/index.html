@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTRA — Code is Law</title>
+<!-- Tailwind from multiple CDN fallbacks -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'deep': { DEFAULT: '#0a0a0f', lighter: '#111118' },
+        'brand': { DEFAULT: '#00e5ff', dim: '#0097a7', glow: '#00e5ff66' },
+        'gold': '#ffd700',
+        'silver': '#c0c0c0',
+        'bronze': '#cd7f32',
+      },
+      fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'monospace'],
+      },
+      backgroundImage: {
+        'mesh-grid': 'linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px)',
+      },
+      animation: {
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+        'orbit': 'orbit 20s linear infinite',
+        'twinkle': 'twinkle 2s ease-in-out infinite alternate',
+      },
+      keyframes: {
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)' },
+          '50%': { boxShadow: '0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        orbit: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        twinkle: {
+          '0%': { opacity: '0.3' },
+          '100%': { opacity: '1' },
+        },
+      },
+      backgroundSize: { 'mesh': '60px 60px' },
+    }
+  }
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --brand: #00e5ff;
+    --brand-glow: rgba(0, 229, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e0e0e0;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor { pointer-events: none; position: fixed; top: 0; left: 0; z-index: 9999; mix-blend-mode: screen; transition: transform 0.15s ease-out; }
+  .cursor-dot { width: 6px; height: 6px; background: var(--brand); border-radius: 50%; box-shadow: 0 0 12px var(--brand-glow), 0 0 24px var(--brand-glow); }
+  .cursor-ring {
+    width: 30px; height: 30px; border: 1.5px solid rgba(0,229,255,0.5); border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1); transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .cursor-ring.hover { transform: translate(-50%, -50%) scale(1.8); border-color: rgba(0,229,255,0.9); background: rgba(0,229,255,0.05); }
+
+  /* Starfield Canvas */
+  #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+  /* Glow Effects */
+  .glow-text {
+    text-shadow: 0 0 40px rgba(0,229,255,0.5), 0 0 80px rgba(0,229,255,0.2), 0 0 120px rgba(0,229,255,0.1);
+  }
+  .glow-border {
+    box-shadow: 0 0 20px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.05);
+  }
+  .glow-card {
+    background: rgba(17, 17, 24, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 229, 255, 0.12);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glow-card:hover {
+    border-color: rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.12), 0 8px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px);
+  }
+
+  /* Glass Panel */
+  .glass {
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Mesh Grid Background */
+  .mesh-bg {
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Section Divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+  }
+
+  /* Navigation */
+  .nav-blur {
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+  }
+  .nav-link {
+    position: relative;
+    color: #a0a0b0;
+    transition: color 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  .nav-link:hover { color: var(--brand); }
+  .nav-link::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+    background: var(--brand);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.4); }
+
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #00e5ff 0%, #0097a7 50%, #00e5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Pulse Ring */
+  .pulse-ring {
+    position: absolute;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 50%;
+    animation: pulseRing 3s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  .no-cursor a, .no-cursor button, .no-cursor [role="button"] { cursor: none; }
+  .no-cursor input, .no-cursor textarea, .no-cursor select { cursor: none; }
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<!-- Custom Cursor -->
+<div class="cursor cursor-dot" id="cursor-dot" style="transform: translate(-50%, -50%);"></div>
+<div class="cursor cursor-ring" id="cursor-ring" style="transform: translate(-50%, -50%);"></div>
+
+<!-- Starfield Particles Canvas -->
+<canvas id="starfield"></canvas>
+
+<!-- Navigation -->
+<nav class="nav-blur fixed top-0 left-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
+        <span class="font-display text-white font-bold text-sm">C</span>
+      </div>
+      <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#hero" class="nav-link">Home</a>
+      <a href="#logic" class="nav-link">Logic</a>
+      <a href="#nft" class="nav-link">NFT</a>
+      <a href="#stakeholders" class="nav-link">Stakeholders</a>
+      <a href="#milestones" class="nav-link">Milestones</a>
+      <a href="#world" class="nav-link">World</a>
+    </div>
+    <a href="#nft" class="no-cursor px-5 py-2 rounded-full bg-brand/10 border border-brand/30 text-brand font-mono text-sm hover:bg-brand/20 transition-all duration-300">
+      Mint Now
+    </a>
+  </div>
+</nav>
+
+<!-- Starfield + Cursor JS -->
+<script>
+  // === Starfield Canvas ===
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let w, h;
+  const STAR_COUNT = 200;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Star {
+    constructor() { this.reset(true); }
+    reset(init = false) {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.r = Math.random() * 1.8 + 0.3;
+      this.opacity = Math.random() * 0.8 + 0.2;
+      this.speed = Math.random() * 0.3 + 0.05;
+      this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+      this.twinkleOffset = Math.random() * Math.PI * 2;
+      if (init) this.y = Math.random() * h;
+    }
+    update() {
+      this.y += this.speed;
+      this.opacity = 0.3 + Math.sin(Date.now() * this.twinkleSpeed + this.twinkleOffset) * 0.3 + 0.4;
+      if (this.y > h + 5) { this.y = -5; this.x = Math.random() * w; }
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,229,255,${this.opacity})`;
+      ctx.fill();
+      // Glow
+      if (this.r > 1.4) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,229,255,${this.opacity * 0.15})`;
+        ctx.fill();
+      }
+    }
+  }
+
+  for (let i = 0; i < STAR_COUNT; i++) stars.push(new Star());
+
+  function animateStars() {
+    ctx.clearRect(0, 0, w, h);
+    stars.forEach(s => { s.update(); s.draw(); });
+    requestAnimationFrame(animateStars);
+  }
+  animateStars();
+
+  // === Custom Cursor ===
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mouseX = 0, mouseY = 0;
+  let dotX = 0, dotY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+  const hoverTargets = document.querySelectorAll('a, button, [role="button"], .glow-card, .no-cursor');
+  hoverTargets.forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+
+  function animateCursor() {
+    dotX += (mouseX - dotX) * 0.3;
+    dotY += (mouseY - dotY) * 0.3;
+    ringX += (mouseX - ringX) * 0.08;
+    ringY += (mouseY - ringY) * 0.08;
+    dot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+    ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+</script>
+
+
+<!-- ==================== HERO SECTION ==================== -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+  <!-- Three.js Globe Container -->
+  <div id="globe-container" class="absolute inset-0 z-[1]"></div>
+
+  <!-- Hero Overlay Content -->
+  <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+    <div class="animate-fade-in-up">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-8">
+        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+        <span class="font-mono text-xs text-brand tracking-widest">GLOBAL WEB3 CONSULTING NETWORK</span>
+      </div>
+    </div>
+
+    <h1 class="font-display text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white mb-6 animate-fade-in-up" style="animation-delay: 0.15s;">
+      C<span class="gradient-text">O</span>NTRA
+    </h1>
+
+    <p class="text-xl md:text-2xl text-gray-400 font-light mb-3 animate-fade-in-up" style="animation-delay: 0.3s;">
+      Code is Law
+    </p>
+    <p class="text-sm md:text-base text-gray-500 font-mono mb-8 animate-fade-in-up" style="animation-delay: 0.4s;">
+      130+ Countries · Web3 × AI · The World's First Decentralized Consulting Protocol
+    </p>
+
+    <!-- CountUp Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 max-w-3xl mx-auto mb-10 animate-fade-in-up" style="animation-delay: 0.5s;">
+      <div class="text-center">
+        <div class="text-3xl md:text-4xl font-display font-bold text-white countup" data-target="130">0</div>
+        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">MARKETS</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl md:text-4xl font-display font-bold text-white countup" data-target="15000">0</div>
+        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">AGENTS</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl md:text-4xl font-display font-bold text-brand countup" data-target="420">0</div>
+        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">M CONTRACTS</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl md:text-4xl font-display font-bold text-brand countup" data-target="98">0</div>
+        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">% SUCCESS</div>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.6s;">
+      <a href="#nft" class="no-cursor px-8 py-3 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300">
+        Mint Governance NFT
+      </a>
+      <a href="#logic" class="no-cursor px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300">
+        Explore Protocol →
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float">
+    <div class="w-5 h-8 rounded-full border border-brand/30 flex justify-center pt-1.5">
+      <div class="w-1 h-2 rounded-full bg-brand animate-pulse"></div>
+    </div>
+  </div>
+</section>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const container = document.getElementById('globe-container');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
+camera.position.z = 8;
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+container.appendChild(renderer.domElement);
+
+// Globe — use real Earth texture with fallback
+const globeGeometry = new THREE.SphereGeometry(2.5, 64, 64);
+const globe = new THREE.Mesh(globeGeometry);
+scene.add(globe);
+
+const textureLoader = new THREE.TextureLoader();
+// 4K Earth texture from NASA Visible Earth via a reliable CDN mirror
+textureLoader.load(
+  'https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57752/land_ocean_ice_cloud_2048.jpg',
+  (texture) => {
+    globe.material = new THREE.MeshPhongMaterial({
+      map: texture,
+      specular: 0x222222,
+      shininess: 5,
+    });
+  },
+  undefined,
+  () => {
+    // Fallback: if NASA URL fails, use a free Earth texture
+    textureLoader.load(
+      'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+      (fallbackTexture) => {
+        globe.material = new THREE.MeshPhongMaterial({
+          map: fallbackTexture,
+          specular: 0x222222,
+          shininess: 5,
+        });
+      },
+      undefined,
+      () => {
+        // If both fail, keep the dark look but with a wireframe hint
+        globe.material = new THREE.MeshPhongMaterial({
+          color: 0x0a1a2a,
+          emissive: 0x021024,
+          emissiveIntensity: 0.3,
+          specular: 0x00e5ff,
+          shininess: 10,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.3,
+        });
+      }
+    );
+  }
+);
+
+// Atmospheric glow
+const glowGeometry = new THREE.SphereGeometry(2.65, 64, 64);
+const glowMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    uColor: { value: new THREE.Color(0x00e5ff) },
+    uIntensity: { value: 0.3 },
+  },
+  vertexShader: /* glsl */ `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vPosition = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: /* glsl */ `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    uniform vec3 uColor;
+    uniform float uIntensity;
+    void main() {
+      float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+      gl_FragColor = vec4(uColor, intensity * uIntensity);
+    }
+  `,
+  side: THREE.BackSide,
+  blending: THREE.AdditiveBlending,
+  transparent: true,
+  depthWrite: false,
+});
+const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+scene.add(glowSphere);
+
+// Orbit ring
+const ringGeo = new THREE.TorusGeometry(2.7, 0.015, 32, 128);
+const ringMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.4 });
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = Math.PI / 2;
+ring.rotation.z = 0.3;
+scene.add(ring);
+
+const ring2Geo = new THREE.TorusGeometry(2.85, 0.01, 32, 96);
+const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.2 });
+const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+ring2.rotation.x = Math.PI / 3;
+ring2.rotation.y = Math.PI / 6;
+scene.add(ring2);
+
+// Node dots on the globe surface
+const nodesGroup = new THREE.Group();
+const nodeCount = 80;
+for (let i = 0; i < nodeCount; i++) {
+  const phi = Math.acos(2 * Math.random() - 1);
+  const theta = Math.random() * Math.PI * 2;
+  const x = 2.55 * Math.sin(phi) * Math.cos(theta);
+  const y = 2.55 * Math.sin(phi) * Math.sin(theta);
+  const z = 2.55 * Math.cos(phi);
+
+  const dotGeo = new THREE.SphereGeometry(0.03 + Math.random() * 0.04, 8, 8);
+  const dotMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.6 + Math.random() * 0.4 });
+  const dot = new THREE.Mesh(dotGeo, dotMat);
+  dot.position.set(x, y, z);
+  nodesGroup.add(dot);
+}
+globe.add(nodesGroup);
+
+// Light city-like points (concentrated in certain bands)
+const citiesGroup = new THREE.Group();
+const cityCount = 30;
+for (let i = 0; i < cityCount; i++) {
+  const phi = Math.acos(2 * Math.random() - 1);
+  const theta = Math.random() * Math.PI * 2;
+  const x = 2.52 * Math.sin(phi) * Math.cos(theta);
+  const y = 2.52 * Math.sin(phi) * Math.sin(theta);
+  const z = 2.52 * Math.cos(phi);
+
+  const cityGeo = new THREE.SphereGeometry(0.05 + Math.random() * 0.06, 8, 8);
+  const cityMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+  const city = new THREE.Mesh(cityGeo, cityMat);
+  city.position.set(x, y, z);
+  citiesGroup.add(city);
+
+  // Light beam
+  const beamGeo = new THREE.CylinderGeometry(0.005, 0.08, 0.3 + Math.random() * 0.5, 8);
+  const beamMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.15 });
+  const beam = new THREE.Mesh(beamGeo, beamMat);
+  beam.position.set(x * 1.15, y * 1.15, z * 1.15);
+  beam.lookAt(new THREE.Vector3(0, 0, 0));
+  citiesGroup.add(beam);
+}
+globe.add(citiesGroup);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0x1a3a5c, 1.5);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0x00e5ff, 2);
+dirLight.position.set(5, 3, 5);
+scene.add(dirLight);
+const dirLight2 = new THREE.DirectionalLight(0x0a2a4a, 1);
+dirLight2.position.set(-5, -2, -3);
+scene.add(dirLight2);
+
+// Particles around globe
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 300;
+const posArray = new Float32Array(particlesCount * 3);
+for (let i = 0; i < particlesCount * 3; i += 3) {
+  const radius = 3.5 + Math.random() * 2;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+  posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+  posArray[i + 2] = radius * Math.cos(phi);
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+const particlesMat = new THREE.PointsMaterial({
+  size: 0.02,
+  color: 0x00e5ff,
+  transparent: true,
+  opacity: 0.5,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+});
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
+
+// Mouse interaction
+let isDragging = false, prevMouseX = 0, prevMouseY = 0;
+let rotationY = 0, rotationX = 0, targetRotationY = 0, targetRotationX = 0;
+let autoY = 0;
+
+container.addEventListener('mousedown', (e) => { isDragging = true; prevMouseX = e.clientX; prevMouseY = e.clientY; });
+window.addEventListener('mouseup', () => { isDragging = false; });
+window.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    const dx = e.clientX - prevMouseX;
+    const dy = e.clientY - prevMouseY;
+    targetRotationY += dx * 0.005;
+    targetRotationX += dy * 0.005;
+    targetRotationX = Math.max(-1, Math.min(1, targetRotationX));
+    prevMouseX = e.clientX;
+    prevMouseY = e.clientY;
+  }
+});
+
+// Touch support
+container.addEventListener('touchstart', (e) => { if (e.touches.length === 1) { isDragging = true; prevMouseX = e.touches[0].clientX; prevMouseY = e.touches[0].clientY; } });
+window.addEventListener('touchend', () => { isDragging = false; });
+container.addEventListener('touchmove', (e) => {
+  if (isDragging && e.touches.length === 1) {
+    const dx = e.touches[0].clientX - prevMouseX;
+    const dy = e.touches[0].clientY - prevMouseY;
+    targetRotationY += dx * 0.005;
+    targetRotationX += dy * 0.005;
+    targetRotationX = Math.max(-1, Math.min(1, targetRotationX));
+    prevMouseX = e.touches[0].clientX;
+    prevMouseY = e.touches[0].clientY;
+  }
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+});
+
+function animate(time) {
+  requestAnimationFrame(animate);
+
+  autoY += 0.003;
+  if (!isDragging) targetRotationY = autoY;
+
+  rotationY += (targetRotationY - rotationY) * 0.08;
+  rotationX += (targetRotationX - rotationX) * 0.08;
+
+  globe.rotation.y = rotationY;
+  globe.rotation.x = rotationX;
+  glowSphere.rotation.y = rotationY * 0.8;
+  glowSphere.rotation.x = rotationX * 0.8;
+  ring.rotation.z += 0.002;
+  ring2.rotation.z -= 0.001;
+  ring2.rotation.x += 0.0005;
+  particles.rotation.y += 0.0005;
+  particles.rotation.x += 0.0002;
+  nodesGroup.rotation.y = -rotationY * 1.02;
+  citiesGroup.rotation.y = -rotationY * 1.02;
+
+  renderer.render(scene, camera);
+}
+animate(0);
+
+// CountUp animation
+function countUp(el) {
+  const target = parseInt(el.dataset.target);
+  const suffix = el.dataset.target.includes('M') ? 'M' : el.dataset.target.includes('%') ? '%' : '';
+  const rawTarget = parseInt(el.dataset.target);
+  const duration = 2000;
+  const startTime = performance.now();
+
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(eased * rawTarget);
+    el.textContent = current.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const countupEls = entry.target.querySelectorAll('.countup');
+      countupEls.forEach(el => countUp(el));
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest('#hero')));
+</script>
+
+<!-- ==================== LOGIC CARDS SECTION ==================== -->
+<section id="logic" class="relative py-24 mesh-bg">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        How <span class="gradient-text">CONTRA</span> Works
+      </h2>
+      <p class="text-gray-500 font-mono text-sm max-w-2xl mx-auto">
+        A self-executing protocol where AI agents and human experts converge to deliver borderless consulting at planetary scale.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card 1 — Submit -->
+      <div class="glow-card p-6 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center mb-5 group-hover:bg-brand/20 transition-all duration-300">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/><circle cx="12" cy="12" r="3" stroke-width="1.5"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2 font-display tracking-wide">Submit</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Stake $CONTRA tokens and define your consulting brief. AI triage routes it to the optimal agent pool.
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs font-mono text-brand/60">
+          <span>01</span><div class="flex-1 h-px bg-brand/10"></div>
+        </div>
+      </div>
+
+      <!-- Card 2 — Match -->
+      <div class="glow-card p-6 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center mb-5 group-hover:bg-brand/20 transition-all duration-300">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2 font-display tracking-wide">Match</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Smart contracts orchestrate multi-agent teams. On-chain reputation ensures quality across 130 markets.
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs font-mono text-brand/60">
+          <span>02</span><div class="flex-1 h-px bg-brand/10"></div>
+        </div>
+      </div>
+
+      <!-- Card 3 — Execute -->
+      <div class="glow-card p-6 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center mb-5 group-hover:bg-brand/20 transition-all duration-300">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2 font-display tracking-wide">Execute</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          AI + human swarm delivers in real-time. Escrowed funds release only upon verified milestone completion.
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs font-mono text-brand/60">
+          <span>03</span><div class="flex-1 h-px bg-brand/10"></div>
+        </div>
+      </div>
+
+      <!-- Card 4 — Verify -->
+      <div class="glow-card p-6 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center mb-5 group-hover:bg-brand/20 transition-all duration-300">
+          <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2 font-display tracking-wide">Verify</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          On-chain attestations seal every engagement. Immutable proof-of-work builds global reputation.
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs font-mono text-brand/60">
+          <span>04</span><div class="flex-1 h-px bg-brand/10"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow Arrows -->
+    <div class="hidden lg:flex justify-center items-center gap-20 mt-10 text-brand/20 font-mono text-xs tracking-widest">
+      <span>→</span><span>→</span><span>→</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== NFT MINT SECTION ==================== -->
+<section id="nft" class="relative py-24 bg-deep">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+        <span class="font-mono text-xs text-brand tracking-widest">GOVERNANCE NFT MINT</span>
+      </div>
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        Mint Your <span class="gradient-text">Governance</span> NFT
+      </h2>
+      <p class="text-gray-500 font-mono text-sm">
+        Multi-chain minting live on 4 chains. Early stakers earn protocol fee share.
+      </p>
+    </div>
+
+    <!-- Chain Selection Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <!-- Base -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="base">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center">
+            <span class="font-display text-blue-400 text-sm font-bold">B</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">Base</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">0.05</span>
+          <span class="text-xs text-gray-500 font-mono">ETH</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-blue-500 h-1.5 rounded-full" style="width: 34%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-mono text-gray-500">
+          <span>3,400 / 10,000</span><span>34%</span>
+        </div>
+      </div>
+
+      <!-- BSC -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="bsc">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-yellow-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
+            <span class="font-display text-yellow-400 text-sm font-bold">B</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">BSC</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">0.5</span>
+          <span class="text-xs text-gray-500 font-mono">BNB</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 51%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-mono text-gray-500">
+          <span>10,200 / 20,000</span><span>51%</span>
+        </div>
+      </div>
+
+      <!-- ETH -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="eth">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="font-display text-purple-400 text-sm font-bold">Ξ</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">Ethereum</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">0.12</span>
+          <span class="text-xs text-gray-500 font-mono">ETH</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 72%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-mono text-gray-500">
+          <span>3,600 / 5,000</span><span>72%</span>
+        </div>
+      </div>
+
+      <!-- Solana -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="solana">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+            <span class="font-display text-cyan-400 text-sm font-bold">S</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">Solana</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">2.5</span>
+          <span class="text-xs text-gray-500 font-mono">SOL</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-gradient-to-r from-purple-500 to-cyan-500 h-1.5 rounded-full" style="width: 28%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-mono text-gray-500">
+          <span>14,000 / 50,000</span><span>28%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Minted Stats -->
+    <div class="glass rounded-2xl p-6 md:p-8 text-center max-w-3xl mx-auto">
+      <div class="grid grid-cols-3 gap-8 mb-6">
+        <div>
+          <div class="text-sm text-gray-500 font-mono mb-1">Total Minted</div>
+          <div class="text-2xl font-display font-bold text-white">31,200</div>
+        </div>
+        <div>
+          <div class="text-sm text-gray-500 font-mono mb-1">Unique Holders</div>
+          <div class="text-2xl font-display font-bold text-white">8,947</div>
+        </div>
+        <div>
+          <div class="text-sm text-gray-500 font-mono mb-1">Floor Price</div>
+          <div class="text-2xl font-display font-bold text-brand">0.08 ETH</div>
+        </div>
+      </div>
+      <a href="#" class="no-cursor inline-block px-10 py-3.5 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300 animate-pulse-glow">
+        Connect Wallet to Mint
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STAKEHOLDER TIERS ==================== -->
+<section id="stakeholders" class="relative py-24 mesh-bg">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+        <span class="font-mono text-xs text-brand tracking-widest">GOVERNANCE TIERS</span>
+      </div>
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        Stakeholder <span class="gradient-text">Tiers</span>
+      </h2>
+      <p class="text-gray-500 font-mono text-sm max-w-2xl mx-auto">
+        Stake $CONTRA to unlock governance power, protocol fee share, and exclusive access to premium agent pools.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <!-- Gold Tier -->
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-br from-gold/40 via-gold/10 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(255,215,0,0.2);">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gold/10 to-transparent"></div>
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 flex items-center justify-center">
+              <svg class="w-7 h-7 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <span class="font-display text-gold font-bold text-lg tracking-wider">GOLD</span>
+          </div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-4xl font-display font-black text-white">10</span>
+            <span class="text-gold font-mono font-bold">%</span>
+          </div>
+          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 100,000 $CONTRA Staked</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (3x weight)</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Priority Agent Access</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Early Feature Access</div>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
+            <div class="bg-gradient-to-r from-gold to-yellow-400 h-2 rounded-full animate-pulse-glow" style="width: 18%"></div>
+          </div>
+          <div class="flex justify-between text-xs font-mono text-gray-500">
+            <span>180 / 1,000 seats</span><span>18% filled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Silver Tier -->
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-br from-silver/30 via-silver/5 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(192,192,192,0.2);">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-silver/8 to-transparent"></div>
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-silver/20 to-silver/5 border border-silver/30 flex items-center justify-center">
+              <svg class="w-7 h-7 text-silver" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <span class="font-display text-silver font-bold text-lg tracking-wider">SILVER</span>
+          </div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-4xl font-display font-black text-white">5</span>
+            <span class="text-silver font-mono font-bold">%</span>
+          </div>
+          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 25,000 $CONTRA Staked</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (2x weight)</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Standard Agent Access</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Beta Feature Access</div>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
+            <div class="bg-gradient-to-r from-silver to-gray-300 h-2 rounded-full" style="width: 42%"></div>
+          </div>
+          <div class="flex justify-between text-xs font-mono text-gray-500">
+            <span>2,100 / 5,000 seats</span><span>42% filled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bronze Tier -->
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-br from-bronze/30 via-bronze/5 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(205,127,50,0.2);">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-bronze/8 to-transparent"></div>
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-bronze/20 to-bronze/5 border border-bronze/30 flex items-center justify-center">
+              <svg class="w-7 h-7 text-bronze" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <span class="font-display text-bronze font-bold text-lg tracking-wider">BRONZE</span>
+          </div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-4xl font-display font-black text-white">3</span>
+            <span class="text-bronze font-mono font-bold">%</span>
+          </div>
+          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 5,000 $CONTRA Staked</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (1x weight)</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Basic Agent Access</div>
+            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Community Voting</div>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
+            <div class="bg-gradient-to-r from-bronze to-orange-300 h-2 rounded-full" style="width: 63%"></div>
+          </div>
+          <div class="flex justify-between text-xs font-mono text-gray-500">
+            <span>6,300 / 10,000 seats</span><span>63% filled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier Comparison Bar -->
+    <div class="glass rounded-2xl p-6 max-w-5xl mx-auto mt-10">
+      <div class="text-sm text-gray-500 font-mono mb-4 text-center">TIER COMPARISON</div>
+      <div class="hidden md:grid grid-cols-4 gap-4 text-center text-xs font-mono text-gray-500">
+        <div class="text-left pl-4 text-gray-400">Feature</div>
+        <div class="text-bronze font-bold">BRONZE</div>
+        <div class="text-silver font-bold">SILVER</div>
+        <div class="text-gold font-bold">GOLD</div>
+      </div>
+      <div class="space-y-2 mt-3">
+        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
+          <span class="text-gray-400 pl-4">Fee Share</span>
+          <span class="text-center text-bronze font-mono">3%</span>
+          <span class="text-center text-silver font-mono">5%</span>
+          <span class="text-center text-gold font-mono">10%</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
+          <span class="text-gray-400 pl-4">Vote Weight</span>
+          <span class="text-center text-bronze font-mono">1×</span>
+          <span class="text-center text-silver font-mono">2×</span>
+          <span class="text-center text-gold font-mono">3×</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
+          <span class="text-gray-400 pl-4">Agent Pool</span>
+          <span class="text-center text-bronze font-mono">Basic</span>
+          <span class="text-center text-silver font-mono">Standard</span>
+          <span class="text-center text-gold font-mono">Priority</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2">
+          <span class="text-gray-400 pl-4">Stake Required</span>
+          <span class="text-center text-bronze font-mono">5,000</span>
+          <span class="text-center text-silver font-mono">25,000</span>
+          <span class="text-center text-gold font-mono">100,000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MILESTONES TIMELINE ==================== -->
+<section id="milestones" class="relative py-24 bg-deep">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        Protocol <span class="gradient-text">Roadmap</span>
+      </h2>
+      <p class="text-gray-500 font-mono text-sm">Code is Law — every milestone is verified on-chain.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Tech Milestones -->
+      <div>
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-1.5 h-8 rounded-full bg-brand"></div>
+          <h3 class="font-display text-xl font-bold text-white tracking-wide">TECHNICAL</h3>
+        </div>
+        <div class="space-y-0">
+          <div class="relative pl-8 pb-8 border-l border-brand/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand shadow-lg shadow-brand/30"></div>
+            <span class="font-mono text-xs text-brand/60">Q4 2025</span>
+            <h4 class="text-white font-bold mt-1">Smart Contract Audit</h4>
+            <p class="text-gray-500 text-sm mt-1">Independent audit by Trail of Bits & CertiK. Results published on-chain.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-brand/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand shadow-lg shadow-brand/30"></div>
+            <span class="font-mono text-xs text-brand/60">Q1 2026</span>
+            <h4 class="text-white font-bold mt-1">Mainnet Launch</h4>
+            <p class="text-gray-500 text-sm mt-1">$CONTRA token + Governance NFT mint goes live on 4 chains simultaneously.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-brand/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand/50 shadow-lg shadow-brand/10"></div>
+            <span class="font-mono text-xs text-brand/40">Q2 2026</span>
+            <h4 class="text-white/70 font-bold mt-1">Agent Marketplace v1</h4>
+            <p class="text-gray-500 text-sm mt-1">Decentralized agent discovery, reputation scoring, and automated matching engine.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-brand/10">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand/30"></div>
+            <span class="font-mono text-xs text-brand/30">Q3 2026</span>
+            <h4 class="text-white/50 font-bold mt-1">Cross-Chain Interoperability</h4>
+            <p class="text-gray-500 text-sm mt-1">Bridge $CONTRA across all supported chains. Unified governance dashboard.</p>
+          </div>
+          <div class="relative pl-8">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand/20"></div>
+            <span class="font-mono text-xs text-brand/20">Q4 2026</span>
+            <h4 class="text-white/40 font-bold mt-1">AI Agent Swarm Protocol</h4>
+            <p class="text-gray-500 text-sm mt-1">Autonomous agent-to-agent consulting settlements. Full DAO transition.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ops Milestones -->
+      <div>
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-1.5 h-8 rounded-full bg-purple-500"></div>
+          <h3 class="font-display text-xl font-bold text-white tracking-wide">OPERATIONAL</h3>
+        </div>
+        <div class="space-y-0">
+          <div class="relative pl-8 pb-8 border-l border-purple-500/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-purple-500 shadow-lg shadow-purple-500/30"></div>
+            <span class="font-mono text-xs text-purple-400/60">Q4 2025</span>
+            <h4 class="text-white font-bold mt-1">130-Country Legal Framework</h4>
+            <p class="text-gray-500 text-sm mt-1">Jurisdiction-by-jurisdiction compliance mapping. 40 jurisdictions complete.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-purple-500/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-purple-500 shadow-lg shadow-purple-500/30"></div>
+            <span class="font-mono text-xs text-purple-400/60">Q1 2026</span>
+            <h4 class="text-white font-bold mt-1">10,000 Agent Onboarding</h4>
+            <p class="text-gray-500 text-sm mt-1">Targeted recruitment across top-20 consulting markets. KYC + reputation verified.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-purple-500/20">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-purple-500/50 shadow-lg shadow-purple-500/10"></div>
+            <span class="font-mono text-xs text-purple-400/40">Q2 2026</span>
+            <h4 class="text-white/70 font-bold mt-1">Enterprise Partnerships</h4>
+            <p class="text-gray-500 text-sm mt-1">Fortune 500 pilot programs. White-label consulting infrastructure for enterprises.</p>
+          </div>
+          <div class="relative pl-8 pb-8 border-l border-purple-500/10">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-purple-500/30"></div>
+            <span class="font-mono text-xs text-purple-400/30">Q3 2026</span>
+            <h4 class="text-white/50 font-bold mt-1">Regional DAO Chapters</h4>
+            <p class="text-gray-500 text-sm mt-1">Self-governing regional nodes. Local treasury + community leadership elections.</p>
+          </div>
+          <div class="relative pl-8">
+            <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-purple-500/20"></div>
+            <span class="font-mono text-xs text-purple-400/20">Q4 2026</span>
+            <h4 class="text-white/40 font-bold mt-1">1M+ Engagements Target</h4>
+            <p class="text-gray-500 text-sm mt-1">Borderless consulting at planetary scale. Every engagement proven on-chain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WORLD MAP + AGENT NETWORK ==================== -->
+<section id="world" class="relative py-24 mesh-bg">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        Global <span class="gradient-text">Node</span> Network
+      </h2>
+      <p class="text-gray-500 font-mono text-sm">130+ countries. 15,000+ agents. One protocol.</p>
+    </div>
+
+    <!-- World Map SVG -->
+    <div class="glass rounded-2xl p-4 md:p-8 mb-10 overflow-hidden">
+      <div class="relative">
+        <svg viewBox="0 0 1000 500" class="w-full opacity-70">
+          <defs>
+            <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glowFilter">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Simplified world map path (dark, unlit) -->
+          <g fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="0.8">
+            <!-- North America -->
+            <path d="M120,100 L250,80 L300,85 L320,100 L340,95 L370,120 L380,150 L360,200 L340,220 L310,240 L280,250 L250,260 L200,270 L160,260 L130,240 L110,200 L100,160 Z"/>
+            <!-- South America -->
+            <path d="M260,300 L290,310 L310,340 L300,380 L280,420 L250,440 L230,420 L240,380 L220,340 Z"/>
+            <!-- Europe -->
+            <path d="M460,80 L520,70 L560,75 L570,90 L580,110 L560,130 L540,140 L520,135 L500,150 L480,140 L470,120 L450,110 Z"/>
+            <!-- Africa -->
+            <path d="M470,160 L520,155 L560,170 L580,200 L570,250 L550,300 L520,340 L500,350 L480,330 L460,300 L450,260 L440,220 Z"/>
+            <!-- Asia -->
+            <path d="M580,60 L700,50 L780,55 L850,70 L890,100 L880,140 L860,160 L820,180 L780,200 L740,220 L700,210 L660,190 L620,170 L580,160 L570,130 L560,100 Z"/>
+            <!-- Southeast Asia / Oceania -->
+            <path d="M740,230 L780,240 L820,260 L840,280 L820,300 L780,310 L740,320 L720,300 L710,270 Z"/>
+            <path d="M800,380 L840,370 L870,390 L860,420 L830,440 L800,430 L780,400 Z"/>
+            <!-- Australia -->
+            <path d="M750,370 L820,350 L870,370 L880,410 L840,430 L780,420 L740,400 Z"/>
+            <!-- Japan / Islands -->
+            <path d="M850,130 L860,150 L850,170 L840,150 Z"/>
+            <!-- Indonesia / Archipelago -->
+            <path d="M740,250 L750,260 L760,255 L770,265 L760,275 L750,270 Z"/>
+          </g>
+
+          <!-- Active market nodes (lit cyan) -->
+          <g filter="url(#glowFilter)">
+            <!-- North America -->
+            <circle cx="220" cy="180" r="4" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="3s" repeatCount="indefinite"/></circle>
+            <circle cx="180" cy="200" r="3" fill="#00e5ff" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/></circle>
+            <circle cx="250" cy="150" r="3" fill="#00e5ff" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="3.5s" repeatCount="indefinite"/></circle>
+
+            <!-- South America -->
+            <circle cx="280" cy="340" r="3" fill="#00e5ff" opacity="0.5"><animate attributeName="opacity" values="0.5;0.15;0.5" dur="4s" repeatCount="indefinite"/></circle>
+
+            <!-- Europe -->
+            <circle cx="490" cy="100" r="4" fill="#00e5ff" opacity="0.9"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="520" cy="115" r="3" fill="#00e5ff" opacity="0.7"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite"/></circle>
+            <circle cx="470" cy="95" r="3" fill="#00e5ff" opacity="0.7"><animate attributeName="opacity" values="0.7;0.25;0.7" dur="2.8s" repeatCount="indefinite"/></circle>
+
+            <!-- Africa -->
+            <circle cx="530" cy="280" r="3" fill="#00e5ff" opacity="0.5"><animate attributeName="opacity" values="0.5;0.15;0.5" dur="4.5s" repeatCount="indefinite"/></circle>
+
+            <!-- Middle East -->
+            <circle cx="580" cy="200" r="5" fill="#00e5ff" opacity="0.85"><animate attributeName="opacity" values="0.85;0.25;0.85" dur="1.8s" repeatCount="indefinite"/></circle>
+            <circle cx="595" cy="220" r="3" fill="#00e5ff" opacity="0.6"><animate attributeName="opacity" values="0.6;0.2;0.6" dur="3.2s" repeatCount="indefinite"/></circle>
+
+            <!-- East Asia -->
+            <circle cx="720" cy="120" r="5" fill="#00e5ff" opacity="0.9"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.2s" repeatCount="indefinite"/></circle>
+            <circle cx="750" cy="140" r="4" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.6s" repeatCount="indefinite"/></circle>
+            <circle cx="700" cy="100" r="4" fill="#00e5ff" opacity="0.75"><animate attributeName="opacity" values="0.75;0.25;0.75" dur="3.1s" repeatCount="indefinite"/></circle>
+
+            <!-- Japan/Korea -->
+            <circle cx="855" cy="140" r="4" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.25;0.8" dur="2.4s" repeatCount="indefinite"/></circle>
+
+            <!-- Southeast Asia -->
+            <circle cx="760" cy="240" r="4" fill="#00e5ff" opacity="0.7"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="3.3s" repeatCount="indefinite"/></circle>
+            <circle cx="780" cy="260" r="3" fill="#00e5ff" opacity="0.5"><animate attributeName="opacity" values="0.5;0.15;0.5" dur="4s" repeatCount="indefinite"/></circle>
+
+            <!-- Oceania -->
+            <circle cx="820" cy="400" r="3" fill="#00e5ff" opacity="0.5"><animate attributeName="opacity" values="0.5;0.15;0.5" dur="5s" repeatCount="indefinite"/></circle>
+
+            <!-- India -->
+            <circle cx="670" cy="200" r="4" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.25;0.8" dur="2.7s" repeatCount="indefinite"/></circle>
+          </g>
+
+          <!-- Node connection arcs -->
+          <g stroke="rgba(0,229,255,0.08)" stroke-width="0.5" fill="none">
+            <path d="M490,100 Q580,160 670,200"/>
+            <path d="M670,200 Q710,160 720,120"/>
+            <path d="M720,120 Q785,130 855,140"/>
+            <path d="M490,100 Q530,190 580,200"/>
+            <path d="M220,180 Q350,220 490,100"/>
+            <path d="M670,200 Q720,240 760,240"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Agent Market + Node Economy Preview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Agent Marketplace Preview -->
+      <div class="glow-card p-6 md:p-8 relative overflow-hidden group cursor-pointer">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-brand/10 to-transparent rounded-bl-full"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand font-mono text-xs">Q2 2026</span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white mb-3">Agent Marketplace</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Decentralized reputation scoring. Staked agent pools. AI-powered matching engine routes every brief to the optimal team across 130 markets.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-lg bg-white/5 text-xs font-mono text-gray-400">Strategy</span>
+            <span class="px-3 py-1 rounded-lg bg-white/5 text-xs font-mono text-gray-400">Tech/DLT</span>
+            <span class="px-3 py-1 rounded-lg bg-white/5 text-xs font-mono text-gray-400">Legal/Compliance</span>
+            <span class="px-3 py-1 rounded-lg bg-white/5 text-xs font-mono text-gray-400">Finance</span>
+            <span class="px-3 py-1 rounded-lg bg-white/5 text-xs font-mono text-gray-400">Marketing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Node Economy Preview -->
+      <div class="glow-card p-6 md:p-8 relative overflow-hidden group cursor-pointer">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-bl-full"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-mono text-xs">Q3 2026</span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white mb-3">Node Economy</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Run a CONTRA node. Stake $CONTRA to validate engagements, earn protocol fees, and participate in regional DAO governance.
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <div class="text-xs text-gray-500 font-mono mb-1">Node APR</div>
+              <div class="text-lg font-display font-bold text-brand">12.8%</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <div class="text-xs text-gray-500 font-mono mb-1">Min Stake</div>
+              <div class="text-lg font-display font-bold text-white">50K</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <div class="text-xs text-gray-500 font-mono mb-1">Active Nodes</div>
+              <div class="text-lg font-display font-bold text-white">3,847</div>
+            </div>
+            <div class="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+              <div class="text-xs text-gray-500 font-mono mb-1">Uptime</div>
+              <div class="text-lg font-display font-bold text-green-400">99.99%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="relative py-16 bg-deep border-t border-brand/5">
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+      <!-- Brand -->
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
+            <span class="font-display text-white font-bold text-sm">C</span>
+          </div>
+          <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+        </div>
+        <p class="text-gray-500 text-sm leading-relaxed mb-4">
+          The world's first decentralized Web3 × AI consulting protocol. Code is Law. Borderless. On-chain.
+        </p>
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-brand/20 transition-colors cursor-pointer">
+            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.85.38-1.78.64-2.73.76 1-.6 1.76-1.54 2.12-2.67-.93.55-1.96.95-3.06 1.17a4.77 4.77 0 00-8.13 4.35C7.16 9.49 3.8 7.72 1.54 4.94a4.78 4.78 0 001.46 6.38c-.77-.02-1.5-.24-2.14-.6v.06a4.78 4.78 0 003.83 4.68c-.7.2-1.44.22-2.15.08a4.78 4.78 0 004.46 3.32A9.6 9.6 0 010 21.54a13.5 13.5 0 007.33 2.15c8.8 0 13.6-7.3 13.6-13.63 0-.2 0-.42-.02-.63A9.69 9.69 0 0024 6.56c-.88.4-1.83.67-2.83.79z"/></svg>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-brand/20 transition-colors cursor-pointer">
+            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-brand/20 transition-colors cursor-pointer">
+            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocol -->
+      <div>
+        <h4 class="font-display text-sm text-white font-bold tracking-wider mb-4">PROTOCOL</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Whitepaper</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Documentation</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Smart Contracts</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Audit Reports</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Tokenomics</a></li>
+        </ul>
+      </div>
+
+      <!-- Ecosystem -->
+      <div>
+        <h4 class="font-display text-sm text-white font-bold tracking-wider mb-4">ECOSYSTEM</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Governance</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Agent Network</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Node Operators</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Partnerships</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Careers</a></li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <h4 class="font-display text-sm text-white font-bold tracking-wider mb-4">RESOURCES</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Blog</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Community</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Support</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Brand Kit</a></li>
+          <li><a href="#" class="text-gray-500 text-sm hover:text-brand transition-colors">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-divider mb-8"></div>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-gray-600 text-xs font-mono">
+        &copy; 2025 CONTRA Protocol. Code is Law. All rights reserved under decentralized governance.
+      </p>
+      <p class="text-gray-700 text-xs font-mono">
+        Built on Ethereum · BNB Chain · Base · Solana
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll reveal animation -->
+<script>
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.glow-card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    revealObserver.observe(card);
+  });
+
+  // Chain card hover effect
+  document.querySelectorAll('.chain-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.chain-card').forEach(c => c.style.borderColor = 'rgba(0,229,255,0.12)');
+      card.style.borderColor = 'rgba(0,229,255,0.5)';
+    });
+  });
+</script>
+
+</body>
+</html>
