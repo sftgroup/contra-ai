@@ -21,12 +21,15 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 .bg-green{background:#00ff88}
 .bg-gold{background:#f59e0b}
 .bg-purple{background:#7c3aed}
-.tab-btn{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:6px 18px;font-size:13px;cursor:pointer;transition:.3s;color:#94a3b8}
-.tab-btn.active,.tab-btn:hover{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,.08)}
-.proposal-vote{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
+.tab-btn{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:6px 18px;font-size:13px;cursor:pointer;transition:.3s;color:rgba(148,163,184,.5)}
+.tab-btn.active,.tab-btn:hover{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,.15);box-shadow:0 0 12px rgba(0,229,255,.2)}
+.proposal-vote,.proposal-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
+.proposal-card{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;cursor:default}
+.proposal-card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.25);box-shadow:0 8px 25px rgba(0,0,0,.3),0 0 15px rgba(0,229,255,.08)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn .4s ease-out}
 .glow{filter:url(#glow)}
+@media (max-width:768px){.glass{padding:12px}.grid-cols-4{grid-template-columns:repeat(2,1fr)}.grid-cols-2{grid-template-columns:1fr}#tabButtons{gap:6px}.tab-btn{font-size:12px;padding:5px 12px;white-space:nowrap;overflow-x:auto}.relative[style*="160px"]{transform:scale(.8);transform-origin:center center}.grid-cols-2.gap-6{gap:8px}table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.max-w-7xl>div>h2{font-size:1rem}.flex.items-center.justify-between.px-6.py-4{flex-wrap:wrap;gap:8px}.flex.items-center.gap-4.text-sm{flex-wrap:wrap;gap:4px}}
 </style>
 </head>
 <body>
@@ -75,8 +78,8 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
       <div class="flex items-center justify-center">
         <div class="relative" style="width:160px;height:160px">
           <svg viewBox="0 0 160 160" width="160" height="160">
-            <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="10"/>
-            <circle cx="80" cy="80" r="68" fill="none" stroke="url(#ringGrad)" stroke-width="10" stroke-dasharray="427.2" stroke-dashoffset="64.08" stroke-linecap="round" transform="rotate(-90 80 80)" filter="url(#glow)"/>
+            <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="12"/>
+            <circle cx="80" cy="80" r="68" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-dasharray="427.2" stroke-dashoffset="64.08" stroke-linecap="round" transform="rotate(-90 80 80)" filter="url(#glow)"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <span class="text-2xl font-bold brand">85.1%</span>
@@ -108,10 +111,10 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
   <div class="fade-in">
     <h2 class="text-lg font-bold mb-3">Governance Proposals</h2>
     <div class="grid grid-cols-2 gap-4" id="proposalGrid">
-      <div class="glass p-4" data-idx="0"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-12 Adjust Fee Split</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:84%"></div></div><span class="text-xs font-bold">84%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(0,'CIP-12 Adjust Fee Split')">Vote</button></div>
-      <div class="glass p-4" data-idx="1"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-11 Onboard Solana</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:95%"></div></div><span class="text-xs font-bold">95%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(1,'CIP-11 Onboard Solana')">Vote</button></div>
-      <div class="glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-10 Increase Node Rewards</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-red-500" style="width:28%"></div></div><span class="text-xs font-bold gold">28%</span></div><div class="text-xs text-red-400 font-medium">Rejected</div></div>
-      <div class="glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-9 Regional DAO</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-green-500" style="width:97%"></div></div><span class="text-xs font-bold green">97%</span></div><div class="text-xs text-green-400 font-medium">Passed</div></div>
+      <div class="proposal-card glass p-4" data-idx="0"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-12 Adjust Fee Split</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:84%"></div></div><span class="text-xs font-bold">84%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(0,'CIP-12 Adjust Fee Split')">Vote</button></div>
+      <div class="proposal-card glass p-4" data-idx="1"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-11 Onboard Solana</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:95%"></div></div><span class="text-xs font-bold">95%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(1,'CIP-11 Onboard Solana')">Vote</button></div>
+      <div class="proposal-card glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-10 Increase Node Rewards</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-red-500" style="width:28%"></div></div><span class="text-xs font-bold gold">28%</span></div><div class="text-xs text-red-400 font-medium">Rejected</div></div>
+      <div class="proposal-card glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-9 Regional DAO</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-green-500" style="width:97%"></div></div><span class="text-xs font-bold green">97%</span></div><div class="text-xs text-green-400 font-medium">Passed</div></div>
     </div>
   </div>
 
