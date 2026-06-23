@@ -1,262 +1,244 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTRA | Dashboard</title>
+<title>CONTRA Dashboard v6</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Space Grotesk','sans-serif'],mono:['JetBrains Mono','monospace']},colors:{brand:'#00e5ff',green:'#00ff88',purple:'#7c3aed',gold:'#f59e0b'}}}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{scrollbar-width:thin;scrollbar-color:#30363d transparent}
-.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06)}
-.glass:hover{border-color:rgba(0,229,255,0.2);box-shadow:0 0 30px rgba(0,229,255,0.04)}
-.glow-brand{box-shadow:0 0 40px rgba(0,229,255,0.06)}
-.glow-green{box-shadow:0 0 40px rgba(0,255,136,0.06)}
-.glow-purple{box-shadow:0 0 40px rgba(124,58,237,0.06)}
-.glow-gold{box-shadow:0 0 40px rgba(245,158,11,0.06)}
-.tab-active{border-bottom:2px solid #00e5ff;color:#00e5ff}
-.tab-inactive{color:#8b949e;border-bottom:2px solid transparent}
-.tab-inactive:hover{color:#c9d1d9}
-.btn-mint{background:linear-gradient(135deg,#00e5ff,#7c3aed);color:#0a0a0f;font-weight:700;letter-spacing:0.02em;transition:all .3s;cursor:pointer}
-.btn-mint:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,229,255,0.25)}
-.mint-radio{width:20px;height:20px;border:2px solid rgba(255,255,255,0.15);border-radius:50%;cursor:pointer;flex-shrink:0;transition:all .3s}
-.mint-radio.checked{border-color:#00e5ff;background:#00e5ff}
-.mint-radio.checked::after{content:'';position:absolute;inset:3px;border-radius:50%;background:#0a0a0f}
-.fade-in{animation:fadeIn .5s ease}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-gradient(135deg,#0a0a0f,#0d1117,#0a0a0f);color:#e2e8f0}
+.jet{font-family:'JetBrains Mono',monospace}
+.glass{background:rgba(255,255,255,.03);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:16px}
+.btn-mint{background:linear-gradient(135deg,#00e5ff,#7c3aed);color:#0a0a0f;font-weight:600;border:none;cursor:pointer;transition:.3s}
+.btn-mint:hover{box-shadow:0 0 20px rgba(0,229,255,.35),0 0 40px rgba(124,58,237,.25)}
+.brand{color:#00e5ff}
+.green{color:#00ff88}
+.gold{color:#f59e0b}
+.purple{color:#7c3aed}
+.bg-brand{background:#00e5ff}
+.bg-green{background:#00ff88}
+.bg-gold{background:#f59e0b}
+.bg-purple{background:#7c3aed}
+.tab-btn{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:6px 18px;font-size:13px;cursor:pointer;transition:.3s;color:#94a3b8}
+.tab-btn.active,.tab-btn:hover{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,.08)}
+.proposal-vote{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse-glow{0%,100%{opacity:.4}50%{opacity:.8}}
-.anim-pulse{animation:pulse-glow 2s infinite}
+.fade-in{animation:fadeIn .4s ease-out}
+.glow{filter:url(#glow)}
 </style>
 </head>
-<body class="bg-gradient-to-br from-[#0a0a0f] via-[#0d1117] to-[#0a0a0f] min-h-screen text-white font-sans antialiased">
+<body>
 
-<nav class="glass sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+<!-- SVG defs -->
+<svg style="position:absolute;width:0;height:0"><defs>
+<filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+</defs></svg>
+
+<!-- Topbar -->
+<div class="flex items-center justify-between px-6 py-4 border-b border-white/[.06] max-w-7xl mx-auto">
   <div class="flex items-center gap-3">
-    <svg class="w-8 h-8" viewBox="0 0 32 32"><defs><linearGradient id="lg"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><circle cx="16" cy="16" r="14" fill="none" stroke="url(#lg)" stroke-width="2.5"/><circle cx="16" cy="16" r="6" fill="url(#lg)"/></svg>
-    <span class="text-xl font-bold tracking-tight">CONTRA</span>
-    <span class="text-xs text-white/40 bg-white/[0.04] px-2 py-0.5 rounded-full font-mono">Dashboard</span>
+    <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#00e5ff] to-[#7c3aed] flex items-center justify-center text-[10px] font-bold text-black">C</span>
+    <span class="font-bold text-lg">CONTRA<span class="brand"> Dashboard</span></span>
   </div>
   <div class="flex items-center gap-4 text-sm">
-    <div class="flex items-center gap-2 glass rounded-full px-4 py-1.5">
-      <span class="w-2 h-2 rounded-full bg-green animate-pulse"></span>
-      <span class="font-mono text-green">0x1234...5678</span>
+    <div class="glass px-3 py-1.5 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_#00ff88]"></span>
+      <span class="jet text-[#94a3b8]">0x1234...5678</span>
     </div>
-    <div class="flex items-center gap-1"><span class="text-white/40">Balance</span><span class="font-mono font-semibold">125,000</span><span class="text-white/40 text-xs">CONTRA</span></div>
-    <select class="glass rounded-lg px-3 py-1.5 bg-transparent cursor-pointer outline-none text-xs"><option>Ethereum</option><option>Base</option><option>BSC</option><option>Solana</option></select>
+    <div class="glass px-3 py-1.5 flex items-center gap-1.5">
+      <span class="text-[#00ff88] text-xs">●</span>
+      <span class="font-semibold gold">125K <span class="text-[#94a3b8] font-normal">CONTRA</span></span>
+    </div>
+    <select class="glass px-3 py-1.5 text-sm text-[#94a3b8] bg-transparent cursor-pointer outline-none">
+      <option>Mainnet</option><option>Testnet</option><option>Devnet</option>
+    </select>
   </div>
-</nav>
+</div>
 
-<div class="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
+<!-- Main -->
+<div class="max-w-7xl mx-auto px-6 py-6 space-y-6">
+
   <!-- Stats -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div class="glass rounded-2xl p-5 glow-green"><p class="text-xs text-white/40 tracking-widest uppercase">Total Value</p><p class="text-2xl font-mono font-bold mt-1">$2,847,392</p><p class="text-xs text-green mt-1 font-mono">↑12.3%</p></div>
-    <div class="glass rounded-2xl p-5 glow-gold"><p class="text-xs text-white/40 tracking-widest uppercase">Staked</p><p class="text-2xl font-mono font-bold mt-1">100,000</p><p class="text-xs text-gold mt-1 font-mono">Gold Tier</p></div>
-    <div class="glass rounded-2xl p-5 glow-brand"><p class="text-xs text-white/40 tracking-widest uppercase">NFT</p><p class="text-2xl font-mono font-bold mt-1">#0421</p><p class="text-xs text-brand mt-1 font-mono">Gold Badge</p></div>
-    <div class="glass rounded-2xl p-5 glow-purple"><p class="text-xs text-white/40 tracking-widest uppercase">Earned</p><p class="text-2xl font-mono font-bold mt-1">$12,450<span class="text-lg text-white/40">.80</span></p><p class="text-xs text-purple mt-1 font-mono">Lifetime</p></div>
+  <div class="grid grid-cols-4 gap-4 fade-in">
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">TVL</div><div class="text-2xl font-bold">$<span class="brand">2.8</span>M</div><div class="text-xs text-green-400 mt-1">+12.4%</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Staked</div><div class="text-2xl font-bold"><span class="gold">100K</span> Gold</div><div class="text-xs text-green-400 mt-1">+8.2%</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">NFT #0421</div><div class="text-2xl font-bold"><span class="gold">Gold</span></div><div class="text-xs text-[#00e5ff] mt-1">Tier 3 · Active</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Earned</div><div class="text-2xl font-bold"><span class="green">12.4</span>K</div><div class="text-xs text-green-400 mt-1">+2.1%</div></div>
   </div>
 
-  <!-- Revenue -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="md:col-span-2">
-  <div class="glass rounded-2xl p-6 relative overflow-hidden">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-semibold text-white/70">30-Day Revenue</h3>
-      <div class="flex items-center gap-3 text-xs font-mono">
-        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand"></span> Protocol Fees</span>
-        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple"></span> Staking Rewards</span>
+  <!-- Revenue Ring -->
+  <div class="glass p-5 fade-in">
+    <div class="grid grid-cols-2 gap-6">
+      <div class="flex items-center justify-center">
+        <div class="relative" style="width:160px;height:160px">
+          <svg viewBox="0 0 160 160" width="160" height="160">
+            <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="10"/>
+            <circle cx="80" cy="80" r="68" fill="none" stroke="url(#ringGrad)" stroke-width="10" stroke-dasharray="427.2" stroke-dashoffset="64.08" stroke-linecap="round" transform="rotate(-90 80 80)" filter="url(#glow)"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-2xl font-bold brand">85.1%</span>
+            <span class="text-xs text-[#64748b]">APR <span class="gold">12.8%</span></span>
+          </div>
+        </div>
       </div>
-    </div>
-    <svg viewBox="0 0 300 140" class="w-full">
-      <defs>
-        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.25"/>
-          <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.01"/>
-        </linearGradient>
-        <linearGradient id="areaGrad2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.15"/>
-          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
-        </linearGradient>
-        <filter id="glow"><feGaussianBlur stdDeviation="1.5"/></filter>
-      </defs>
-      <!-- Grid lines -->
-      <line x1="0" y1="120" x2="290" y2="120" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,4"/><line x1="0" y1="95" x2="290" y2="95" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,4"/><line x1="0" y1="70" x2="290" y2="70" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,4"/><line x1="0" y1="45" x2="290" y2="45" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,4"/><line x1="0" y1="20" x2="290" y2="20" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,4"/>
-      <!-- Second area: staking rewards (offset downward) -->
-      <path d="M0,120 L0,112 8.33,113 16.66,110 24.990000000000002,111 33.32,108 41.65,109 49.980000000000004,106 58.31,106.4 66.64,104 74.97,107.6 83.3,102 91.63,105 99.96000000000001,100 108.29,102.4 116.62,98 124.95,103.6 133.28,96 141.61,101 149.94,92 158.27,98.4 166.6,89 174.93,97 183.26,86 191.59,94 199.92000000000002,82 208.25,96 216.58,78 224.91,92 233.24,74 241.57,93 249.9,70 258.23,90 266.56,66 274.89,90.39999999999999 283.22,62.00000000000001 291.55,88 L290,120 Z" fill="url(#areaGrad2)"/>
-      <!-- Main area: protocol fees -->
-      <path d="M0,120 L0,100 8.33,102.5 16.66,95 24.990000000000002,97.5 33.32,90 41.65,92.5 49.980000000000004,85 58.31,86 66.64,80 74.97,89 83.3,75 91.63,82.5 99.96000000000001,70 108.29,76 116.62,65 124.95,79 133.28,60 141.61,72.5 149.94,50 158.27,66 166.6,42.5 174.93,62.50000000000001 183.26,35 191.59,55 199.92000000000002,25 208.25,60 216.58,15 224.91,50 233.24,5.000000000000014 241.57,52.5 249.9,-5 258.23,45 266.56,-15 274.89,46 283.22,-25 291.55,40 L290,120 Z" fill="url(#areaGrad)"/>
-      <!-- Gradient stroke line -->
-      <defs><linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
-      <polyline points="0,100 8.33,102.5 16.66,95 24.990000000000002,97.5 33.32,90 41.65,92.5 49.980000000000004,85 58.31,86 66.64,80 74.97,89 83.3,75 91.63,82.5 99.96000000000001,70 108.29,76 116.62,65 124.95,79 133.28,60 141.61,72.5 149.94,50 158.27,66 166.6,42.5 174.93,62.50000000000001 183.26,35 191.59,55 199.92000000000002,25 208.25,60 216.58,15 224.91,50 233.24,5.000000000000014 241.57,52.5 249.9,-5 258.23,45 266.56,-15 274.89,46 283.22,-25 291.55,40" fill="none" stroke="url(#lineGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
-      <!-- Data points -->
-      <circle cx="0" cy="100" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="0s"/></circle><circle cx="24.990000000000002" cy="97.5" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="0.3s"/></circle><circle cx="49.980000000000004" cy="85" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="0.6s"/></circle><circle cx="74.97" cy="89" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="0.8999999999999999s"/></circle><circle cx="99.96000000000001" cy="70" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="1.2s"/></circle><circle cx="124.95" cy="79" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="1.5s"/></circle><circle cx="149.94" cy="50" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="1.7999999999999998s"/></circle><circle cx="174.93" cy="62.50000000000001" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="2.1s"/></circle><circle cx="199.92000000000002" cy="25" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="2.4s"/></circle><circle cx="224.91" cy="50" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="2.6999999999999997s"/></circle><circle cx="249.9" cy="-5" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="3s"/></circle><circle cx="274.89" cy="46" r="4" fill="#0d1117" stroke="#00e5ff" stroke-width="2"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" begin="3.3s"/></circle>
-      <!-- Hover tooltip area (invisible) -->
-      <text x="0" y="90" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$5120</text><text x="49.980000000000004" y="75" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$8960</text><text x="99.96000000000001" y="60" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$12800</text><text x="149.94" y="40" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$17920</text><text x="199.92000000000002" y="15" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$24320</text><text x="249.9" y="-15" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="6" font-family="JetBrains Mono,monospace">$32000</text>
-    </svg>
-  </div></div>
-    <div class="glass rounded-2xl p-6 flex flex-col justify-between space-y-4">
-      <div><p class="text-xs text-white/40 tracking-widest uppercase">Current APR</p><p class="text-3xl font-mono font-bold text-green mt-1">12.8%</p></div>
-      <div><p class="text-xs text-white/40 tracking-widest uppercase">Monthly</p><p class="text-xl font-mono font-bold text-white mt-1">$3,240.00</p></div>
-      <div><p class="text-xs text-white/40 tracking-widest uppercase">Total Claimed</p><p class="text-xl font-mono font-bold text-white mt-1">$12,450.80</p></div>
-      <div><p class="text-xs text-white/40 tracking-widest uppercase">Next Claim</p><p class="text-xl font-mono font-bold text-brand mt-1">6d 14h</p></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Total Earned</div><div class="text-lg font-bold"><span class="green">12.45</span>K</div></div>
+        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Pending</div><div class="text-lg font-bold"><span class="gold">2.18</span>K</div></div>
+        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Monthly</div><div class="text-lg font-bold"><span class="brand">3.24</span>K</div></div>
+        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Reward Pool</div><div class="text-lg font-bold"><span class="purple">20</span>%</div></div>
+      </div>
     </div>
   </div>
 
   <!-- NFT Tabs -->
-  <div class="glass rounded-2xl p-6">
-    <div class="flex justify-center gap-1 mb-6 border-b border-white/10 pb-0" id="tab-bar">
-      <button class="px-5 py-3 text-sm font-semibold transition-all tab-active border-b-2 border-gold text-gold" onclick="switchTab('partner')">🥇 Partner</button><button class="px-5 py-3 text-sm font-semibold transition-all tab-inactive" onclick="switchTab('user')">👤 User</button><button class="px-5 py-3 text-sm font-semibold transition-all tab-inactive" onclick="switchTab('expert')">🧠 Expert</button><button class="px-5 py-3 text-sm font-semibold transition-all tab-inactive" onclick="switchTab('kol')">📢 KOL</button>
+  <div class="glass p-5 fade-in">
+    <div class="flex gap-2 mb-5" id="tabButtons">
+      <button class="tab-btn" onclick="switchTab('partner')">Partner</button>
+      <button class="tab-btn" onclick="switchTab('user')">User</button>
+      <button class="tab-btn" onclick="switchTab('expert')">Expert</button>
+      <button class="tab-btn" onclick="switchTab('kol')">KOL</button>
     </div>
-    <div id="tab-content">
-      
-    <div id="partner-unminted" class="fade-in">
-      <div class="glass rounded-2xl p-6 mb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-amber-500/10 border-amber-500/20">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">🥇</div>
-          <div>
-            <h3 class="text-lg font-bold text-white">Gold NFT</h3>
-            <p class="text-xs text-white/50 font-mono mt-0.5">Required Stake: <span class="text-gold font-semibold">100K CONTRA</span></p>
-          </div>
-        </div>
-        <div class="text-right">
-          <p class="text-xs text-white/40">Stake Amount</p>
-          <p class="text-2xl font-mono font-bold text-gold">100K</p>
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="glass rounded-xl p-3 flex items-center gap-2 text-sm">
-          <span class="text-green">✓</span><span class="text-white/80">10% Protocol Fee Split</span>
-        </div><div class="glass rounded-xl p-3 flex items-center gap-2 text-sm">
-          <span class="text-green">✓</span><span class="text-white/80">3× Vote Weight</span>
-        </div><div class="glass rounded-xl p-3 flex items-center gap-2 text-sm">
-          <span class="text-green">✓</span><span class="text-white/80">Priority Agent Pool</span>
-        </div><div class="glass rounded-xl p-3 flex items-center gap-2 text-sm">
-          <span class="text-green">✓</span><span class="text-white/80">Early Feature Access</span>
-        </div>
-      </div>
-      <div class="glass rounded-xl p-4 mb-4">
-        <div class="flex justify-between text-xs font-mono mb-2"><span class="text-white/50">Quota</span><span class="text-gold">180 / 1,000</span></div>
-        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-          <div class="h-full rounded-full bg-gradient-to-r from-#f59e0b to-#fbbf24" style="width:18.0%"></div>
-        </div>
-        <p class="text-right text-xs text-white/40 font-mono mt-1">18.0% filled</p>
-      </div>
-      <button class="btn-mint w-full rounded-xl py-4 text-base" onclick="mintIdentity('partner')">Mint Gold NFT</button>
-    </div>
-    <div id="partner-minted" class="fade-in hidden">
-      <div class="glass rounded-2xl p-6 mb-4 border border-gold/30 text-center">
-        <div class="text-5xl mb-3">🎖️</div>
-        <h4 class="font-bold text-gold mb-2">NFT #00180 (Gold)</h4>
-      </div>
-      <p class="text-center text-white/30 text-xs mt-2">✅ Minted on-chain</p>
-    </div>
-    </div>
+    <div id="tabContent"></div>
   </div>
 
   <!-- Governance -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="glass rounded-2xl p-5">
-      <div class="flex items-center justify-between mb-3">
-        <h4 class="text-sm font-semibold text-white">CIP-12: Adjust Fee Split</h4>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green font-mono">Active</span>
-      </div>
-      <div class="flex items-center justify-between text-xs text-white/40">
-        <span class="font-mono">Weight: 3×</span>
-        <span class="font-mono">3 days left</span>
-        <button class="px-4 py-1.5 rounded-lg bg-brand/10 text-brand text-xs font-semibold hover:bg-brand/20 transition">Vote</button>
-      </div>
-    </div>
-    <div class="glass rounded-2xl p-5">
-      <div class="flex items-center justify-between mb-3">
-        <h4 class="text-sm font-semibold text-white">CIP-11: Onboard Solana Agents</h4>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green font-mono">Active</span>
-      </div>
-      <div class="flex items-center justify-between text-xs text-white/40">
-        <span class="font-mono">Weight: 3×</span>
-        <span class="font-mono">5 days left</span>
-        <button class="px-4 py-1.5 rounded-lg bg-brand/10 text-brand text-xs font-semibold hover:bg-brand/20 transition">Vote</button>
-      </div>
+  <div class="fade-in">
+    <h2 class="text-lg font-bold mb-3">Governance Proposals</h2>
+    <div class="grid grid-cols-2 gap-4" id="proposalGrid">
+      <div class="glass p-4" data-idx="0"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-12 Adjust Fee Split</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:84%"></div></div><span class="text-xs font-bold">84%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(0,'CIP-12 Adjust Fee Split')">Vote</button></div>
+      <div class="glass p-4" data-idx="1"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-11 Onboard Solana</span><span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:95%"></div></div><span class="text-xs font-bold">95%</span></div><button class="btn-mint text-xs px-3 py-1.5 rounded-lg" onclick="openVote(1,'CIP-11 Onboard Solana')">Vote</button></div>
+      <div class="glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-10 Increase Node Rewards</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-red-500" style="width:28%"></div></div><span class="text-xs font-bold gold">28%</span></div><div class="text-xs text-red-400 font-medium">Rejected</div></div>
+      <div class="glass p-4"><div class="flex justify-between items-start mb-2"><span class="font-semibold">CIP-9 Regional DAO</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Ended</span></div><div class="flex items-center gap-2 mb-3"><div class="flex-1 h-1.5 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-green-500" style="width:97%"></div></div><span class="text-xs font-bold green">97%</span></div><div class="text-xs text-green-400 font-medium">Passed</div></div>
     </div>
   </div>
 
-  <!-- Activity -->
-  <div class="glass rounded-2xl p-6">
-    <h3 class="text-sm font-semibold text-white/70 mb-4">Recent Activity</h3>
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left">
-        <thead><tr class="text-xs text-white/40 border-b border-white/10">
-          <th class="pb-3 font-medium">Time</th><th class="pb-3 font-medium">Type</th><th class="pb-3 font-medium">Amount</th><th class="pb-3 font-medium">Tx Hash</th><th class="pb-3 font-medium">Status</th>
-        </tr></thead>
-        <tbody class="font-mono">
-          <tr class="border-b border-white/5"><td class="py-3 text-white/50 text-xs">2m ago</td><td class="py-3"><span class="text-brand text-xs">Stake</span></td><td class="py-3 text-xs">+25,000 CONTRA</td><td class="py-3 text-white/30 text-xs">0x3f2a...8b91</td><td class="py-3"><span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green">Confirmed</span></td></tr>
-          <tr class="border-b border-white/5"><td class="py-3 text-white/50 text-xs">15m ago</td><td class="py-3"><span class="text-purple text-xs">Vote</span></td><td class="py-3 text-xs">CIP-12</td><td class="py-3 text-white/30 text-xs">0xa7c2...4d3e</td><td class="py-3"><span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green">Confirmed</span></td></tr>
-          <tr class="border-b border-white/5"><td class="py-3 text-white/50 text-xs">1h ago</td><td class="py-3"><span class="text-green text-xs">Claim</span></td><td class="py-3 text-xs">+$3,240 USDC</td><td class="py-3 text-white/30 text-xs">0x9e1f...7a62</td><td class="py-3"><span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green">Confirmed</span></td></tr>
-          <tr class="border-b border-white/5"><td class="py-3 text-white/50 text-xs">3h ago</td><td class="py-3"><span class="text-gold text-xs">Mint</span></td><td class="py-3 text-xs">NFT #0421</td><td class="py-3 text-white/30 text-xs">0x5d8b...c1f2</td><td class="py-3"><span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green">Confirmed</span></td></tr>
-          <tr><td class="py-3 text-white/50 text-xs">6h ago</td><td class="py-3"><span class="text-brand text-xs">Stake</span></td><td class="py-3 text-xs">+100,000 CONTRA</td><td class="py-3 text-white/30 text-xs">0x2c4a...9e7d</td><td class="py-3"><span class="text-xs px-2 py-0.5 rounded-full bg-green/20 text-green">Confirmed</span></td></tr>
-        </tbody>
-      </table>
+  <!-- Recent Activity -->
+  <div class="glass p-5 fade-in">
+    <h2 class="text-lg font-bold mb-4">Recent Activity</h2>
+    <table class="w-full text-sm">
+      <thead><tr class="text-[#64748b] text-xs border-b border-white/[.06]"><th class="text-left pb-3 font-medium">Time</th><th class="text-left pb-3 font-medium">Type</th><th class="text-right pb-3 font-medium">Amount</th><th class="text-left pb-3 font-medium pl-4">Tx Hash</th><th class="text-right pb-3 font-medium">Status</th></tr></thead>
+      <tbody id="activityTable" class="divide-y divide-white/[.04]"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Vote Modal -->
+<div id="voteModal" class="fixed inset-0 z-50 hidden" style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
+  <div class="flex items-center justify-center min-h-screen px-4">
+    <div class="glass p-6 w-full max-w-md fade-in">
+      <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-lg" id="voteTitle">Vote</h3><button onclick="closeVote()" class="text-[#64748b] hover:text-white text-xl leading-none">&times;</button></div>
+      <p class="text-sm text-[#94a3b8] mb-5" id="voteDesc">Cast your vote on this governance proposal.</p>
+      <div class="space-y-3 mb-5" id="voteOptions">
+        <label class="flex items-center gap-3 glass px-4 py-3 cursor-pointer hover:border-white/[.12] transition-colors"><input type="radio" name="vote" value="for" class="accent-[#00e5ff]"><span class="text-green-400 font-medium">For</span><span class="text-xs text-[#64748b]">✓</span></label>
+        <label class="flex items-center gap-3 glass px-4 py-3 cursor-pointer hover:border-white/[.12] transition-colors"><input type="radio" name="vote" value="against" class="accent-[#00e5ff]"><span class="text-red-400 font-medium">Against</span><span class="text-xs text-[#64748b]">✗</span></label>
+        <label class="flex items-center gap-3 glass px-4 py-3 cursor-pointer hover:border-white/[.12] transition-colors"><input type="radio" name="vote" value="abstain" class="accent-[#00e5ff]"><span class="text-[#94a3b8] font-medium">Abstain</span><span class="text-xs text-[#64748b]">—</span></label>
+      </div>
+      <p id="voteError" class="text-xs text-red-400 mb-3 hidden">Please select an option.</p>
+      <button class="btn-mint w-full py-2.5 rounded-xl" onclick="submitVote()">Confirm Vote</button>
     </div>
   </div>
 </div>
 
 <script>
-const identities = [{"id":"partner","name":"Partner","icon":"🥇","nft":"Gold NFT","stake":"100K CONTRA","perks":["10% Protocol Fee Split","3× Vote Weight","Priority Agent Pool","Early Feature Access"],"quota":{"minted":180,"total":1000},"mintedPanel":"<h4 class=\"font-bold text-gold mb-2\">NFT #00180 (Gold)</h4>","color":"gold","classBg":"bg-amber-500/10 border-amber-500/20"},{"id":"user","name":"User","icon":"👤","nft":"Bronze NFT","stake":"5K CONTRA","perks":["3% Protocol Fee Split","1× Vote Weight","Basic Agent Access","Community Voting"],"quota":{"minted":6300,"total":10000},"mintedPanel":"<h4 class=\"font-bold text-brand mb-2\">NFT #06300 (Bronze)</h4>","color":"brand","classBg":"bg-brand/10 border-brand/20"},{"id":"expert","name":"Expert","icon":"🧠","nft":"Expert NFT","stake":"25K CONTRA + KYC","perks":["Task Matchmaking","Reputation System","5% Protocol Fee","1.5× Vote Weight"],"quota":{"minted":2100,"total":10000},"mintedPanel":"<h4 class=\"font-bold text-purple mb-2\">NFT #02100 (Expert)</h4><div class=\"grid grid-cols-2 gap-3 mt-4 text-sm\"><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Reputation</p><p class=\"text-lg font-mono font-bold text-purple\">89/100</p></div><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Tasks Done</p><p class=\"text-lg font-mono font-bold text-white\">47</p></div><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Active</p><p class=\"text-lg font-mono font-bold text-white\">3</p></div><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Earned</p><p class=\"text-lg font-mono font-bold text-green\">$28,450</p></div></div>","color":"purple","classBg":"bg-purple-500/10 border-purple-500/20"},{"id":"kol","name":"KOL","icon":"📢","nft":"KOL NFT","stake":"50K CONTRA + Social Verify","perks":["Referral Commission","Exclusive Promo Link","Community Incentives","2× Vote Weight"],"quota":{"minted":128,"total":500},"mintedPanel":"<h4 class=\"font-bold text-green mb-2\">NFT #00128 (KOL)</h4><div class=\"grid grid-cols-2 gap-3 mt-4 text-sm\"><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Referrals</p><p class=\"text-lg font-mono font-bold text-green\">234</p></div><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Commission</p><p class=\"text-lg font-mono font-bold text-white\">$15,680</p></div><div class=\"glass rounded-xl p-3\"><p class=\"text-xs text-white/40\">Influence</p><p class=\"text-lg font-mono font-bold text-purple\">87/100</p></div></div>","color":"green","classBg":"bg-green-500/10 border-green-500/20"}];
+const identities = {
+  partner: {name:'Partner',stake:'50K CONTRA',perks:['Revenue share 12%','Priority governance','Early access'],quota:'5 / 10 minted',pct:50},
+  user: {name:'User',stake:'10K CONTRA',perks:['Voting rights','Claim rewards','Community chat'],quota:'128 / 500 minted',pct:25},
+  expert: {name:'Expert',stake:'100K CONTRA',perks:['Advisor weight x3','DAO committee seat','Fee discount 20%'],quota:'3 / 20 minted',pct:15},
+  kol: {name:'KOL',stake:'25K CONTRA',perks:['Campaign bonuses','Referral rewards','Verified badge'],quota:'18 / 100 minted',pct:18}
+};
 
-let mintedState = {};
-let activeTab = 'partner';
+const activityData = [
+  ['2026-06-24 03:12','Stake','2,500 CONTRA','0x8a3f...b2c1','Confirmed'],
+  ['2026-06-24 01:45','Vote','500 CONTRA','0xf4e2...9a07','Confirmed'],
+  ['2026-06-23 22:30','Claim','1,200 CONTRA','0x1b9c...4d8f','Confirmed'],
+  ['2026-06-23 19:14','Mint','10,000 CONTRA','0x6d2a...e3b5','Pending'],
+  ['2026-06-23 15:00','Stake','8,000 CONTRA','0xc7f1...2a6e','Confirmed'],
+  ['2026-06-23 11:48','Vote','250 CONTRA','0x3e8b...7c0d','Confirmed'],
+  ['2026-06-23 08:22','Claim','3,400 CONTRA','0x9a5c...1f4b','Pending'],
+  ['2026-06-23 04:09','Mint','5,000 CONTRA','0x2d7e...8f3a','Confirmed']
+];
+
+let selectedVote = null;
+let voteIndex = -1;
 
 function switchTab(id) {
-  activeTab = id;
-  document.querySelectorAll('#tab-bar button').forEach((btn,i) => {
-    const identity = identities[i];
-    const isActive = identity.id === id;
-    btn.className = 'px-5 py-3 text-sm font-semibold transition-all ' + (isActive ? 'tab-active border-b-2 border-'+identity.color+' text-'+identity.color : 'tab-inactive');
-  });
-  renderTab(id);
-}
-
-function mintIdentity(id) {
-  mintedState[id] = true;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{if(b.textContent.toLowerCase()===id)b.classList.add('active')});
   renderTab(id);
 }
 
 function renderTab(id) {
-  const identity = identities.find(i => i.id === id);
-  const pct = ((identity.quota.minted / identity.quota.total)*100).toFixed(1);
-  const isMinted = mintedState[id];
-  
-  const unmintedHTML = '<div id="'+id+'-unminted" class="fade-in '+(isMinted?'hidden':'')+'">'+
-    '<div class="glass rounded-2xl p-6 mb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 '+identity.classBg+'">'+
-      '<div class="flex items-center gap-4">'+
-        '<div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">'+identity.icon+'</div>'+
-        '<div><h3 class="text-lg font-bold text-white">'+identity.nft+'</h3>'+
-        '<p class="text-xs text-white/50 font-mono mt-0.5">Required Stake: <span class="text-'+identity.color+' font-semibold">'+identity.stake+'</span></p></div>'+
-      '</div>'+
-      '<div class="text-right"><p class="text-xs text-white/40">Stake Amount</p>'+
-      '<p class="text-2xl font-mono font-bold text-'+identity.color+'">'+identity.stake.split(' ')[0]+'</p></div>'+
-    '</div>'+
-    '<div class="grid grid-cols-2 gap-3 mb-4">'+
-      identity.perks.map(p => '<div class="glass rounded-xl p-3 flex items-center gap-2 text-sm"><span class="text-green">✓</span><span class="text-white/80">'+p+'</span></div>').join('')+
-    '</div>'+
-    '<div class="glass rounded-xl p-4 mb-4">'+
-      '<div class="flex justify-between text-xs font-mono mb-2"><span class="text-white/50">Quota</span><span class="text-'+identity.color+'">'+identity.quota.minted.toLocaleString()+' / '+identity.quota.total.toLocaleString()+'</span></div>'+
-      '<div class="h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full bg-'+identity.color+'" style="width:'+pct+'%"></div></div>'+
-      '<p class="text-right text-xs text-white/40 font-mono mt-1">'+pct+'% filled</p>'+
-    '</div>'+
-    '<button class="btn-mint w-full rounded-xl py-4 text-base" onclick="mintIdentity(''+id+'')">Mint '+identity.nft+'</button>'+
-  '</div>';
-  
-  const mintedHTML = '<div id="'+id+'-minted" class="fade-in '+(isMinted?'':'hidden')+'">'+
-    '<div class="glass rounded-2xl p-6 mb-4 border border-'+identity.color+'/30 text-center">'+
-      '<div class="text-5xl mb-3">🎖️</div>'+
-      identity.mintedPanel+
-    '</div>'+
-    '<p class="text-center text-white/30 text-xs mt-2">✅ Minted on-chain</p>'+
-  '</div>';
-  
-  document.getElementById('tab-content').innerHTML = unmintedHTML + mintedHTML;
+  const d = identities[id];
+  const perks = d.perks.map(p=>`<span class="text-xs text-[#94a3b8]">✦ ${p}</span>`).join('');
+  document.getElementById('tabContent').innerHTML = `
+    <div class="fade-in">
+      <div class="glass p-4 mb-4 flex items-center justify-between">
+        <div><div class="text-sm text-[#64748b]">Stake Required</div><div class="text-lg font-bold gold">${d.stake}</div></div>
+        <button class="btn-mint px-5 py-2 rounded-xl text-sm" onclick="mintIdentity('${id}')">Mint ${d.name}</button>
+      </div>
+      <div class="grid grid-cols-3 gap-3 mb-4">${perks}</div>
+      <div><div class="flex justify-between text-xs text-[#64748b] mb-1"><span>Minting Quota</span><span>${d.quota}</span></div><div class="h-2 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:${d.pct}%"></div></div></div>
+    </div>
+  `;
 }
 
+function mintIdentity(id) {
+  const d = identities[id];
+  document.getElementById('tabContent').innerHTML = `
+    <div class="fade-in">
+      <div class="glass p-6 text-center">
+        <div class="text-4xl mb-3">🏆</div>
+        <div class="text-xl font-bold brand mb-1">${d.name} Identity Minted</div>
+        <p class="text-sm text-[#94a3b8] mb-4">Staked ${d.stake} · NFT #${Math.floor(Math.random()*9999)}</p>
+        <div class="flex justify-center gap-4 text-xs">
+          <span class="glass px-3 py-1.5">Weight <span class="gold">x${id==='expert'?3:id==='kol'?2:1}</span></span>
+          <span class="glass px-3 py-1.5">Rewards <span class="green">+${id==='partner'?12:id==='expert'?15:8}%</span></span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openVote(idx, title) {
+  voteIndex = idx;
+  selectedVote = null;
+  document.getElementById('voteTitle').textContent = title;
+  document.getElementById('voteDesc').textContent = `Cast your vote on ${title}.`;
+  document.getElementById('voteError').classList.add('hidden');
+  document.querySelectorAll('input[name="vote"]').forEach(r=>r.checked=false);
+  document.getElementById('voteModal').classList.remove('hidden');
+}
+
+function closeVote() {
+  document.getElementById('voteModal').classList.add('hidden');
+}
+
+function submitVote() {
+  const sel = document.querySelector('input[name="vote"]:checked');
+  if(!sel) { document.getElementById('voteError').classList.remove('hidden'); return; }
+  document.getElementById('voteError').classList.add('hidden');
+  const val = sel.value;
+  const card = document.querySelector(`[data-idx="${voteIndex}"]`);
+  if(card) {
+    const pct = val==='for'?Math.floor(Math.random()*8+90):Math.floor(Math.random()*15+5);
+    card.querySelector('.h-full').style.width = pct+'%';
+    card.querySelector('span:last-child').textContent = pct+'%';
+  }
+  closeVote();
+}
+
+function initActivity() {
+  const tbody = document.getElementById('activityTable');
+  activityData.forEach(r=>{
+    const statusCls = r[4]==='Confirmed'?'text-green-400 bg-green-500/10':'text-[#f59e0b] bg-yellow-500/10';
+    tbody.innerHTML += `<tr class="text-[#e2e8f0]"><td class="py-3 text-xs text-[#64748b]">${r[0]}</td><td class="py-3"><span class="text-sm">${r[1]}</span></td><td class="py-3 text-right font-medium jet text-sm">${r[2]}</td><td class="py-3 pl-4"><span class="jet text-xs text-[#64748b]">${r[3]}</span></td><td class="py-3 text-right"><span class="text-xs px-2 py-0.5 rounded-full font-medium ${statusCls}">${r[4]}</span></td></tr>`;
+  });
+}
+
+initActivity();
 switchTab('partner');
 </script>
 </body>
