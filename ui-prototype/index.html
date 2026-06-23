@@ -480,49 +480,94 @@ ring2.rotation.x = Math.PI / 3;
 ring2.rotation.y = Math.PI / 6;
 scene.add(ring2);
 
-// Node dots on the globe surface
+// helper: convert lat/lon to 3D position on sphere
+function latLonToVec3(lat, lon, radius) {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta)
+  );
+}
+
+// Real market cities with (lat, lon, name, tier)
+const marketCities = [
+  {lat: 40.7, lon: -74.0, name: 'New York', tier: 1},
+  {lat: 51.5, lon: -0.1, name: 'London', tier: 1},
+  {lat: 1.3, lon: 103.8, name: 'Singapore', tier: 1},
+  {lat: 35.7, lon: 139.7, name: 'Tokyo', tier: 1},
+  {lat: 25.2, lon: 55.3, name: 'Dubai', tier: 1},
+  {lat: 22.3, lon: 114.2, name: 'Hong Kong', tier: 1},
+  {lat: 31.2, lon: 121.5, name: 'Shanghai', tier: 1},
+  {lat: 48.9, lon: 2.3, name: 'Paris', tier: 2},
+  {lat: 52.5, lon: 13.4, name: 'Berlin', tier: 2},
+  {lat: 47.4, lon: 8.5, name: 'Zurich', tier: 2},
+  {lat: -33.9, lon: 151.2, name: 'Sydney', tier: 2},
+  {lat: 37.6, lon: 127.0, name: 'Seoul', tier: 2},
+  {lat: 19.1, lon: 72.9, name: 'Mumbai', tier: 2},
+  {lat: -23.5, lon: -46.6, name: 'Sao Paulo', tier: 2},
+  {lat: 43.7, lon: -79.4, name: 'Toronto', tier: 2},
+  {lat: 55.8, lon: 37.6, name: 'Moscow', tier: 3},
+  {lat: 32.1, lon: 34.8, name: 'Tel Aviv', tier: 3},
+  {lat: 39.9, lon: 116.4, name: 'Beijing', tier: 3},
+  {lat: 37.8, lon: -122.4, name: 'San Francisco', tier: 2},
+  {lat: -34.6, lon: -58.4, name: 'Buenos Aires', tier: 3},
+];
+
+// Market node dots on the globe surface
 const nodesGroup = new THREE.Group();
-const nodeCount = 80;
-for (let i = 0; i < nodeCount; i++) {
+marketCities.forEach(city => {
+  const pos = latLonToVec3(city.lat, city.lon, 2.53);
+
+  // Glow disc (ring)
+  const ringGeo = new THREE.RingGeometry(0.02, 0.06, 16);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0x00e5ff,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.7,
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.copy(pos);
+  ring.lookAt(new THREE.Vector3(0, 0, 0));
+  nodesGroup.add(ring);
+
+  // Central dot
+  const size = city.tier === 1 ? 0.05 : city.tier === 2 ? 0.035 : 0.025;
+  const dotGeo = new THREE.SphereGeometry(size, 8, 8);
+  const dotColor = city.tier === 1 ? 0x00ff88 : city.tier === 2 ? 0x00e5ff : 0x7c3aed;
+  const dotMat = new THREE.MeshBasicMaterial({ color: dotColor });
+  const dot = new THREE.Mesh(dotGeo, dotMat);
+  dot.position.copy(pos);
+  nodesGroup.add(dot);
+
+  // Light beam outward
+  const beamHeight = city.tier === 1 ? 0.5 : city.tier === 2 ? 0.3 : 0.2;
+  const beamGeo = new THREE.CylinderGeometry(0.003, 0.06, beamHeight, 8);
+  const beamMat = new THREE.MeshBasicMaterial({ color: dotColor, transparent: true, opacity: 0.2 });
+  const beam = new THREE.Mesh(beamGeo, beamMat);
+  beam.position.copy(pos.clone().normalize().multiplyScalar(2.56 + beamHeight / 2));
+  beam.lookAt(new THREE.Vector3(0, 0, 0));
+  nodesGroup.add(beam);
+});
+
+// Smaller ambient dots for visual density
+const ambientCount = 60;
+for (let i = 0; i < ambientCount; i++) {
   const phi = Math.acos(2 * Math.random() - 1);
   const theta = Math.random() * Math.PI * 2;
-  const x = 2.55 * Math.sin(phi) * Math.cos(theta);
-  const y = 2.55 * Math.sin(phi) * Math.sin(theta);
-  const z = 2.55 * Math.cos(phi);
+  const x = 2.54 * Math.sin(phi) * Math.cos(theta);
+  const y = 2.54 * Math.sin(phi) * Math.sin(theta);
+  const z = 2.54 * Math.cos(phi);
 
-  const dotGeo = new THREE.SphereGeometry(0.03 + Math.random() * 0.04, 8, 8);
-  const dotMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.6 + Math.random() * 0.4 });
+  const dotGeo = new THREE.SphereGeometry(0.015 + Math.random() * 0.025, 6, 6);
+  const dotMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.3 + Math.random() * 0.4 });
   const dot = new THREE.Mesh(dotGeo, dotMat);
   dot.position.set(x, y, z);
   nodesGroup.add(dot);
 }
 globe.add(nodesGroup);
-
-// Light city-like points (concentrated in certain bands)
-const citiesGroup = new THREE.Group();
-const cityCount = 30;
-for (let i = 0; i < cityCount; i++) {
-  const phi = Math.acos(2 * Math.random() - 1);
-  const theta = Math.random() * Math.PI * 2;
-  const x = 2.52 * Math.sin(phi) * Math.cos(theta);
-  const y = 2.52 * Math.sin(phi) * Math.sin(theta);
-  const z = 2.52 * Math.cos(phi);
-
-  const cityGeo = new THREE.SphereGeometry(0.05 + Math.random() * 0.06, 8, 8);
-  const cityMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
-  const city = new THREE.Mesh(cityGeo, cityMat);
-  city.position.set(x, y, z);
-  citiesGroup.add(city);
-
-  // Light beam
-  const beamGeo = new THREE.CylinderGeometry(0.005, 0.08, 0.3 + Math.random() * 0.5, 8);
-  const beamMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.15 });
-  const beam = new THREE.Mesh(beamGeo, beamMat);
-  beam.position.set(x * 1.15, y * 1.15, z * 1.15);
-  beam.lookAt(new THREE.Vector3(0, 0, 0));
-  citiesGroup.add(beam);
-}
-globe.add(citiesGroup);
 
 // Lighting
 const ambientLight = new THREE.AmbientLight(0x1a3a5c, 1.5);
@@ -617,7 +662,7 @@ function animate(time) {
   particles.rotation.y += 0.0005;
   particles.rotation.x += 0.0002;
   nodesGroup.rotation.y = -rotationY * 1.02;
-  citiesGroup.rotation.y = -rotationY * 1.02;
+  nodesGroup.rotation.y = -rotationY * 1.02;
 
   renderer.render(scene, camera);
 }
@@ -1118,22 +1163,22 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
     </div>
 
     <!-- World Map SVG -->
-    <div class="glass rounded-2xl p-4 md:p-8 mb-10 overflow-hidden">
+    <div class="glow-card rounded-2xl p-4 md:p-8 mb-10 overflow-hidden">
       <div class="relative">
-        <svg viewBox="0 0 1000 500" class="w-full opacity-70">
+        <svg viewBox="0 0 1000 500" class="w-full">
           <defs>
             <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.6"/>
+              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.8"/>
               <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
             </radialGradient>
             <filter id="glowFilter">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feGaussianBlur stdDeviation="4" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
 
-          <!-- Simplified world map path (dark, unlit) -->
-          <g fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="0.8">
+          <!-- Simplified world map path -->
+          <g fill="none" stroke="rgba(0,229,255,0.2)" stroke-width="1">
             <!-- North America -->
             <path d="M120,100 L250,80 L300,85 L320,100 L340,95 L370,120 L380,150 L360,200 L340,220 L310,240 L280,250 L250,260 L200,270 L160,260 L130,240 L110,200 L100,160 Z"/>
             <!-- South America -->
@@ -1153,6 +1198,22 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
             <path d="M850,130 L860,150 L850,170 L840,150 Z"/>
             <!-- Indonesia / Archipelago -->
             <path d="M740,250 L750,260 L760,255 L770,265 L760,275 L750,270 Z"/>
+          </g>
+
+          <!-- Pulsing ring glow behind each major node -->
+          <g fill="none" stroke="#00e5ff" stroke-width="1.5" opacity="0.4">
+            <circle cx="220" cy="180" r="12"><animate attributeName="r" values="4;18" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="3s" repeatCount="indefinite"/></circle>
+            <circle cx="250" cy="150" r="8"><animate attributeName="r" values="3;14" dur="3.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0" dur="3.5s" repeatCount="indefinite"/></circle>
+            <circle cx="280" cy="340" r="8"><animate attributeName="r" values="3;14" dur="4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0" dur="4s" repeatCount="indefinite"/></circle>
+            <circle cx="490" cy="100" r="12"><animate attributeName="r" values="4;18" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="580" cy="200" r="12"><animate attributeName="r" values="5;20" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="1.8s" repeatCount="indefinite"/></circle>
+            <circle cx="720" cy="120" r="12"><animate attributeName="r" values="5;20" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="2.2s" repeatCount="indefinite"/></circle>
+            <circle cx="750" cy="140" r="10"><animate attributeName="r" values="4;16" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0" dur="2.6s" repeatCount="indefinite"/></circle>
+            <circle cx="855" cy="140" r="10"><animate attributeName="r" values="4;16" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0" dur="2.4s" repeatCount="indefinite"/></circle>
+            <circle cx="760" cy="240" r="10"><animate attributeName="r" values="4;16" dur="3.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0" dur="3.3s" repeatCount="indefinite"/></circle>
+            <circle cx="670" cy="200" r="12"><animate attributeName="r" values="4;18" dur="2.7s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.45;0" dur="2.7s" repeatCount="indefinite"/></circle>
+            <circle cx="520" cy="115" r="8"><animate attributeName="r" values="3;14" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0" dur="3s" repeatCount="indefinite"/></circle>
+            <circle cx="470" cy="95" r="8"><animate attributeName="r" values="3;14" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0" dur="2.8s" repeatCount="indefinite"/></circle>
           </g>
 
           <!-- Active market nodes (lit cyan) -->
@@ -1197,7 +1258,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           </g>
 
           <!-- Node connection arcs -->
-          <g stroke="rgba(0,229,255,0.08)" stroke-width="0.5" fill="none">
+          <g stroke="rgba(0,229,255,0.2)" stroke-width="1" stroke-dasharray="4,4" fill="none">
             <path d="M490,100 Q580,160 670,200"/>
             <path d="M670,200 Q710,160 720,120"/>
             <path d="M720,120 Q785,130 855,140"/>
