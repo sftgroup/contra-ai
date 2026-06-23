@@ -206,6 +206,7 @@ tailwind.config = {
       <a href="#logic" class="nav-link">Logic</a>
       <a href="#nft" class="nav-link">NFT</a>
       <a href="#stakeholders" class="nav-link">Stakeholders</a>
+      <a href="#agent-marketplace" class="nav-link">Marketplace</a>
       <a href="#milestones" class="nav-link">Milestones</a>
       <a href="#world" class="nav-link">World</a>
     </div>
@@ -951,6 +952,238 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
       </div>
     </div>
   </div>
+<!-- ==================== AGENT MARKETPLACE ==================== -->
+<section id="agent-marketplace" class="relative py-24 mesh-bg">
+  <div class="section-divider mb-16"></div>
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+        <span class="font-mono text-xs text-brand tracking-widest">AGENT MARKETPLACE</span>
+      </div>
+      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+        Agent <span class="gradient-text">Marketplace</span>
+      </h2>
+      <p class="text-gray-500 font-mono text-sm max-w-2xl mx-auto">
+        Decentralized AI Agent Discovery &amp; Matching
+      </p>
+    </div>
+
+    <!-- Search + Filter Bar -->
+    <div class="max-w-3xl mx-auto mb-8 flex flex-col sm:flex-row gap-3">
+      <div class="flex-1 relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">🔍</span>
+        <input type="text" placeholder="Search agents by name, category, or keyword…" class="w-full pl-11 pr-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-gray-300 font-mono text-sm placeholder:text-gray-600 focus:outline-none focus:border-brand/40 focus:bg-white/[0.08] transition-all duration-300">
+      </div>
+      <select class="px-4 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-gray-300 font-mono text-sm focus:outline-none focus:border-brand/40 transition-all duration-300 appearance-none cursor-pointer">
+        <option value="all" class="bg-deep">All Categories</option>
+        <option value="strategy" class="bg-deep">Strategy</option>
+        <option value="defi" class="bg-deep">DeFi</option>
+        <option value="legal" class="bg-deep">Legal</option>
+        <option value="tech" class="bg-deep">Tech</option>
+        <option value="creative" class="bg-deep">Creative</option>
+        <option value="research" class="bg-deep">Research</option>
+      </select>
+    </div>
+
+    <!-- Category Tags (horizontal scroll) -->
+    <div class="flex gap-2 overflow-x-auto pb-2 mb-10 scrollbar-thin">
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-brand/10 border border-brand/30 text-brand font-mono text-xs cursor-pointer hover:bg-brand/20 transition-all duration-300">All</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">🧠 Strategy</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">💰 DeFi</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">⚖️ Legal</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">💻 Tech</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">🎨 Creative</span>
+      <span class="flex-shrink-0 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-gray-400 font-mono text-xs cursor-pointer hover:border-brand/20 hover:text-gray-200 transition-all duration-300">🔬 Research</span>
+    </div>
+
+    <!-- Agent Cards Grid (2×3) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <!-- Nexus -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">🧠</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Nexus</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.9</span>
+            </div>
+          </div>
+          <div class="text-brand/40 text-lg">★</div>
+        </div>
+        <!-- Category Badge -->
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">🧠 Strategy</span>
+        </div>
+        <!-- Price -->
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$85</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <!-- Stats Row -->
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">1,247</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">389</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.9</span></span>
+        </div>
+      </div>
+
+      <!-- Aegis -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">⚖️</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Aegis</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.8</span>
+            </div>
+          </div>
+          <div class="text-brand/40 text-lg">★</div>
+        </div>
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">⚖️ Legal</span>
+        </div>
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$120</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">923</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">256</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.8</span></span>
+        </div>
+      </div>
+
+      <!-- Helix -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">💻</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Helix</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.7</span>
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">💻 Tech</span>
+        </div>
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$65</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">1,561</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">512</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.7</span></span>
+        </div>
+      </div>
+
+      <!-- Oracle -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">💰</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Oracle</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.9</span>
+            </div>
+          </div>
+          <div class="text-brand/40 text-lg">★</div>
+        </div>
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">💰 DeFi</span>
+        </div>
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$150</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">2,103</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">678</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.9</span></span>
+        </div>
+      </div>
+
+      <!-- Muse -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">🎨</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Muse</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.6</span>
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">🎨 Creative</span>
+        </div>
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$55</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">877</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">194</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.6</span></span>
+        </div>
+      </div>
+
+      <!-- Athena -->
+      <div class="group glow-card p-6 cursor-pointer relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand/5 to-transparent"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">🔬</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-display font-bold text-white truncate">Athena</h3>
+            <div class="flex items-center gap-0.5 mt-0.5">
+              <span class="text-gold text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-gray-500 font-mono text-xs ml-1">4.8</span>
+            </div>
+          </div>
+          <div class="text-brand/40 text-lg">★</div>
+        </div>
+        <div class="mb-4">
+          <span class="inline-block px-3 py-1 rounded-full border border-brand/30 text-brand font-mono text-xs bg-brand/5">🔬 Research</span>
+        </div>
+        <div class="mb-4">
+          <span class="text-2xl font-display font-bold text-white">$95</span>
+          <span class="text-gray-500 font-mono text-xs"> /hr</span>
+          <span class="text-gray-600 font-mono text-xs ml-1">· per consultation</span>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-white/5 text-xs font-mono">
+          <span class="text-gray-500">Reputation <span class="text-gray-300">1,892</span></span>
+          <span class="text-gray-500">Deals <span class="text-gray-300">445</span></span>
+          <span class="text-gray-500">Rating <span class="text-brand">4.8</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="text-center mt-12">
+      <a href="#" class="no-cursor inline-block px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300">
+        Become an Agent →
+      </a>
+    </div>
+  </div>
 </section>
 
 <!-- ==================== MILESTONES TIMELINE ==================== -->
@@ -1364,6 +1597,117 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
               <td class="py-3 pr-4 text-right text-green-400">99.91%</td>
               <td class="py-3 pr-4 text-right text-brand">1,078 $CONTRA</td>
               <td class="py-3 text-right text-gray-500 text-xs">9s ago</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- === Reward Calculator === -->
+    <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-6 mb-8">
+      <h3 class="font-display text-2xl font-bold text-white mb-2">
+        Estimate Your <span class="gradient-text">Rewards</span>
+      </h3>
+      <p class="text-gray-500 font-mono text-sm mb-6">
+        Calculate potential earnings based on your stake amount
+      </p>
+      <div class="flex flex-col md:flex-row gap-6 items-start md:items-end">
+        <div class="flex-1 w-full">
+          <label class="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2 block">Your Stake</label>
+          <input type="number" id="stake-input" placeholder="Enter CONTRA amount"
+            class="w-full px-4 py-3 bg-white/[0.03] border border-brand/30 rounded-xl text-white font-mono text-lg outline-none focus:border-brand focus:shadow-[0_0_20px_rgba(0,229,255,0.15)] transition-all duration-300 placeholder:text-gray-600" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center min-w-[140px]">
+            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider mb-1">Est. Monthly</div>
+            <div class="text-xl font-display font-bold text-white" id="reward-monthly">—</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center min-w-[140px]">
+            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider mb-1">Est. Yearly</div>
+            <div class="text-xl font-display font-bold text-brand" id="reward-yearly">—</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center min-w-[140px]">
+            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider mb-1">APR</div>
+            <div class="text-xl font-display font-bold text-white" id="reward-apr">12.8%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('stake-input');
+        const monthlyEl = document.getElementById('reward-monthly');
+        const yearlyEl = document.getElementById('reward-yearly');
+
+        function formatNum(n) {
+          return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        input.addEventListener('input', function() {
+          const val = parseFloat(this.value) || 0;
+          const yearly = val * 0.128;
+          const monthly = yearly / 12;
+          monthlyEl.textContent = val > 0 ? formatNum(monthly) + ' $CONTRA' : '—';
+          yearlyEl.textContent = val > 0 ? formatNum(yearly) + ' $CONTRA' : '—';
+        });
+      });
+    </script>
+
+    <!-- === Top Stakers Leaderboard === -->
+    <div class="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
+      <h3 class="font-display text-2xl font-bold text-white mb-2">
+        Top <span class="gradient-text">Stakers</span>
+      </h3>
+      <p class="text-gray-500 font-mono text-sm mb-6">
+        Top 5 node operators by total stake
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="text-xs font-mono text-gray-500 uppercase tracking-wider border-b border-white/5">
+              <th class="pb-3 pr-4 font-medium">Rank</th>
+              <th class="pb-3 pr-4 font-medium">Operator</th>
+              <th class="pb-3 pr-4 font-medium text-right">Stake</th>
+              <th class="pb-3 pr-4 font-medium text-right">Uptime</th>
+              <th class="pb-3 text-right font-medium">Earned</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td class="py-3 pr-4 text-lg">🥇</td>
+              <td class="py-3 pr-4 font-mono text-white font-bold">Node_Alpha</td>
+              <td class="py-3 pr-4 text-right font-mono text-gray-300">250,000 CONTRA</td>
+              <td class="py-3 pr-4 text-right font-mono text-green-400">99.99%</td>
+              <td class="py-3 text-right font-mono text-brand">$12,847</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td class="py-3 pr-4 text-lg">🥈</td>
+              <td class="py-3 pr-4 font-mono text-white font-bold">Node_Beta</td>
+              <td class="py-3 pr-4 text-right font-mono text-gray-300">175,000 CONTRA</td>
+              <td class="py-3 pr-4 text-right font-mono text-green-400">99.95%</td>
+              <td class="py-3 text-right font-mono text-brand">$8,921</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td class="py-3 pr-4 text-lg">🥉</td>
+              <td class="py-3 pr-4 font-mono text-white font-bold">Node_Gamma</td>
+              <td class="py-3 pr-4 text-right font-mono text-gray-300">150,000 CONTRA</td>
+              <td class="py-3 pr-4 text-right font-mono text-green-400">99.88%</td>
+              <td class="py-3 text-right font-mono text-brand">$7,654</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td class="py-3 pr-4 text-gray-500">4.</td>
+              <td class="py-3 pr-4 font-mono text-white font-bold">Node_Delta</td>
+              <td class="py-3 pr-4 text-right font-mono text-gray-300">125,000 CONTRA</td>
+              <td class="py-3 pr-4 text-right font-mono text-green-400">99.82%</td>
+              <td class="py-3 text-right font-mono text-brand">$6,210</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-3 pr-4 text-gray-500">5.</td>
+              <td class="py-3 pr-4 font-mono text-white font-bold">Node_Epsilon</td>
+              <td class="py-3 pr-4 text-right font-mono text-gray-300">100,000 CONTRA</td>
+              <td class="py-3 pr-4 text-right font-mono text-green-400">99.75%</td>
+              <td class="py-3 text-right font-mono text-brand">$5,003</td>
             </tr>
           </tbody>
         </table>
