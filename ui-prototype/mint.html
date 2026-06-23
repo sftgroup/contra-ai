@@ -1,223 +1,854 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mint NFT — CONTRA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTRA — Mint Your Identity</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
 <script>
-tailwind.config={theme:{extend:{colors:{'deep':{DEFAULT:'#0a0a0f',lighter:'#111118'},'brand':{DEFAULT:'#00e5ff',dim:'#0097a7',glow:'#00e5ff66'},'gold':'#ffd700','silver':'#c0c0c0','bronze':'#cd7f32'},fontFamily:{mono:['JetBrains Mono','Fira Code','monospace'],sans:['Inter','system-ui','sans-serif'],display:['Orbitron','monospace']},animation:{'pulse-glow':'pulseGlow 3s ease-in-out infinite','float':'float 6s ease-in-out infinite','fade-in-up':'fadeInUp 0.8s ease-out forwards'},keyframes:{pulseGlow:{'0%,100%':{boxShadow:'0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)'},'50%':{boxShadow:'0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)'}},float:{'0%,100%':{transform:'translateY(0px)'},'50%':{transform:'translateY(-20px)'}},fadeInUp:{'0%':{opacity:'0',transform:'translateY(30px)'},'100%':{opacity:'1',transform:'translateY(0)'}}}}}}
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'deep': { DEFAULT: '#0a0a0f', lighter: '#111118' },
+        'brand': { DEFAULT: '#00e5ff', dim: '#0097a7', glow: '#00e5ff66' },
+        'gold': '#ffd700',
+        'purple': '#a855f7',
+        'blue': '#3b82f6',
+      },
+      fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'monospace'],
+      },
+      animation: {
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+        'twinkle': 'twinkle 2s ease-in-out infinite alternate',
+        'border-glow': 'borderGlow 3s ease-in-out infinite alternate',
+      },
+      keyframes: {
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)' },
+          '50%': { boxShadow: '0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)' },
+        },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        twinkle: {
+          '0%': { opacity: '0.3' },
+          '100%': { opacity: '1' },
+        },
+        borderGlow: {
+          '0%': { borderColor: 'rgba(0,229,255,0.2)' },
+          '100%': { borderColor: 'rgba(0,229,255,0.6)' },
+        },
+      },
+    }
+  }
+}
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-:root{--brand:#00e5ff;--brand-glow:rgba(0,229,255,0.3)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
-.cursor{pointer-events:none;position:fixed;top:0;left:0;z-index:9999;mix-blend-mode:screen;transition:transform 0.15s ease-out}
-.cursor-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;box-shadow:0 0 12px var(--brand-glow),0 0 24px var(--brand-glow)}
-.cursor-ring{width:30px;height:30px;border:1.5px solid rgba(0,229,255,0.5);border-radius:50%;transform:translate(-50%,-50%) scale(1);transition:transform 0.2s ease,border-color 0.2s ease}
-.cursor-ring.hover{transform:translate(-50%,-50%) scale(1.8);border-color:rgba(0,229,255,0.9);background:rgba(0,229,255,0.05)}
-#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.glow-text{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2),0 0 120px rgba(0,229,255,0.1)}
-.glow-card{background:rgba(17,17,24,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,229,255,0.12);border-radius:16px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
-.glow-card:hover{border-color:rgba(0,229,255,0.4);box-shadow:0 0 30px rgba(0,229,255,0.12),0 8px 40px rgba(0,0,0,0.4);transform:translateY(-4px)}
-.glass{background:rgba(10,10,15,0.6);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06)}
-.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.3),transparent)}
-.gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-/* Modal */
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
-.modal-overlay.active{display:flex}
-.modal-box{background:rgba(17,17,24,0.95);backdrop-filter:blur(30px);border:1px solid rgba(0,229,255,0.2);border-radius:20px;padding:32px;max-width:420px;width:90%;box-shadow:0 0 60px rgba(0,229,255,0.1)}
-.tier-selected{box-shadow:0 0 30px rgba(0,229,255,0.3),inset 0 0 30px rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.6)!important}
-.nft-preview{background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(168,85,247,0.1));border:2px solid rgba(0,229,255,0.3);border-radius:20px}
-.btn-primary{background:linear-gradient(135deg,#00e5ff,#0097a7);color:#000;font-weight:700;padding:12px 32px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:14px;cursor:none;border:none;transition:all 0.3s}
-.btn-primary:hover{box-shadow:0 0 30px rgba(0,229,255,0.4);transform:scale(1.05)}
-.btn-secondary{padding:12px 32px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:14px;border:1px solid rgba(0,229,255,0.3);background:transparent;color:#00e5ff;cursor:none;transition:all 0.3s}
-.btn-secondary:hover{background:rgba(0,229,255,0.1);box-shadow:0 0 20px rgba(0,229,255,0.15)}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --brand: #00e5ff;
+    --brand-glow: rgba(0, 229, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e0e0e0;
+    overflow-x: hidden;
+  }
+
+  /* Starfield Canvas */
+  #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+  /* Glow Effects */
+  .glow-text {
+    text-shadow: 0 0 40px rgba(0,229,255,0.5), 0 0 80px rgba(0,229,255,0.2), 0 0 120px rgba(0,229,255,0.1);
+  }
+  .glow-border {
+    box-shadow: 0 0 20px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.05);
+  }
+  .glow-card {
+    background: rgba(17, 17, 24, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 229, 255, 0.12);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glow-card:hover {
+    border-color: rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.12), 0 8px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px);
+  }
+
+  /* Glass Panel */
+  .glass {
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Section Divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+  }
+
+  /* Navigation */
+  .nav-blur {
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+  }
+  .nav-link {
+    position: relative;
+    color: #a0a0b0;
+    transition: color 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  .nav-link:hover { color: var(--brand); }
+  .nav-link::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+    background: var(--brand);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.4); }
+
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #00e5ff 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Tier Card Colors */
+  .tier-member { border-color: rgba(0, 229, 255, 0.3); }
+  .tier-member.selected { border-color: #00e5ff; box-shadow: 0 0 40px rgba(0, 229, 255, 0.2), 0 0 80px rgba(0, 229, 255, 0.08); }
+  .tier-officer { border-color: rgba(59, 130, 246, 0.3); }
+  .tier-officer.selected { border-color: #3b82f6; box-shadow: 0 0 40px rgba(59, 130, 246, 0.2), 0 0 80px rgba(59, 130, 246, 0.08); }
+  .tier-partner { border-color: rgba(168, 85, 247, 0.3); }
+  .tier-partner.selected { border-color: #a855f7; box-shadow: 0 0 40px rgba(168, 85, 247, 0.2), 0 0 80px rgba(168, 85, 247, 0.08); }
+  .tier-strategist { border-color: rgba(255, 215, 0, 0.3); }
+  .tier-strategist.selected { border-color: #ffd700; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), 0 0 80px rgba(255, 215, 0, 0.08); }
+
+  .tier-card {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tier-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1.5px;
+    background: linear-gradient(135deg, transparent 30%, var(--tier-color, rgba(0,229,255,0.4)) 50%, transparent 70%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .tier-card.selected::before { opacity: 1; }
+
+  /* FAQ Accordion */
+  .faq-item {
+    border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  .faq-item:hover {
+    border-bottom-color: rgba(0, 229, 255, 0.25);
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+  }
+  .faq-item.open .faq-answer {
+    max-height: 300px;
+  }
+  .faq-item.open .faq-icon {
+    transform: rotate(45deg);
+  }
+  .faq-icon {
+    transition: transform 0.3s ease;
+  }
+
+  /* Price glow */
+  .price-glow {
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  }
+
+  /* Button effects */
+  .btn-mint {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  .btn-mint::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #00e5ff, #a855f7);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 9999px;
+  }
+  .btn-mint:hover::before { opacity: 1; }
+  .btn-mint:hover { border-color: transparent; }
+  .btn-mint span { position: relative; z-index: 1; }
+
+  /* Table styles */
+  .compare-table th, .compare-table td {
+    padding: 16px 20px;
+    text-align: left;
+  }
+  .compare-table th:first-child, .compare-table td:first-child {
+    text-align: left;
+    min-width: 180px;
+  }
+  .compare-table tr {
+    border-bottom: 1px solid rgba(0, 229, 255, 0.06);
+    transition: background 0.3s ease;
+  }
+  .compare-table tr:hover {
+    background: rgba(0, 229, 255, 0.03);
+  }
 </style>
 </head>
-<body>
-<div class="cursor cursor-dot" id="cursor-dot" style="transform:translate(-50%,-50%)"></div>
-<div class="cursor cursor-ring" id="cursor-ring" style="transform:translate(-50%,-50%)"></div>
+<body class="font-sans antialiased">
+
+<!-- Starfield Particles Canvas -->
 <canvas id="starfield"></canvas>
 
-<main class="relative z-10">
-  <section class="min-h-[40vh] flex items-center justify-center px-6 pt-24">
-    <div class="text-center max-w-3xl mx-auto animate-fade-in-up">
-      <div class="inline-block px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-mono tracking-widest mb-6">BECOME AN EXPERT</div>
-      <h1 class="text-5xl md:text-7xl font-display font-bold tracking-tight mb-6"><span class="glow-text">Mint</span> <span class="gradient-text">Your NFT</span></h1>
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto">Choose your identity tier. Mint your soul-bound NFT. Join the global network of 130-country experts.</p>
-    </div>
-  </section>
-
-  <!-- Tier Selector -->
-  <section class="px-6 pb-12">
-    <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div id="tier-member" class="glow-card tier-card p-6 text-center" onclick="selectTier('member')" style="border-top:3px solid #00e5ff66"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#00e5ff15;border:2px solid #00e5ff30">🆓</div><h3 class="text-lg font-display text-white mb-2">DID NFT Member</h3><p class="text-2xl font-display font-bold mb-3" style="color:#00e5ff">Free</p><p class="text-gray-400 text-xs leading-relaxed">Community · Governance Vote</p></div>
-      <div id="tier-officer" class="glow-card tier-card p-6 text-center" onclick="selectTier('officer')" style="border-top:3px solid #3b82f666"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#3b82f615;border:2px solid #3b82f630">⚡</div><h3 class="text-lg font-display text-white mb-2">Strategic Officer</h3><p class="text-2xl font-display font-bold mb-3" style="color:#3b82f6">10,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Consulting · AI Tools · Profit Share</p></div>
-      <div id="tier-partner" class="glow-card tier-card p-6 text-center" onclick="selectTier('partner')" style="border-top:3px solid #a855f766"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#a855f715;border:2px solid #a855f730">💎</div><h3 class="text-lg font-display text-white mb-2">Senior Partner</h3><p class="text-2xl font-display font-bold mb-3" style="color:#a855f7">15,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Weighted Dividend 10% · Priority</p></div>
-      <div id="tier-strategist" class="glow-card tier-card p-6 text-center" onclick="selectTier('strategist')" style="border-top:3px solid #ffd70066"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#ffd70015;border:2px solid #ffd70030">👑</div><h3 class="text-lg font-display text-white mb-2">Chief Strategist</h3><p class="text-2xl font-display font-bold mb-3" style="color:#ffd700">20,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Weighted Dividend 25% · Elite Status</p></div>
-    </div>
-  </section>
-
-  <!-- Mint Panel -->
-  <section class="px-6 pb-16">
-    <div id="mint-panel" class="max-w-lg mx-auto glow-card p-8" style="display:none">
-      <h3 class="text-xl font-display text-brand mb-6">Mint Summary</h3>
-      <div class="space-y-4 mb-6">
-        <div class="flex justify-between"><span class="text-gray-500">Tier</span><span class="text-white font-mono" id="selected-name">—</span></div>
-        <div class="flex justify-between"><span class="text-gray-500">Price</span><span class="text-brand font-mono font-bold" id="selected-price">—</span></div>
-        <div class="flex justify-between"><span class="text-gray-500">Benefits</span><span class="text-gray-300 text-xs text-right max-w-48" id="selected-benefits">—</span></div>
+<!-- Navigation -->
+<nav class="nav-blur fixed top-0 left-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-[#a855f7] flex items-center justify-center shadow-lg shadow-brand/20">
+        <span class="font-display text-white font-bold text-sm">C</span>
       </div>
-      <div class="flex gap-3">
-        <button id="wallet-btn" class="btn-secondary flex-1" onclick="connectWallet()">Connect Wallet</button>
-        <button id="mint-btn" class="btn-primary flex-1" onclick="openConfirm()" style="display:none">Mint NFT</button>
+      <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="index.html#logic" class="nav-link">Logic</a>
+      <a href="index.html#nft" class="nav-link">NFT</a>
+      <a href="index.html#stakeholders" class="nav-link">Stakeholders</a>
+      <a href="mint.html" class="nav-link" style="color: var(--brand);">Mint</a>
+    </div>
+    <a href="#cta" class="px-5 py-2 rounded-full bg-brand/10 border border-brand/30 text-brand font-mono text-sm hover:bg-brand/20 transition-all duration-300">
+      Connect Wallet
+    </a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative z-10 min-h-[60vh] flex items-center justify-center pt-32 pb-16">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="inline-flex items-center gap-3 mb-8 px-5 py-2 rounded-full glass border border-white/5">
+      <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+      <span class="font-mono text-xs text-gray-400 tracking-wider">IDENTITY MINT LIVE</span>
+      <span class="font-mono text-xs gradient-text">ON CHAIN</span>
+    </div>
+
+    <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 tracking-wider glow-text">
+      Mint Your<br><span class="gradient-text">Identity</span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+      Choose your role in the CONTRA ecosystem. Each tier unlocks unique privileges,
+      staking rewards, and governance power. Your identity is your stake.
+    </p>
+
+    <!-- Stats Bar -->
+    <div class="flex flex-wrap justify-center gap-8 mb-12">
+      <div class="text-center">
+        <div class="font-display text-3xl font-bold gradient-text">3,247</div>
+        <div class="text-xs text-gray-500 mt-1 font-mono">IDENTITIES MINTED</div>
       </div>
-      <p id="mint-success" class="text-green-400 text-sm font-mono text-center mt-4" style="display:none">✓ NFT Minted Successfully!</p>
-      <div id="nft-preview-card" class="nft-preview mt-6 p-5 text-center" style="display:none">
-        <div class="text-4xl mb-2">🎖️</div>
-        <p class="text-sm font-display text-brand" id="nft-tier-name">—</p>
-        <p class="text-xs text-gray-500 mt-1">Token ID: #CAI-3061</p>
-        <p class="text-xs text-gray-600 mt-1" id="nft-date">—</p>
+      <div class="w-px bg-gradient-to-b from-transparent via-brand/30 to-transparent hidden sm:block"></div>
+      <div class="text-center">
+        <div class="font-display text-3xl font-bold text-white">$12.4M</div>
+        <div class="text-xs text-gray-500 mt-1 font-mono">TOTAL VALUE STAKED</div>
       </div>
-    </div>
-  </section>
-
-  <!-- Benefits Table -->
-  <section class="px-6 pb-20"><div class="section-divider mb-12"></div>
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-display font-bold text-center mb-8">Tier <span class="gradient-text">Benefits</span></h2>
-      <div class="overflow-x-auto"><table class="w-full text-sm">
-        <thead><tr class="text-left text-gray-400 font-mono text-xs border-b border-white/10">
-          <th class="py-3 px-3">Benefit</th><th class="py-3 px-3 text-center">Member</th><th class="py-3 px-3 text-center">Officer</th><th class="py-3 px-3 text-center">Partner</th><th class="py-3 px-3 text-center">Strategist</th>
-        </tr></thead>
-        <tbody class="text-gray-300 text-xs">
-          <tr class="border-b border-white/5"><td class="py-3 px-3">Community Access</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Governance Vote</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">AI Tools</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Consulting Rights</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Project Profit Share</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">5%</td><td class="py-3 px-3 text-center">10%</td><td class="py-3 px-3 text-center">25%</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Weighted Dividend</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">10%</td><td class="py-3 px-3 text-center">25%</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Priority Matching</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Elite Badge</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Brand Authorization</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-  </section>
-
-  <!-- Example NFTs -->
-  <section class="px-6 pb-20">
-    <h2 class="text-3xl font-display font-bold text-center mb-8">Recently <span class="gradient-text">Minted</span></h2>
-    <div class="max-w-4xl mx-auto grid sm:grid-cols-3 gap-4">
-      
-        <div class="nft-preview p-5 text-center">
-          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">D</div>
-          <h4 class="text-sm font-display text-white">Dr. Zhang Wei</h4>
-          <p class="text-xs text-brand">Strategic Officer</p>
-          <p class="text-xs text-gray-500 mt-1">AI & Blockchain</p>
-          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0003</p>
-        </div>
-      
-        <div class="nft-preview p-5 text-center">
-          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">S</div>
-          <h4 class="text-sm font-display text-white">Sarah Kim</h4>
-          <p class="text-xs text-brand">Senior Partner</p>
-          <p class="text-xs text-gray-500 mt-1">DeFi Strategy</p>
-          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0002</p>
-        </div>
-      
-        <div class="nft-preview p-5 text-center">
-          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">A</div>
-          <h4 class="text-sm font-display text-white">Alex Rivera</h4>
-          <p class="text-xs text-brand">Chief Strategist</p>
-          <p class="text-xs text-gray-500 mt-1">Enterprise Web3</p>
-          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0001</p>
-        </div>
-      
-    </div>
-  </section>
-
-  <footer class="px-6 py-12 text-center"><div class="section-divider mb-8"></div><p class="text-gray-600 text-xs font-mono">CONTRA © 2026 · Singapore · Code is Law</p></footer>
-</main>
-
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal">
-  <div class="modal-box text-center">
-    <h3 class="text-xl font-display text-white mb-4">Confirm Mint</h3>
-    <p class="text-gray-400 mb-2">You are minting:</p>
-    <p class="text-brand font-display text-lg" id="modal-tier">—</p>
-    <p class="text-2xl font-display font-bold text-white mt-2" id="modal-price">—</p>
-    <div class="flex gap-3 mt-6 justify-center">
-      <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn-primary" onclick="executeMint()">Confirm Mint</button>
+      <div class="w-px bg-gradient-to-b from-transparent via-brand/30 to-transparent hidden sm:block"></div>
+      <div class="text-center">
+        <div class="font-display text-3xl font-bold text-white">84.2%</div>
+        <div class="text-xs text-gray-500 mt-1 font-mono">STAKING APY</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
+<!-- Tier Cards Section -->
+<section class="relative z-10 pb-20">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Choose Your Tier</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Select Your Role</h2>
+      <p class="text-gray-400 max-w-xl mx-auto">Click a tier card to select. Each tier represents a different stake level and unlocks progressively greater benefits.</p>
+    </div>
 
+    <!-- 2x2 Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tier-grid">
+
+      <!-- Member Tier -->
+      <div class="tier-card tier-member glow-card rounded-[20px] p-[1px] cursor-pointer"
+           style="--tier-color: rgba(0,229,255,0.4)"
+           data-tier="member"
+           data-price="0"
+           onclick="selectTier(this)">
+        <div class="bg-deep rounded-[19px] p-8 h-full">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <span class="font-mono text-xs text-[#00e5ff] tracking-[0.15em] uppercase">Free</span>
+              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Member</h3>
+            </div>
+            <span class="text-5xl">🆓</span>
+          </div>
+          <div class="mb-6">
+            <span class="font-display text-4xl font-bold text-white price-glow">Free</span>
+            <span class="text-gray-500 text-sm ml-2">Forever</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
+              <span>Basic AI consultation — <strong class="text-gray-300">10 queries/day</strong></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
+              <span>Access to <strong class="text-gray-300">public community</strong> forums</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
+              <span>Browse agent marketplace (view only)</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
+              <span>Weekly ecosystem newsletter</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 rounded-full border border-[#00e5ff]/30 text-[#00e5ff] font-mono text-sm hover:bg-[#00e5ff]/10 transition-all duration-300">
+            Register Free
+          </button>
+        </div>
+      </div>
+
+      <!-- Officer Tier -->
+      <div class="tier-card tier-officer glow-card rounded-[20px] p-[1px] cursor-pointer"
+           style="--tier-color: rgba(59,130,246,0.4)"
+           data-tier="officer"
+           data-price="10000"
+           onclick="selectTier(this)">
+        <div class="bg-deep rounded-[19px] p-8 h-full">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <span class="font-mono text-xs text-[#3b82f6] tracking-[0.15em] uppercase">Stake 10,000 USDC</span>
+              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Officer</h3>
+            </div>
+            <span class="text-5xl">⚡</span>
+          </div>
+          <div class="mb-6">
+            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(59,130,246,0.4);">10,000</span>
+            <span class="text-gray-500 text-sm ml-2">USDC</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
+              <span>Enhanced AI — <strong class="text-gray-300">50 queries/day</strong></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Priority matching</strong> with experts</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Staking rewards</strong> — earn yield on your stake</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
+              <span>Access to exclusive officer Discord</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
+              <span>Early access to new agent launches</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 rounded-full border border-[#3b82f6]/30 text-[#3b82f6] font-mono text-sm hover:bg-[#3b82f6]/10 transition-all duration-300">
+            Mint Officer
+          </button>
+        </div>
+      </div>
+
+      <!-- Partner Tier -->
+      <div class="tier-card tier-partner glow-card rounded-[20px] p-[1px] cursor-pointer"
+           style="--tier-color: rgba(168,85,247,0.4)"
+           data-tier="partner"
+           data-price="15000"
+           onclick="selectTier(this)">
+        <div class="bg-deep rounded-[19px] p-8 h-full">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <span class="font-mono text-xs text-[#a855f7] tracking-[0.15em] uppercase">Stake 15,000 USDC</span>
+              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Partner</h3>
+            </div>
+            <span class="text-5xl">💎</span>
+          </div>
+          <div class="mb-6">
+            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(168,85,247,0.4);">15,000</span>
+            <span class="text-gray-500 text-sm ml-2">USDC</span>
+          </div>
+          <div class="mb-5 -mt-2">
+            <span class="inline-block px-3 py-1 rounded-full bg-[#a855f7]/10 border border-[#a855f7]/20 text-[#a855f7] text-xs font-mono">Most Popular</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Unlimited AI</strong> consultation</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Dedicated expert</strong> assignment</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">DAO governance</strong> voting rights</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Revenue sharing</strong> from platform fees</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span>Custom agent deployment slots</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
+              <span>Co-branding partnership opportunities</span>
+            </li>
+          </ul>
+          <button class="btn-mint w-full py-3 rounded-full border border-[#a855f7]/30 text-[#a855f7] font-mono text-sm hover:text-white transition-all duration-300">
+            <span>Mint Partner</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Strategist Tier -->
+      <div class="tier-card tier-strategist glow-card rounded-[20px] p-[1px] cursor-pointer"
+           style="--tier-color: rgba(255,215,0,0.4)"
+           data-tier="strategist"
+           data-price="20000"
+           onclick="selectTier(this)">
+        <div class="bg-deep rounded-[19px] p-8 h-full">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <span class="font-mono text-xs text-[#ffd700] tracking-[0.15em] uppercase">Stake 20,000 USDC</span>
+              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Strategist</h3>
+            </div>
+            <span class="text-5xl">👑</span>
+          </div>
+          <div class="mb-6">
+            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(255,215,0,0.4);">20,000</span>
+            <span class="text-gray-500 text-sm ml-2">USDC</span>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">All Partner benefits</strong> included</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Strategy committee</strong> seat</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Early-stage investment</strong> opportunities</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Custom concierge</strong> AI services</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">1-on-1 advisory</strong> with core team</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-gray-400">
+              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
+              <span><strong class="text-gray-300">Private deal flow</strong> & investor network</span>
+            </li>
+          </ul>
+          <button class="btn-mint w-full py-3 rounded-full border border-[#ffd700]/30 text-[#ffd700] font-mono text-sm hover:text-white transition-all duration-300">
+            <span>Mint Strategist</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end tier-grid -->
+
+    <!-- Selected Tier Summary -->
+    <div id="selected-summary" class="mt-10 glass rounded-2xl p-6 hidden opacity-0 transition-all duration-500 text-center">
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <span class="text-gray-400 font-mono text-sm">Selected:</span>
+        <span id="summary-tier-name" class="font-display text-xl font-bold tracking-wide"></span>
+        <span class="text-gray-500">—</span>
+        <span id="summary-price" class="font-mono text-lg gradient-text"></span>
+        <button onclick="scrollToCTA()" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00e5ff] to-[#a855f7] text-white font-mono text-sm font-semibold hover:opacity-90 transition-opacity">
+          Proceed to Mint
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison Table -->
+<section class="relative z-10 py-20">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Full Comparison</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Benefits at a Glance</h2>
+      <p class="text-gray-400 max-w-xl mx-auto">Compare every feature across all four tiers to find your perfect fit.</p>
+    </div>
+
+    <div class="glass rounded-2xl overflow-x-auto">
+      <table class="compare-table w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/5">
+            <th class="font-mono text-xs text-gray-500 tracking-wider py-5">FEATURE</th>
+            <th class="text-center font-display text-sm text-[#00e5ff] tracking-wide">
+              <span class="text-lg mr-1">🆓</span> Member
+            </th>
+            <th class="text-center font-display text-sm text-[#3b82f6] tracking-wide">
+              <span class="text-lg mr-1">⚡</span> Officer
+            </th>
+            <th class="text-center font-display text-sm text-[#a855f7] tracking-wide">
+              <span class="text-lg mr-1">💎</span> Partner
+            </th>
+            <th class="text-center font-display text-sm text-[#ffd700] tracking-wide">
+              <span class="text-lg mr-1">👑</span> Strategist
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Stake Required</td>
+            <td class="text-center text-gray-500">Free</td>
+            <td class="text-center text-white font-mono">10,000 USDC</td>
+            <td class="text-center text-white font-mono">15,000 USDC</td>
+            <td class="text-center text-white font-mono">20,000 USDC</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">AI Queries / Day</td>
+            <td class="text-center text-gray-500">10</td>
+            <td class="text-center text-white">50</td>
+            <td class="text-center"><span class="text-[#a855f7]">Unlimited</span></td>
+            <td class="text-center"><span class="text-[#ffd700]">Unlimited</span></td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Community Access</td>
+            <td class="text-center text-gray-500">Public</td>
+            <td class="text-center text-white">Officer Only</td>
+            <td class="text-center text-white">Partner Only</td>
+            <td class="text-center text-white">All Access</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Expert Matching</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-white">Priority</td>
+            <td class="text-center text-white">Dedicated</td>
+            <td class="text-center text-white">Dedicated</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Staking Rewards</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#00e5ff]">✓</td>
+            <td class="text-center text-[#00e5ff]">✓</td>
+            <td class="text-center text-[#00e5ff]">✓</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">DAO Voting</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#a855f7]">1x Weight</td>
+            <td class="text-center text-[#ffd700]">3x Weight</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Revenue Share</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#a855f7]">Pro-rata</td>
+            <td class="text-center text-[#ffd700]">Pro-rata + Bonus</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Agent Deployment</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-white">1 Slot</td>
+            <td class="text-center text-white">3 Slots</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Strategy Committee</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#ffd700]">✓</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Early Investments</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#ffd700]">✓</td>
+          </tr>
+          <tr>
+            <td class="font-mono text-xs text-gray-400">Concierge Service</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-gray-500">—</td>
+            <td class="text-center text-[#ffd700]">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="relative z-10 py-20">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">FAQ</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Common Questions</h2>
+      <p class="text-gray-400">Everything you need to know about minting your CONTRA identity.</p>
+    </div>
+
+    <div class="space-y-0">
+      <!-- FAQ 1 -->
+      <div class="faq-item open" onclick="toggleFAQ(this)">
+        <div class="flex items-center justify-between py-5 cursor-pointer">
+          <h3 class="font-sans font-medium text-white pr-4">What happens to my staked USDC?</h3>
+          <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
+        </div>
+        <div class="faq-answer">
+          <p class="text-gray-400 text-sm leading-relaxed pb-5">
+            Your staked USDC remains in your custody within the CONTRA protocol's smart contract. It is never locked — you can unstake at any time with a 7-day cooldown period. While staked, you earn yield through the protocol's revenue-sharing mechanism and DeFi integrations. Your principal is always protected by audited smart contracts and multi-sig governance.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="flex items-center justify-between py-5 cursor-pointer">
+          <h3 class="font-sans font-medium text-white pr-4">Can I upgrade my tier later?</h3>
+          <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
+        </div>
+        <div class="faq-answer">
+          <p class="text-gray-400 text-sm leading-relaxed pb-5">
+            Absolutely. You can upgrade your tier at any time by staking the difference in USDC. For example, moving from Officer (10,000 USDC) to Partner (15,000 USDC) requires staking an additional 5,000 USDC. Your benefits upgrade instantly upon confirmation. Downgrading is also supported — simply unstake the excess amount.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="flex items-center justify-between py-5 cursor-pointer">
+          <h3 class="font-sans font-medium text-white pr-4">How does revenue sharing work?</h3>
+          <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
+        </div>
+        <div class="faq-answer">
+          <p class="text-gray-400 text-sm leading-relaxed pb-5">
+            Partner and Strategist tier holders receive a share of CONTRA's platform fees proportional to their stake relative to the total Partner+ pool. Revenue is distributed monthly in USDC directly to your connected wallet. The current distribution rate is approximately 8-12% APY, varying with platform volume. Strategist holders receive an additional bonus multiplier.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="flex items-center justify-between py-5 cursor-pointer">
+          <h3 class="font-sans font-medium text-white pr-4">Is there a referral program?</h3>
+          <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
+        </div>
+        <div class="faq-answer">
+          <p class="text-gray-400 text-sm leading-relaxed pb-5">
+            Yes! CONTRA offers a referral program where you earn 5% of the staking amount for every new member you bring in who mints an Officer tier or above. Referral rewards are paid in USDC and are claimable immediately. Your referral link is generated after you mint your own identity — share it to grow the ecosystem and earn passive rewards.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="cta" class="relative z-10 py-24">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="glass rounded-3xl p-12 md:p-16 border border-white/5">
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Ready to Join?</span>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mt-4 mb-6 tracking-wide">
+        Stake Your Claim<br>in the <span class="gradient-text">CONTRA</span> Ecosystem
+      </h2>
+      <p class="text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed">
+        Connect your wallet, select your tier, and mint your on-chain identity.
+        Your journey from observer to strategist starts with a single transaction.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button id="cta-mint-btn" class="btn-mint px-10 py-4 rounded-full border border-brand/40 text-brand font-mono text-base font-semibold hover:text-white transition-all duration-300">
+          <span>Connect Wallet & Mint</span>
+        </button>
+        <a href="#tier-grid" class="px-10 py-4 rounded-full border border-white/10 text-gray-400 font-mono text-base hover:border-white/25 hover:text-white transition-all duration-300">
+          Compare Tiers
+        </a>
+      </div>
+
+      <div class="mt-10 flex items-center justify-center gap-6 text-xs text-gray-600 font-mono">
+        <span>🔒 Audited by CertiK</span>
+        <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+        <span>⚡ Gas-optimized</span>
+        <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+        <span>🛡️ Multi-sig secured</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="relative z-10 py-10 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-[#a855f7] flex items-center justify-center">
+        <span class="font-display text-white font-bold text-xs">C</span>
+      </div>
+      <span class="font-display font-bold text-base tracking-wider text-white">CONTRA</span>
+    </div>
+    <p class="text-gray-600 text-xs font-mono">&copy; 2026 CONTRA Protocol. Code is Law.</p>
+  </div>
+</footer>
+
+<!-- Starfield + Interaction JS -->
 <script>
-(function(){
-  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
-  let stars=[],w,h;
-  function rs(){w=window.innerWidth;h=window.innerHeight;c.width=w;c.height=h}
-  function init(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.5,t:Math.random()*Math.PI*2,s:Math.random()*0.02+0.005})}
-  rs();init();window.addEventListener('resize',()=>{rs();init()});
-  function draw(){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.t+=s.s;const a=0.3+Math.sin(s.t)*0.3;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,255,'+a.toFixed(2)+')';ctx.fill()});requestAnimationFrame(draw)}
-  draw();
-  const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  let mx=0,my=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-  function anim(){dot.style.transform='translate('+(mx-3)+'px,'+(my-3)+'px)';ring.style.transform='translate('+(mx-15)+'px,'+(my-15)+'px)';requestAnimationFrame(anim)}
-  anim();
-  document.querySelectorAll('a,button,.glow-card,.btn-primary,.btn-secondary').forEach(el=>{el.addEventListener('mouseenter',()=>ring.classList.add('hover'));el.addEventListener('mouseleave',()=>ring.classList.remove('hover'))});
-})();
+  // === Starfield Canvas ===
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let w, h;
+  const STAR_COUNT = 200;
 
-// Mint logic
-let selectedTier = null, minted = false;
-const tiers = {
-  member: {name:'DID NFT Member',price:'Free',color:'#00e5ff',benefits:'Community · Governance Vote'},
-  officer: {name:'Strategic Officer',price:'10,000 USDC',color:'#3b82f6',benefits:'Consulting · AI Tools · Profit Share'},
-  partner: {name:'Senior Partner',price:'15,000 USDC',color:'#a855f7',benefits:'Weighted Dividend 10% · Priority'},
-  strategist: {name:'Chief Strategist',price:'20,000 USDC',color:'#ffd700',benefits:'Weighted Dividend 25% · Elite Status'},
-};
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-function selectTier(id) {
-  selectedTier = id;
-  document.querySelectorAll('.tier-card').forEach(el=>el.classList.remove('tier-selected'));
-  document.getElementById('tier-'+id).classList.add('tier-selected');
-  document.getElementById('mint-panel').style.display='block';
-  document.getElementById('mint-panel').classList.add('animate-fade-in-up');
-  document.getElementById('selected-name').textContent = tiers[id].name;
-  document.getElementById('selected-price').textContent = tiers[id].price;
-  document.getElementById('selected-benefits').textContent = tiers[id].benefits;
-  document.getElementById('wallet-btn').textContent = 'Connect Wallet';
-  document.getElementById('mint-btn').style.display = 'none';
-  minted = false;
-  document.getElementById('mint-success').style.display = 'none';
-  document.getElementById('nft-preview-card').style.display = 'none';
-}
+  class Star {
+    constructor() { this.reset(true); }
+    reset(init = false) {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.r = Math.random() * 1.8 + 0.3;
+      this.opacity = Math.random() * 0.8 + 0.2;
+      this.speed = Math.random() * 0.3 + 0.05;
+      this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+      this.twinkleOffset = Math.random() * Math.PI * 2;
+      if (init) this.y = Math.random() * h;
+    }
+    update() {
+      this.y += this.speed;
+      this.opacity = 0.3 + Math.sin(Date.now() * this.twinkleSpeed + this.twinkleOffset) * 0.3 + 0.4;
+      if (this.y > h + 5) { this.y = -5; this.x = Math.random() * w; }
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 229, 255, ${this.opacity})`;
+      ctx.fill();
+    }
+  }
 
-function connectWallet() {
-  document.getElementById('wallet-btn').textContent = '0x71C7...a3F9 ✓';
-  document.getElementById('wallet-btn').style.background = 'rgba(34,197,94,0.15)';
-  document.getElementById('wallet-btn').style.borderColor = 'rgba(34,197,94,0.4)';
-  document.getElementById('mint-btn').style.display = 'inline-block';
-}
+  for (let i = 0; i < STAR_COUNT; i++) stars.push(new Star());
 
-function openConfirm() {
-  if (!selectedTier || minted) return;
-  document.getElementById('modal-tier').textContent = tiers[selectedTier].name;
-  document.getElementById('modal-price').textContent = tiers[selectedTier].price;
-  document.getElementById('confirm-modal').classList.add('active');
-}
-function closeConfirm() {
-  document.getElementById('confirm-modal').classList.remove('active');
-}
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    stars.forEach(s => { s.update(); s.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
 
-function executeMint() {
-  closeConfirm();
-  minted = true;
-  document.getElementById('mint-btn').style.display = 'none';
-  document.getElementById('mint-success').style.display = 'block';
-  document.getElementById('nft-preview-card').style.display = 'block';
-  const now = new Date().toLocaleDateString();
-  document.getElementById('nft-tier-name').textContent = tiers[selectedTier].name;
-  document.getElementById('nft-date').textContent = now;
-  document.getElementById('nft-preview-card').style.borderColor = tiers[selectedTier].color+'80';
-}
+  // === Tier Selection ===
+  let selectedTier = null;
+  const summaryEl = document.getElementById('selected-summary');
+
+  function selectTier(el) {
+    // Remove previous selection
+    document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+    // Add selection
+    el.classList.add('selected');
+    selectedTier = el.dataset.tier;
+
+    // Update summary
+    const tierNames = { member: 'Member 🆓', officer: 'Officer ⚡', partner: 'Partner 💎', strategist: 'Strategist 👑' };
+    const price = el.dataset.price === '0' ? 'Free' : `${parseInt(el.dataset.price).toLocaleString()} USDC`;
+
+    document.getElementById('summary-tier-name').textContent = tierNames[selectedTier];
+    document.getElementById('summary-tier-name').style.color =
+      selectedTier === 'member' ? '#00e5ff' :
+      selectedTier === 'officer' ? '#3b82f6' :
+      selectedTier === 'partner' ? '#a855f7' : '#ffd700';
+    document.getElementById('summary-price').textContent = price;
+
+    summaryEl.classList.remove('hidden');
+    requestAnimationFrame(() => { summaryEl.classList.add('opacity-100'); });
+
+    // Scroll summary into view
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function scrollToCTA() {
+    document.getElementById('cta').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // === FAQ Accordion ===
+  function toggleFAQ(el) {
+    // Close others
+    document.querySelectorAll('.faq-item').forEach(item => {
+      if (item !== el) item.classList.remove('open');
+    });
+    // Toggle current
+    el.classList.toggle('open');
+  }
+
+  // === CTA Mint Button ===
+  document.getElementById('cta-mint-btn').addEventListener('click', () => {
+    if (!selectedTier) {
+      // Scroll to tiers
+      document.getElementById('tier-grid').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const firstCard = document.querySelector('.tier-card');
+        if (firstCard) firstCard.style.animation = 'pulseGlow 0.6s ease-in-out 3';
+        setTimeout(() => { if (firstCard) firstCard.style.animation = ''; }, 1800);
+      }, 600);
+    } else {
+      alert(`Minting ${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} identity...\n\nConnect your wallet to proceed.`);
+    }
+  });
 </script>
 
-</body></html>
+</body>
+</html>
