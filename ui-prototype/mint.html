@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mint NFT — CONTRA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
+<script>
+tailwind.config={theme:{extend:{colors:{'deep':{DEFAULT:'#0a0a0f',lighter:'#111118'},'brand':{DEFAULT:'#00e5ff',dim:'#0097a7',glow:'#00e5ff66'},'gold':'#ffd700','silver':'#c0c0c0','bronze':'#cd7f32'},fontFamily:{mono:['JetBrains Mono','Fira Code','monospace'],sans:['Inter','system-ui','sans-serif'],display:['Orbitron','monospace']},animation:{'pulse-glow':'pulseGlow 3s ease-in-out infinite','float':'float 6s ease-in-out infinite','fade-in-up':'fadeInUp 0.8s ease-out forwards'},keyframes:{pulseGlow:{'0%,100%':{boxShadow:'0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)'},'50%':{boxShadow:'0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)'}},float:{'0%,100%':{transform:'translateY(0px)'},'50%':{transform:'translateY(-20px)'}},fadeInUp:{'0%':{opacity:'0',transform:'translateY(30px)'},'100%':{opacity:'1',transform:'translateY(0)'}}}}}}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--brand:#00e5ff;--brand-glow:rgba(0,229,255,0.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;cursor:none}
+.cursor{pointer-events:none;position:fixed;top:0;left:0;z-index:9999;mix-blend-mode:screen;transition:transform 0.15s ease-out}
+.cursor-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;box-shadow:0 0 12px var(--brand-glow),0 0 24px var(--brand-glow)}
+.cursor-ring{width:30px;height:30px;border:1.5px solid rgba(0,229,255,0.5);border-radius:50%;transform:translate(-50%,-50%) scale(1);transition:transform 0.2s ease,border-color 0.2s ease}
+.cursor-ring.hover{transform:translate(-50%,-50%) scale(1.8);border-color:rgba(0,229,255,0.9);background:rgba(0,229,255,0.05)}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow-text{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2),0 0 120px rgba(0,229,255,0.1)}
+.glow-card{background:rgba(17,17,24,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,229,255,0.12);border-radius:16px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+.glow-card:hover{border-color:rgba(0,229,255,0.4);box-shadow:0 0 30px rgba(0,229,255,0.12),0 8px 40px rgba(0,0,0,0.4);transform:translateY(-4px)}
+.glass{background:rgba(10,10,15,0.6);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06)}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.3),transparent)}
+.gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-box{background:rgba(17,17,24,0.95);backdrop-filter:blur(30px);border:1px solid rgba(0,229,255,0.2);border-radius:20px;padding:32px;max-width:420px;width:90%;box-shadow:0 0 60px rgba(0,229,255,0.1)}
+.tier-selected{box-shadow:0 0 30px rgba(0,229,255,0.3),inset 0 0 30px rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.6)!important}
+.nft-preview{background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(168,85,247,0.1));border:2px solid rgba(0,229,255,0.3);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#00e5ff,#0097a7);color:#000;font-weight:700;padding:12px 32px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:14px;cursor:none;border:none;transition:all 0.3s}
+.btn-primary:hover{box-shadow:0 0 30px rgba(0,229,255,0.4);transform:scale(1.05)}
+.btn-secondary{padding:12px 32px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:14px;border:1px solid rgba(0,229,255,0.3);background:transparent;color:#00e5ff;cursor:none;transition:all 0.3s}
+.btn-secondary:hover{background:rgba(0,229,255,0.1);box-shadow:0 0 20px rgba(0,229,255,0.15)}
+</style>
+</head>
+<body>
+<div class="cursor cursor-dot" id="cursor-dot" style="transform:translate(-50%,-50%)"></div>
+<div class="cursor cursor-ring" id="cursor-ring" style="transform:translate(-50%,-50%)"></div>
+<canvas id="starfield"></canvas>
+
+<main class="relative z-10">
+  <section class="min-h-[40vh] flex items-center justify-center px-6 pt-24">
+    <div class="text-center max-w-3xl mx-auto animate-fade-in-up">
+      <div class="inline-block px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-mono tracking-widest mb-6">BECOME AN EXPERT</div>
+      <h1 class="text-5xl md:text-7xl font-display font-bold tracking-tight mb-6"><span class="glow-text">Mint</span> <span class="gradient-text">Your NFT</span></h1>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto">Choose your identity tier. Mint your soul-bound NFT. Join the global network of 130-country experts.</p>
+    </div>
+  </section>
+
+  <!-- Tier Selector -->
+  <section class="px-6 pb-12">
+    <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="tier-member" class="glow-card tier-card p-6 text-center" onclick="selectTier('member')" style="border-top:3px solid #00e5ff66"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#00e5ff15;border:2px solid #00e5ff30">🆓</div><h3 class="text-lg font-display text-white mb-2">DID NFT Member</h3><p class="text-2xl font-display font-bold mb-3" style="color:#00e5ff">Free</p><p class="text-gray-400 text-xs leading-relaxed">Community · Governance Vote</p></div>
+      <div id="tier-officer" class="glow-card tier-card p-6 text-center" onclick="selectTier('officer')" style="border-top:3px solid #3b82f666"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#3b82f615;border:2px solid #3b82f630">⚡</div><h3 class="text-lg font-display text-white mb-2">Strategic Officer</h3><p class="text-2xl font-display font-bold mb-3" style="color:#3b82f6">10,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Consulting · AI Tools · Profit Share</p></div>
+      <div id="tier-partner" class="glow-card tier-card p-6 text-center" onclick="selectTier('partner')" style="border-top:3px solid #a855f766"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#a855f715;border:2px solid #a855f730">💎</div><h3 class="text-lg font-display text-white mb-2">Senior Partner</h3><p class="text-2xl font-display font-bold mb-3" style="color:#a855f7">15,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Weighted Dividend 10% · Priority</p></div>
+      <div id="tier-strategist" class="glow-card tier-card p-6 text-center" onclick="selectTier('strategist')" style="border-top:3px solid #ffd70066"><div class="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-xl" style="background:#ffd70015;border:2px solid #ffd70030">👑</div><h3 class="text-lg font-display text-white mb-2">Chief Strategist</h3><p class="text-2xl font-display font-bold mb-3" style="color:#ffd700">20,000 USDC</p><p class="text-gray-400 text-xs leading-relaxed">Weighted Dividend 25% · Elite Status</p></div>
+    </div>
+  </section>
+
+  <!-- Mint Panel -->
+  <section class="px-6 pb-16">
+    <div id="mint-panel" class="max-w-lg mx-auto glow-card p-8" style="display:none">
+      <h3 class="text-xl font-display text-brand mb-6">Mint Summary</h3>
+      <div class="space-y-4 mb-6">
+        <div class="flex justify-between"><span class="text-gray-500">Tier</span><span class="text-white font-mono" id="selected-name">—</span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Price</span><span class="text-brand font-mono font-bold" id="selected-price">—</span></div>
+        <div class="flex justify-between"><span class="text-gray-500">Benefits</span><span class="text-gray-300 text-xs text-right max-w-48" id="selected-benefits">—</span></div>
+      </div>
+      <div class="flex gap-3">
+        <button id="wallet-btn" class="btn-secondary flex-1" onclick="connectWallet()">Connect Wallet</button>
+        <button id="mint-btn" class="btn-primary flex-1" onclick="openConfirm()" style="display:none">Mint NFT</button>
+      </div>
+      <p id="mint-success" class="text-green-400 text-sm font-mono text-center mt-4" style="display:none">✓ NFT Minted Successfully!</p>
+      <div id="nft-preview-card" class="nft-preview mt-6 p-5 text-center" style="display:none">
+        <div class="text-4xl mb-2">🎖️</div>
+        <p class="text-sm font-display text-brand" id="nft-tier-name">—</p>
+        <p class="text-xs text-gray-500 mt-1">Token ID: #CAI-3061</p>
+        <p class="text-xs text-gray-600 mt-1" id="nft-date">—</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Table -->
+  <section class="px-6 pb-20"><div class="section-divider mb-12"></div>
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-display font-bold text-center mb-8">Tier <span class="gradient-text">Benefits</span></h2>
+      <div class="overflow-x-auto"><table class="w-full text-sm">
+        <thead><tr class="text-left text-gray-400 font-mono text-xs border-b border-white/10">
+          <th class="py-3 px-3">Benefit</th><th class="py-3 px-3 text-center">Member</th><th class="py-3 px-3 text-center">Officer</th><th class="py-3 px-3 text-center">Partner</th><th class="py-3 px-3 text-center">Strategist</th>
+        </tr></thead>
+        <tbody class="text-gray-300 text-xs">
+          <tr class="border-b border-white/5"><td class="py-3 px-3">Community Access</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Governance Vote</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">AI Tools</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Consulting Rights</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Project Profit Share</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">5%</td><td class="py-3 px-3 text-center">10%</td><td class="py-3 px-3 text-center">25%</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Weighted Dividend</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">10%</td><td class="py-3 px-3 text-center">25%</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Priority Matching</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Elite Badge</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td></tr><tr class="border-b border-white/5"><td class="py-3 px-3">Brand Authorization</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">—</td><td class="py-3 px-3 text-center">✅</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- Example NFTs -->
+  <section class="px-6 pb-20">
+    <h2 class="text-3xl font-display font-bold text-center mb-8">Recently <span class="gradient-text">Minted</span></h2>
+    <div class="max-w-4xl mx-auto grid sm:grid-cols-3 gap-4">
+      
+        <div class="nft-preview p-5 text-center">
+          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">D</div>
+          <h4 class="text-sm font-display text-white">Dr. Zhang Wei</h4>
+          <p class="text-xs text-brand">Strategic Officer</p>
+          <p class="text-xs text-gray-500 mt-1">AI & Blockchain</p>
+          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0003</p>
+        </div>
+      
+        <div class="nft-preview p-5 text-center">
+          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">S</div>
+          <h4 class="text-sm font-display text-white">Sarah Kim</h4>
+          <p class="text-xs text-brand">Senior Partner</p>
+          <p class="text-xs text-gray-500 mt-1">DeFi Strategy</p>
+          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0002</p>
+        </div>
+      
+        <div class="nft-preview p-5 text-center">
+          <div class="w-12 h-12 rounded-full mx-auto mb-3 bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-display text-lg">A</div>
+          <h4 class="text-sm font-display text-white">Alex Rivera</h4>
+          <p class="text-xs text-brand">Chief Strategist</p>
+          <p class="text-xs text-gray-500 mt-1">Enterprise Web3</p>
+          <p class="text-xs text-gray-600 mt-2 font-mono">#CAI-0001</p>
+        </div>
+      
+    </div>
+  </section>
+
+  <footer class="px-6 py-12 text-center"><div class="section-divider mb-8"></div><p class="text-gray-600 text-xs font-mono">CONTRA © 2026 · Singapore · Code is Law</p></footer>
+</main>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box text-center">
+    <h3 class="text-xl font-display text-white mb-4">Confirm Mint</h3>
+    <p class="text-gray-400 mb-2">You are minting:</p>
+    <p class="text-brand font-display text-lg" id="modal-tier">—</p>
+    <p class="text-2xl font-display font-bold text-white mt-2" id="modal-price">—</p>
+    <div class="flex gap-3 mt-6 justify-center">
+      <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-primary" onclick="executeMint()">Confirm Mint</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+  let stars=[],w,h;
+  function rs(){w=window.innerWidth;h=window.innerHeight;c.width=w;c.height=h}
+  function init(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+0.5,t:Math.random()*Math.PI*2,s:Math.random()*0.02+0.005})}
+  rs();init();window.addEventListener('resize',()=>{rs();init()});
+  function draw(){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.t+=s.s;const a=0.3+Math.sin(s.t)*0.3;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,255,'+a.toFixed(2)+')';ctx.fill()});requestAnimationFrame(draw)}
+  draw();
+  const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  function anim(){dot.style.transform='translate('+(mx-3)+'px,'+(my-3)+'px)';ring.style.transform='translate('+(mx-15)+'px,'+(my-15)+'px)';requestAnimationFrame(anim)}
+  anim();
+  document.querySelectorAll('a,button,.glow-card,.btn-primary,.btn-secondary').forEach(el=>{el.addEventListener('mouseenter',()=>ring.classList.add('hover'));el.addEventListener('mouseleave',()=>ring.classList.remove('hover'))});
+})();
+
+// Mint logic
+let selectedTier = null, minted = false;
+const tiers = {
+  member: {name:'DID NFT Member',price:'Free',color:'#00e5ff',benefits:'Community · Governance Vote'},
+  officer: {name:'Strategic Officer',price:'10,000 USDC',color:'#3b82f6',benefits:'Consulting · AI Tools · Profit Share'},
+  partner: {name:'Senior Partner',price:'15,000 USDC',color:'#a855f7',benefits:'Weighted Dividend 10% · Priority'},
+  strategist: {name:'Chief Strategist',price:'20,000 USDC',color:'#ffd700',benefits:'Weighted Dividend 25% · Elite Status'},
+};
+
+function selectTier(id) {
+  selectedTier = id;
+  document.querySelectorAll('.tier-card').forEach(el=>el.classList.remove('tier-selected'));
+  document.getElementById('tier-'+id).classList.add('tier-selected');
+  document.getElementById('mint-panel').style.display='block';
+  document.getElementById('mint-panel').classList.add('animate-fade-in-up');
+  document.getElementById('selected-name').textContent = tiers[id].name;
+  document.getElementById('selected-price').textContent = tiers[id].price;
+  document.getElementById('selected-benefits').textContent = tiers[id].benefits;
+  document.getElementById('wallet-btn').textContent = 'Connect Wallet';
+  document.getElementById('mint-btn').style.display = 'none';
+  minted = false;
+  document.getElementById('mint-success').style.display = 'none';
+  document.getElementById('nft-preview-card').style.display = 'none';
+}
+
+function connectWallet() {
+  document.getElementById('wallet-btn').textContent = '0x71C7...a3F9 ✓';
+  document.getElementById('wallet-btn').style.background = 'rgba(34,197,94,0.15)';
+  document.getElementById('wallet-btn').style.borderColor = 'rgba(34,197,94,0.4)';
+  document.getElementById('mint-btn').style.display = 'inline-block';
+}
+
+function openConfirm() {
+  if (!selectedTier || minted) return;
+  document.getElementById('modal-tier').textContent = tiers[selectedTier].name;
+  document.getElementById('modal-price').textContent = tiers[selectedTier].price;
+  document.getElementById('confirm-modal').classList.add('active');
+}
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('active');
+}
+
+function executeMint() {
+  closeConfirm();
+  minted = true;
+  document.getElementById('mint-btn').style.display = 'none';
+  document.getElementById('mint-success').style.display = 'block';
+  document.getElementById('nft-preview-card').style.display = 'block';
+  const now = new Date().toLocaleDateString();
+  document.getElementById('nft-tier-name').textContent = tiers[selectedTier].name;
+  document.getElementById('nft-date').textContent = now;
+  document.getElementById('nft-preview-card').style.borderColor = tiers[selectedTier].color+'80';
+}
+</script>
+
+</body></html>
