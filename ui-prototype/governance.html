@@ -1,79 +1,264 @@
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-gradient w-full text-sm" onclick="openVoteModal('CTRA-45', 'Reduce Protocol Fee from 0.3% to 0.15%')">
-        Cast Vote
-      </button>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance — CONTRA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}
+tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:'#00e5ff'}},fontFamily:{mono:['JetBrains Mono','monospace'],display:['Orbitron','monospace'],sans:['Inter','sans-serif']}}}}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;min-height:100vh}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow-text{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2)}
+.glass-card{background:rgba(17,17,24,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,229,255,0.12);border-radius:16px;transition:all 0.3s ease}
+.glass-card:hover{border-color:rgba(0,229,255,0.4);box-shadow:0 0 30px rgba(0,229,255,0.1),0 8px 30px rgba(0,0,0,0.3);transform:translateY(-2px)}
+.glass-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;color:#e0e0e0;font-size:14px;outline:none;transition:border-color 0.2s}
+.glass-input:focus{border-color:rgba(0,229,255,0.5);box-shadow:0 0 0 3px rgba(0,229,255,0.06)}
+.glass-input::placeholder{color:rgba(255,255,255,0.2)}
+.btn-gradient{background:linear-gradient(135deg,#00e5ff,#a855f7);border:none;border-radius:12px;padding:12px 28px;color:#0a0a0f;font-family:'Orbitron',monospace;font-weight:600;cursor:pointer;transition:all 0.3s ease;letter-spacing:0.5px}
+.btn-gradient:hover{box-shadow:0 0 30px rgba(0,229,255,0.3),0 0 60px rgba(168,85,247,0.15);transform:translateY(-1px)}
+.btn-gradient:disabled{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3);cursor:not-allowed;box-shadow:none;transform:none}
+.gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-box{background:rgba(17,17,24,0.95);backdrop-filter:blur(24px);border:1px solid rgba(0,229,255,0.18);border-radius:20px;padding:32px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;animation:modalIn 0.3s ease-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.vote-option{cursor:pointer;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px 16px;transition:all 0.2s ease}
+.vote-option:hover{border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.05)}
+.vote-option.selected{border-color:#00e5ff;background:rgba(0,229,255,0.08)}
+.badge-passed{background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3)}
+.badge-rejected{background:rgba(248,113,113,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
+.badge-active{background:rgba(0,229,255,0.12);color:#00e5ff;border:1px solid rgba(0,229,255,0.3)}
+*:focus-visible{outline:2px solid #00e5ff;outline-offset:2px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}#starfield{display:none}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<section class="relative z-10 min-h-[50vh] flex items-center justify-center px-6 pt-20">
+  <div class="text-center max-w-4xl mx-auto">
+    <div class="inline-block px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-mono tracking-widest mb-6">DAO GOVERNANCE</div>
+    <h1 class="text-5xl md:text-7xl font-display font-bold tracking-tight mb-4"><span class="glow-text">Shape The Future</span></h1>
+    <p class="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">Decentralized governance for the CONTRA protocol. Stake $CTRA, vote on proposals, and direct the evolution of AI consulting.</p>
+    <div class="flex items-center justify-center gap-8 text-center">
+      <div><p class="text-2xl font-display gradient-text font-bold">47</p><p class="text-xs text-gray-500 font-mono mt-1">TOTAL PROPOSALS</p></div>
+      <div><p class="text-2xl font-display text-[#22c55e] font-bold">89%</p><p class="text-xs text-gray-500 font-mono mt-1">VOTER PARTICIPATION</p></div>
+      <div><p class="text-2xl font-display gradient-text font-bold">$8.2M</p><p class="text-xs text-gray-500 font-mono mt-1">TREASURY</p></div>
     </div>
   </div>
 </section>
-
-<!-- Vote Modal -->
+<section class="relative z-10 max-w-7xl mx-auto px-6 pb-8">
+  <h2 class="font-display text-xl font-semibold text-white/80 mb-5">Treasury Overview</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs font-mono text-gray-500 mb-1">Total Treasury</div>
+      <div class="text-2xl font-display gradient-text font-bold">$8.2M</div>
+      <div class="text-xs text-gray-500 mt-1">12,450,000 CTRA</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs font-mono text-gray-500 mb-1">Staking Pool</div>
+      <div class="text-2xl font-display text-[#22c55e] font-bold">$3.4M</div>
+      <div class="text-xs text-gray-500 mt-1">APY 12.8%</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs font-mono text-gray-500 mb-1">Dev Fund</div>
+      <div class="text-2xl font-display text-[#a855f7] font-bold">$2.1M</div>
+      <div class="text-xs text-gray-500 mt-1">Multi-sig 4/7</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs font-mono text-gray-500 mb-1">Community Fund</div>
+      <div class="text-2xl font-display text-[#f59e0b] font-bold">$1.5M</div>
+      <div class="text-xs text-gray-500 mt-1">Grants & Bounties</div>
+    </div>
+  </div>
+</section>
+<section class="relative z-10 max-w-7xl mx-auto px-6 pb-8">
+  <h2 class="font-display text-xl font-semibold text-white/80 mb-5 flex items-center gap-3">
+    <span class="text-[#f59e0b]">⚡</span> Active Proposals
+    <span class="badge-active text-xs font-mono px-2 py-0.5 rounded-full">4 LIVE</span>
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="glass-card p-6">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <span class="badge-active text-xs font-mono px-2.5 py-0.5 rounded-full">Voting</span>
+          <span class="text-white/20 text-xs ml-2 font-mono">#CTRA-42</span>
+        </div>
+        <span class="text-xs text-gray-500 font-mono">3 days left</span>
+      </div>
+      <h3 class="font-display font-semibold text-base text-white/85 mb-2">Integrate GPT-4o into Consulting Engine</h3>
+      <p class="text-xs text-white/35 mb-4">Upgrade AI matching engine with GPT-4o for improved expert-client matching accuracy and multilingual support across 130+ countries.</p>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#22c55e] w-16">FOR 72%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#22c55e] rounded-full" style="width:72%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#f87171] w-16">AGAINST 18%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#f87171] rounded-full" style="width:18%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#a78bfa] w-16">ABSTAIN 10%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#a78bfa] rounded-full" style="width:10%"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-gradient w-full text-sm" onclick="openVoteModal('CTRA-42','Integrate GPT-4o into Consulting Engine')">Cast Vote</button>
+    </div>
+    <div class="glass-card p-6">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <span class="badge-active text-xs font-mono px-2.5 py-0.5 rounded-full">Voting</span>
+          <span class="text-white/20 text-xs ml-2 font-mono">#CTRA-43</span>
+        </div>
+        <span class="text-xs text-gray-500 font-mono">5 days left</span>
+      </div>
+      <h3 class="font-display font-semibold text-base text-white/85 mb-2">Expand Node Network to Southeast Asia</h3>
+      <p class="text-xs text-white/35 mb-4">Deploy 50+ validator nodes across Singapore, Bangkok, Jakarta, and Manila to improve latency for APAC users.</p>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#22c55e] w-16">FOR 64%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#22c55e] rounded-full" style="width:64%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#f87171] w-16">AGAINST 24%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#f87171] rounded-full" style="width:24%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#a78bfa] w-16">ABSTAIN 12%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#a78bfa] rounded-full" style="width:12%"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-gradient w-full text-sm" onclick="openVoteModal('CTRA-43','Expand Node Network to Southeast Asia')">Cast Vote</button>
+    </div>
+    <div class="glass-card p-6">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <span class="badge-active text-xs font-mono px-2.5 py-0.5 rounded-full">Voting</span>
+          <span class="text-white/20 text-xs ml-2 font-mono">#CTRA-44</span>
+        </div>
+        <span class="text-xs text-gray-500 font-mono">7 days left</span>
+      </div>
+      <h3 class="font-display font-semibold text-base text-white/85 mb-2">Launch $500K Grant Program for AI Researchers</h3>
+      <p class="text-xs text-white/35 mb-4">Allocate $500K from community fund to sponsor open-source AI research projects that benefit the CONTRA ecosystem.</p>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#22c55e] w-16">FOR 81%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#22c55e] rounded-full" style="width:81%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#f87171] w-16">AGAINST 9%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#f87171] rounded-full" style="width:9%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#a78bfa] w-16">ABSTAIN 10%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#a78bfa] rounded-full" style="width:10%"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-gradient w-full text-sm" onclick="openVoteModal('CTRA-44','Launch $500K Grant Program for AI Researchers')">Cast Vote</button>
+    </div>
+    <div class="glass-card p-6">
+      <div class="flex items-start justify-between mb-3">
+        <div>
+          <span class="badge-active text-xs font-mono px-2.5 py-0.5 rounded-full">Voting</span>
+          <span class="text-white/20 text-xs ml-2 font-mono">#CTRA-45</span>
+        </div>
+        <span class="text-xs text-gray-500 font-mono">9 days left</span>
+      </div>
+      <h3 class="font-display font-semibold text-base text-white/85 mb-2">Reduce Protocol Fee from 0.3% to 0.15%</h3>
+      <p class="text-xs text-white/35 mb-4">Proposal to halve protocol fees to attract more trading volume and improve competitiveness against centralized platforms.</p>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#22c55e] w-16">FOR 55%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#22c55e] rounded-full" style="width:55%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#f87171] w-16">AGAINST 35%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#f87171] rounded-full" style="width:35%"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-[#a78bfa] w-16">ABSTAIN 10%</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-[#a78bfa] rounded-full" style="width:10%"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-gradient w-full text-sm" onclick="openVoteModal('CTRA-45','Reduce Protocol Fee from 0.3% to 0.15%')">Cast Vote</button>
+    </div>
+  </div>
+</section>
 <div class="modal-overlay" id="voteModalOverlay">
   <div class="modal-box">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-5">
       <div>
-        <span class="text-xs font-mono text-[#00e5ff] mb-1 block" id="modalPropId">#CTRA-42</span>
-        <h3 class="font-orbitron font-semibold text-lg text-white/90" id="modalPropTitle">Integrate GPT-4o into Consulting Engine</h3>
+        <span class="text-xs font-mono text-brand mb-1 block" id="modalPropId">#CTRA-42</span>
+        <h3 class="font-display font-semibold text-lg text-white/90" id="modalPropTitle"></h3>
       </div>
-      <button onclick="closeVoteModal()" class="text-white/30 hover:text-white/80 transition-colors text-xl leading-none">&times;</button>
+      <button onclick="closeVoteModal()" class="text-white/30 hover:text-white/80 transition-colors text-xl leading-none" aria-label="Close">&times;</button>
     </div>
-
-    <p class="text-sm text-white/40 mb-6">Select your vote. Your staked $CTRA determines your voting power.</p>
-
-    <div class="space-y-3 mb-6" id="voteOptions">
-      <div class="vote-option" onclick="selectVote('for')" id="vote-option-for">
+    <p class="text-sm text-white/35 mb-5">Select your vote. Your staked $CTRA determines your voting power.</p>
+    <div class="space-y-3 mb-5">
+      <div class="vote-option" onclick="selectVote('for')" id="v-for">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(0,229,255,0.15);">✓</div>
-          <div>
-            <span class="text-white/90 font-semibold text-sm">Approve</span>
-            <span class="text-white/30 text-xs ml-2">Vote FOR this proposal</span>
-          </div>
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(0,229,255,0.15);color:#00e5ff">&#10003;</div>
+          <div><span class="text-white/90 font-semibold text-sm">Approve</span><span class="text-white/25 text-xs ml-2">Vote FOR this proposal</span></div>
         </div>
       </div>
-      <div class="vote-option" onclick="selectVote('against')" id="vote-option-against">
+      <div class="vote-option" onclick="selectVote('against')" id="v-against">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(248,113,113,0.15);">✗</div>
-          <div>
-            <span class="text-white/90 font-semibold text-sm">Reject</span>
-            <span class="text-white/30 text-xs ml-2">Vote AGAINST this proposal</span>
-          </div>
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(248,113,113,0.15);color:#f87171">&#10007;</div>
+          <div><span class="text-white/90 font-semibold text-sm">Reject</span><span class="text-white/25 text-xs ml-2">Vote AGAINST this proposal</span></div>
         </div>
       </div>
-      <div class="vote-option" onclick="selectVote('abstain')" id="vote-option-abstain">
+      <div class="vote-option" onclick="selectVote('abstain')" id="v-abstain">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(168,85,247,0.15);">—</div>
-          <div>
-            <span class="text-white/90 font-semibold text-sm">Abstain</span>
-            <span class="text-white/30 text-xs ml-2">Abstain from voting</span>
-          </div>
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(168,85,247,0.15);color:#a855f7">&mdash;</div>
+          <div><span class="text-white/90 font-semibold text-sm">Abstain</span><span class="text-white/25 text-xs ml-2">Abstain from voting</span></div>
         </div>
       </div>
     </div>
-
-    <div class="glass-card p-4 mb-6" style="background:rgba(10,10,25,0.4);">
+    <div class="glass-card p-4 mb-5" style="background:rgba(10,10,25,0.4);">
       <div class="flex justify-between text-sm mb-1">
-        <span class="text-white/40">Your Voting Power</span>
+        <span class="text-white/35">Your Voting Power</span>
         <span class="font-mono font-semibold gradient-text">12,450 $CTRA</span>
       </div>
     </div>
-
-    <button class="btn-gradient w-full text-sm py-3" onclick="submitVote()" id="submitVoteBtn" disabled style="opacity:0.4;">
-      Confirm Vote
-    </button>
+    <button class="btn-gradient w-full text-sm py-3" onclick="submitVote()" id="submitVoteBtn" disabled>Confirm Vote</button>
     <p class="text-xs text-white/20 text-center mt-3 font-mono" id="voteStatus"></p>
   </div>
 </div>
-
-<!-- Completed Proposals -->
-<section class="relative z-10 max-w-7xl mx-auto px-6 pb-12">
-  <h2 class="font-orbitron text-xl font-semibold text-white/80 mb-6 flex items-center gap-3">
-    <span class="text-[#a855f7]">✓</span> Completed Proposals
+<section class="relative z-10 max-w-7xl mx-auto px-6 pb-8">
+  <h2 class="font-display text-xl font-semibold text-white/80 mb-5 flex items-center gap-3">
+    <span class="text-[#a855f7]">&#10003;</span> Completed Proposals
   </h2>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-    <!-- Completed 1: Passed -->
-    <div class="glass-card p-6 opacity-75 hover:opacity-100 transition-opacity">
+    <div class="glass-card p-6 opacity-70 hover:opacity-100 transition-opacity">
       <div class="flex items-start justify-between mb-3">
         <div>
           <span class="badge-passed text-xs font-mono px-2.5 py-0.5 rounded-full">Passed</span>
@@ -81,7 +266,7 @@
         </div>
         <span class="text-xs text-white/20 font-mono">Executed Jun 18</span>
       </div>
-      <h3 class="font-orbitron font-semibold text-base text-white/80 mb-2">Deploy Cross-Chain Bridge to Solana</h3>
+      <h3 class="font-display font-semibold text-base text-white/80 mb-2">Deploy Cross-Chain Bridge to Solana</h3>
       <p class="text-xs text-white/35 mb-3">Bridge $CTRA to Solana ecosystem for expanded DeFi integrations and liquidity.</p>
       <div class="flex items-center gap-4 text-xs font-mono">
         <span class="text-[#22c55e]">For 82%</span>
@@ -89,9 +274,7 @@
         <span class="text-[#a78bfa]">Abstain 7%</span>
       </div>
     </div>
-
-    <!-- Completed 2: Passed -->
-    <div class="glass-card p-6 opacity-75 hover:opacity-100 transition-opacity">
+    <div class="glass-card p-6 opacity-70 hover:opacity-100 transition-opacity">
       <div class="flex items-start justify-between mb-3">
         <div>
           <span class="badge-passed text-xs font-mono px-2.5 py-0.5 rounded-full">Passed</span>
@@ -99,17 +282,15 @@
         </div>
         <span class="text-xs text-white/20 font-mono">Executed Jun 14</span>
       </div>
-      <h3 class="font-orbitron font-semibold text-base text-white/80 mb-2">Establish $2M Bug Bounty Program</h3>
-      <p class="text-xs text-white/35 mb-3">Create a community bug bounty program with rewards up to $500K for critical vulnerabilities.</p>
+      <h3 class="font-display font-semibold text-base text-white/80 mb-2">Establish $2M Bug Bounty Program</h3>
+      <p class="text-xs text-white/35 mb-3">Community bug bounty with rewards up to $500K for critical vulnerabilities.</p>
       <div class="flex items-center gap-4 text-xs font-mono">
         <span class="text-[#22c55e]">For 91%</span>
         <span class="text-[#f87171]">Against 4%</span>
         <span class="text-[#a78bfa]">Abstain 5%</span>
       </div>
     </div>
-
-    <!-- Completed 3: Rejected -->
-    <div class="glass-card p-6 opacity-75 hover:opacity-100 transition-opacity">
+    <div class="glass-card p-6 opacity-70 hover:opacity-100 transition-opacity">
       <div class="flex items-start justify-between mb-3">
         <div>
           <span class="badge-rejected text-xs font-mono px-2.5 py-0.5 rounded-full">Rejected</span>
@@ -117,17 +298,15 @@
         </div>
         <span class="text-xs text-white/20 font-mono">Closed Jun 10</span>
       </div>
-      <h3 class="font-orbitron font-semibold text-base text-white/80 mb-2">Increase Staking APY to 24%</h3>
-      <p class="text-xs text-white/35 mb-3">Proposal to temporarily boost staking APY to 24% to attract new stakers. Deemed unsustainable.</p>
+      <h3 class="font-display font-semibold text-base text-white/80 mb-2">Increase Staking APY to 24%</h3>
+      <p class="text-xs text-white/35 mb-3">Temporarily boost staking APY. Deemed unsustainable by treasury analysis.</p>
       <div class="flex items-center gap-4 text-xs font-mono">
         <span class="text-[#22c55e]">For 31%</span>
         <span class="text-[#f87171]">Against 58%</span>
         <span class="text-[#a78bfa]">Abstain 11%</span>
       </div>
     </div>
-
-    <!-- Completed 4: Passed -->
-    <div class="glass-card p-6 opacity-75 hover:opacity-100 transition-opacity">
+    <div class="glass-card p-6 opacity-70 hover:opacity-100 transition-opacity">
       <div class="flex items-start justify-between mb-3">
         <div>
           <span class="badge-passed text-xs font-mono px-2.5 py-0.5 rounded-full">Passed</span>
@@ -135,8 +314,8 @@
         </div>
         <span class="text-xs text-white/20 font-mono">Executed Jun 08</span>
       </div>
-      <h3 class="font-orbitron font-semibold text-base text-white/80 mb-2">Integrate ZK Proofs for Private Voting</h3>
-      <p class="text-xs text-white/35 mb-3">Implement zero-knowledge proofs to enable private, verifiable on-chain voting for governance.</p>
+      <h3 class="font-display font-semibold text-base text-white/80 mb-2">Integrate ZK Proofs for Private Voting</h3>
+      <p class="text-xs text-white/35 mb-3">Zero-knowledge proofs for private, verifiable on-chain governance voting.</p>
       <div class="flex items-center gap-4 text-xs font-mono">
         <span class="text-[#22c55e]">For 76%</span>
         <span class="text-[#f87171]">Against 15%</span>
@@ -145,176 +324,103 @@
     </div>
   </div>
 </section>
-
-<!-- Submit Proposal -->
-<section class="relative z-10 max-w-3xl mx-auto px-6 pb-20">
-  <h2 class="font-orbitron text-xl font-semibold text-white/80 mb-6 flex items-center gap-3">
-    <span class="text-[#00e5ff]">✦</span> Submit Proposal
+<section class="relative z-10 max-w-3xl mx-auto px-6 pb-16">
+  <h2 class="font-display text-xl font-semibold text-white/80 mb-5 flex items-center gap-3">
+    <span class="text-brand">✦</span> Submit Proposal
   </h2>
-  <div class="glass-card p-8">
-    <p class="text-sm text-white/40 mb-6">Minimum 50,000 $CTRA staked to submit a proposal. All proposals are reviewed by the Governance Council before going live.</p>
-
-    <form class="space-y-5" onsubmit="submitProposal(event)">
+  <div class="glass-card p-7">
+    <p class="text-sm text-white/40 mb-5">Minimum 50,000 $CTRA staked to submit a proposal. All proposals reviewed by the Governance Council.</p>
+    <form class="space-y-4" onsubmit="submitProposal(event)">
       <div>
-        <label class="block text-xs font-mono text-white/50 mb-2">Proposal Title</label>
+        <label class="block text-xs font-mono text-white/50 mb-1.5">Proposal Title</label>
         <input type="text" class="glass-input" placeholder="e.g. Upgrade Oracle Infrastructure to v3" required id="propTitle">
       </div>
       <div>
-        <label class="block text-xs font-mono text-white/50 mb-2">Description</label>
-        <textarea class="glass-input" rows="4" placeholder="Describe your proposal in detail. Include motivation, specification, and expected impact..." required id="propDesc" style="resize:vertical;"></textarea>
+        <label class="block text-xs font-mono text-white/50 mb-1.5">Description</label>
+        <textarea class="glass-input" rows="4" placeholder="Describe your proposal in detail..." required id="propDesc" style="resize:vertical;"></textarea>
       </div>
       <div>
-        <label class="block text-xs font-mono text-white/50 mb-2">Proposal Type</label>
-        <select class="glass-input" required id="propType" style="appearance:none;">
-          <option value="" disabled selected style="background:#0a0a0f;">Select proposal type...</option>
-          <option value="protocol" style="background:#0a0a0f;">Protocol Upgrade</option>
-          <option value="treasury" style="background:#0a0a0f;">Treasury Allocation</option>
-          <option value="parameter" style="background:#0a0a0f;">Parameter Change</option>
-          <option value="grant" style="background:#0a0a0f;">Community Grant</option>
+        <label class="block text-xs font-mono text-white/50 mb-1.5">Proposal Type</label>
+        <select class="glass-input" required id="propType">
+          <option value="" disabled selected>Select proposal type...</option>
+          <option value="protocol">Protocol Upgrade</option>
+          <option value="treasury">Treasury Allocation</option>
+          <option value="parameter">Parameter Change</option>
+          <option value="grant">Community Grant</option>
         </select>
       </div>
       <div>
-        <label class="block text-xs font-mono text-white/50 mb-2">Wallet Address</label>
+        <label class="block text-xs font-mono text-white/50 mb-1.5">Wallet Address</label>
         <input type="text" class="glass-input font-mono text-sm" placeholder="0x..." required id="propWallet">
       </div>
       <button type="submit" class="btn-gradient w-full text-sm py-3">Submit Proposal</button>
     </form>
+    <div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,229,255,0.15);border:1px solid rgba(0,229,255,0.3);border-radius:12px;padding:12px 24px;color:#00e5ff;font-family:'JetBrains Mono',monospace;font-size:12px;z-index:200;transition:opacity 0.3s;"></div>
   </div>
 </section>
-
-<!-- Footer -->
-<footer class="relative z-10 border-t border-white/5 py-8 px-6 text-center">
+<footer class="relative z-10 border-t border-white/5 py-6 px-6 text-center">
   <p class="text-xs text-white/20 font-mono">CONTRA DAO · Decentralized AI Consulting Governance · 2026</p>
 </footer>
 
 <script>
-// === Starfield Canvas ===
-(function() {
-  const canvas = document.getElementById('starfield');
-  const ctx = canvas.getContext('2d');
-  let stars = [];
-  let animId;
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  function initStars() {
-    stars = [];
-    const count = Math.floor((canvas.width * canvas.height) / 1800);
-    for (let i = 0; i < count; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.4 + 0.3,
-        o: Math.random(),
-        s: Math.random() * 0.01 + 0.003,
-        d: Math.random() > 0.5 ? 1 : -1
-      });
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (const s of stars) {
-      s.o += s.s * s.d;
-      if (s.o > 1) { s.o = 1; s.d = -1; }
-      if (s.o < 0.1) { s.o = 0.1; s.d = 1; }
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,220,255,${s.o})`;
-      ctx.fill();
-    }
-    animId = requestAnimationFrame(draw);
-  }
-
-  resize();
-  initStars();
+(function(){
+  const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');
+  let stars=[],w,h;
+  function resize(){w=window.innerWidth;h=window.innerHeight;canvas.width=w;canvas.height=h}
+  function init(){stars=[];for(let i=0;i<180;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+0.3,o:Math.random(),s:Math.random()*0.01+0.003,d:Math.random()>0.5?1:-1})}
+  resize();init();window.addEventListener('resize',function(){resize();init()});
+  function draw(){ctx.clearRect(0,0,w,h);stars.forEach(function(s){s.o+=s.s*s.d;if(s.o>1){s.o=1;s.d=-1}if(s.o<0.1){s.o=0.1;s.d=1};ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(200,220,255,'+s.o+')';ctx.fill()});requestAnimationFrame(draw)}
   draw();
-  window.addEventListener('resize', () => { resize(); initStars(); });
 })();
 
-// === Vote Modal ===
-let selectedVote = null;
-let currentProposalId = '';
-let currentProposalTitle = '';
+var selectedVote=null,currentPropId='',currentPropTitle='';
 
-function openVoteModal(propId, propTitle) {
-  currentProposalId = propId;
-  currentProposalTitle = propTitle;
-  selectedVote = null;
-
-  document.getElementById('modalPropId').textContent = '#' + propId;
-  document.getElementById('modalPropTitle').textContent = propTitle;
-  document.getElementById('submitVoteBtn').disabled = true;
-  document.getElementById('submitVoteBtn').style.opacity = '0.4';
-  document.getElementById('voteStatus').textContent = '';
-
-  document.querySelectorAll('.vote-option').forEach(el => el.classList.remove('selected'));
+function openVoteModal(propId,propTitle){
+  currentPropId=propId;currentPropTitle=propTitle;selectedVote=null;
+  document.getElementById('modalPropId').textContent='#'+propId;
+  document.getElementById('modalPropTitle').textContent=propTitle;
+  document.getElementById('submitVoteBtn').disabled=true;
+  document.getElementById('submitVoteBtn').style.opacity='0.4';
+  document.getElementById('submitVoteBtn').textContent='Confirm Vote';
+  document.getElementById('voteStatus').textContent='';
+  var opts=document.querySelectorAll('.vote-option');
+  for(var i=0;i<opts.length;i++)opts[i].classList.remove('selected');
   document.getElementById('voteModalOverlay').classList.add('active');
 }
 
-function closeVoteModal() {
-  document.getElementById('voteModalOverlay').classList.remove('active');
+function closeVoteModal(){document.getElementById('voteModalOverlay').classList.remove('active')}
+
+function selectVote(type){
+  selectedVote=type;
+  var opts=document.querySelectorAll('.vote-option');
+  for(var i=0;i<opts.length;i++)opts[i].classList.remove('selected');
+  document.getElementById('v-'+type).classList.add('selected');
+  var btn=document.getElementById('submitVoteBtn');btn.disabled=false;btn.style.opacity='1';
+  var labels={for:'Approve',against:'Reject',abstain:'Abstain'};
+  btn.textContent='Confirm '+labels[type];
 }
 
-function selectVote(type) {
-  selectedVote = type;
-  document.querySelectorAll('.vote-option').forEach(el => el.classList.remove('selected'));
-  document.getElementById('vote-option-' + type).classList.add('selected');
-
-  const btn = document.getElementById('submitVoteBtn');
-  btn.disabled = false;
-  btn.style.opacity = '1';
-
-  const labels = { for: 'Approve', against: 'Reject', abstain: 'Abstain' };
-  btn.textContent = 'Confirm ' + labels[type];
+function submitVote(){
+  if(!selectedVote)return;
+  var labels={for:'FOR ✅',against:'AGAINST ❌',abstain:'ABSTAIN ⚪'};
+  document.getElementById('voteStatus').textContent='Vote '+labels[selectedVote]+' cast for '+currentPropId;
+  var btn=document.getElementById('submitVoteBtn');btn.textContent='Vote Submitted ✓';btn.style.opacity='0.6';btn.disabled=true;
+  setTimeout(closeVoteModal,1800);
 }
 
-function submitVote() {
-  if (!selectedVote) return;
-
-  const labels = { for: 'FOR ✅', against: 'AGAINST ❌', abstain: 'ABSTAIN ⚪' };
-  document.getElementById('voteStatus').textContent =
-    'Vote ' + labels[selectedVote] + ' cast for ' + currentProposalId;
-
-  const btn = document.getElementById('submitVoteBtn');
-  btn.textContent = 'Vote Submitted ✓';
-  btn.style.opacity = '0.6';
-  btn.disabled = true;
-
-  setTimeout(closeVoteModal, 1800);
-}
-
-function submitProposal(e) {
+function submitProposal(e){
   e.preventDefault();
-  const title = document.getElementById('propTitle').value;
-  const desc = document.getElementById('propDesc').value;
-  const type = document.getElementById('propType').value;
-  const wallet = document.getElementById('propWallet').value;
-
-  if (!title || !desc || !type || !wallet) return;
-
-  alert('Proposal submitted successfully!\n\n' +
-    'Title: ' + title + '\n' +
-    'Type: ' + type + '\n' +
-    'Wallet: ' + wallet + '\n\n' +
-    'Your proposal will be reviewed by the Governance Council.'
-  );
-
+  var title=document.getElementById('propTitle').value,desc=document.getElementById('propDesc').value,type=document.getElementById('propType').value,wallet=document.getElementById('propWallet').value;
+  if(!title||!desc||!type||!wallet)return;
+  var t=document.getElementById('toast');
+  t.textContent='✓ Proposal "'+title+'" submitted to governance queue';
+  t.style.display='block';t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.style.display='none'},300)},3000);
   e.target.reset();
 }
 
-// Close modal on overlay click
-document.getElementById('voteModalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeVoteModal();
-});
-
-// Close modal on Escape key
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeVoteModal();
-});
+document.getElementById('voteModalOverlay').addEventListener('click',function(e){if(e.target===this)closeVoteModal()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVoteModal()});
 </script>
 </body>
 </html>
