@@ -1,379 +1,704 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — CONTRA</title>
+<title>About — CONTRA AI Consulting</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
 tailwind.config = {
   theme: {
     extend: {
-      colors: {
-        'deep': { DEFAULT: '#0a0a0f', lighter: '#111118' },
-        'brand': { DEFAULT: '#00e5ff', dim: '#0097a7', glow: '#00e5ff66' },
-        'gold': '#ffd700', 'silver': '#c0c0c0', 'bronze': '#cd7f32',
-      },
       fontFamily: {
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Orbitron', 'monospace'],
+        orbitron: ['Orbitron', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
-      backgroundImage: {
-        'mesh-grid': 'linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px)',
-      },
-      animation: {
-        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-      },
-      keyframes: {
-        pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)' },
-          '50%': { boxShadow: '0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)' },
-        },
-        float: { '0%,100%':{transform:'translateY(0px)'}, '50%':{transform:'translateY(-20px)'} },
-        fadeInUp: { '0%':{opacity:'0',transform:'translateY(30px)'}, '100%':{opacity:'1',transform:'translateY(0)'} },
-      },
-      backgroundSize: { 'mesh': '60px 60px' },
+      colors: {
+        brand: '#00e5ff',
+        deep: '#0a0a0f',
+        'deep-card': 'rgba(10,10,20,0.75)',
+      }
     }
   }
 }
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-:root { --brand: #00e5ff; --brand-glow: rgba(0,229,255,0.3); }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0a0a0f; color:#e0e0e0; overflow-x:hidden; cursor:none; }
-.cursor{pointer-events:none;position:fixed;top:0;left:0;z-index:9999;mix-blend-mode:screen;transition:transform 0.15s ease-out;}
-.cursor-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;box-shadow:0 0 12px var(--brand-glow),0 0 24px var(--brand-glow);}
-.cursor-ring{width:30px;height:30px;border:1.5px solid rgba(0,229,255,0.5);border-radius:50%;transform:translate(-50%,-50%) scale(1);transition:transform 0.2s ease,border-color 0.2s ease;}
-.cursor-ring.hover{transform:translate(-50%,-50%) scale(1.8);border-color:rgba(0,229,255,0.9);background:rgba(0,229,255,0.05);}
-#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
-.glow-text{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2),0 0 120px rgba(0,229,255,0.1);}
-.glow-card{background:rgba(17,17,24,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,229,255,0.12);border-radius:16px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);}
-.glow-card:hover{border-color:rgba(0,229,255,0.4);box-shadow:0 0 30px rgba(0,229,255,0.12),0 8px 40px rgba(0,0,0,0.4);transform:translateY(-4px);}
-.glass{background:rgba(10,10,15,0.6);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06);}
-.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,0.3),transparent);}
-.gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  * { box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+  .font-orbitron { font-family: 'Orbitron', sans-serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Canvas stars */
+  #starCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Glass cards */
+  .glass {
+    background: rgba(10,10,25,0.65);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(0,229,255,0.12);
+    border-radius: 16px;
+  }
+  .glass-hover {
+    transition: all 0.35s ease;
+  }
+  .glass-hover:hover {
+    border-color: rgba(0,229,255,0.4);
+    box-shadow: 0 0 40px rgba(0,229,255,0.08), 0 0 80px rgba(168,85,247,0.06);
+    transform: translateY(-3px);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #00e5ff, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, #00e5ff, #a855f7);
+    border-radius: 1px;
+  }
+
+  /* Hero glow */
+  .hero-glow {
+    text-shadow: 0 0 80px rgba(0,229,255,0.25), 0 0 160px rgba(168,85,247,0.15);
+  }
+  .hero-sub {
+    text-shadow: 0 0 30px rgba(0,229,255,0.15);
+  }
+
+  /* Team avatar placeholder */
+  .avatar-placeholder {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(168,85,247,0.15));
+    border: 2px solid rgba(0,229,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+  }
+
+  /* Timeline */
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #00e5ff, #a855f7, transparent);
+  }
+  .timeline-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #00e5ff;
+    box-shadow: 0 0 20px rgba(0,229,255,0.6), 0 0 40px rgba(0,229,255,0.2);
+    flex-shrink: 0;
+  }
+  .timeline-dot.future {
+    background: #a855f7;
+    box-shadow: 0 0 20px rgba(168,85,247,0.5), 0 0 40px rgba(168,85,247,0.15);
+  }
+
+  /* Nav link */
+  .nav-link {
+    position: relative;
+    color: #b0b0b0;
+    transition: color 0.25s;
+  }
+  .nav-link:hover { color: #00e5ff; }
+  .nav-link.active {
+    color: #00e5ff;
+  }
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, #00e5ff, #a855f7);
+  }
+
+  /* Fade-in animation */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.8s ease forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Partner logo placeholder */
+  .partner-box {
+    aspect-ratio: 3/2;
+    background: rgba(0,229,255,0.03);
+    border: 1px solid rgba(0,229,255,0.1);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+  }
+  .partner-box:hover {
+    border-color: rgba(0,229,255,0.35);
+    background: rgba(0,229,255,0.06);
+  }
 </style>
 </head>
 <body>
-<div class="cursor cursor-dot" id="cursor-dot" style="transform:translate(-50%,-50%);"></div>
-<div class="cursor cursor-ring" id="cursor-ring" style="transform:translate(-50%,-50%);"></div>
-<canvas id="starfield"></canvas>
 
-<main class="relative z-10">
-  <section class="min-h-[60vh] flex items-center justify-center px-6 pt-24">
-    <div class="text-center max-w-4xl mx-auto animate-fade-in-up">
-      <div class="inline-block px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-mono tracking-widest mb-6">WHO WE ARE</div>
-      <h1 class="text-5xl md:text-7xl font-display font-bold tracking-tight mb-6">
-        <span class="glow-text">About</span> <span class="gradient-text">CONTRA</span>
-      </h1>
-      <p class="text-xl md:text-2xl text-gray-300 mb-4 font-mono">Code is Law</p>
-      <p class="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-        Decentralized AI consulting platform spanning 130 countries. We replace institutional monopoly with code, 
-        redistribute value to contributors, and make elite consulting accessible to all.
+<!-- Starfield Canvas -->
+<canvas id="starCanvas"></canvas>
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-orbitron text-xl font-bold tracking-wider">
+      <span class="text-brand">CON</span><span class="text-white">TRA</span>
+    </a>
+    <div class="flex gap-8 text-sm font-medium">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link active">About</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="dapp-audit.html" class="nav-link">DApp Audit</a>
+      <a href="case-studies.html" class="nav-link">Case Studies</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section class="relative z-10 pt-40 pb-24 text-center px-6">
+  <div class="max-w-4xl mx-auto fade-up">
+    <h1 class="font-orbitron text-5xl md:text-7xl font-black hero-glow mb-6">
+      <span class="text-white">About </span><span class="gradient-text">CONTRA</span>
+    </h1>
+    <p class="text-xl md:text-2xl text-gray-300 hero-sub leading-relaxed max-w-3xl mx-auto">
+      Bridging <span class="text-brand font-semibold">AI</span> &times; 
+      <span class="text-purple-400 font-semibold">Web3</span> Consulting — 
+      where intelligence meets decentralization.
+    </p>
+    <div class="mt-10 flex justify-center gap-4">
+      <span class="px-4 py-2 glass text-sm font-mono text-brand">EST. 2026</span>
+      <span class="px-4 py-2 glass text-sm font-mono text-gray-400">Remotely Global</span>
+      <span class="px-4 py-2 glass text-sm font-mono text-purple-400">130+ Countries</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MISSION SECTION ==================== -->
+<section class="relative z-10 py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">Our Mission</span>
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        We exist to make AI-driven Web3 consulting accessible, private, and value-aligned — globally.
       </p>
     </div>
-  </section>
 
-  <section class="px-6 py-20 relative">
-    <div class="section-divider mb-16"></div>
-    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-      <div class="glow-card p-8 text-center">
-        <div class="text-4xl mb-4">🌍</div>
-        <h3 class="text-xl font-display text-brand mb-3">Global Reach</h3>
-        <p class="text-gray-400 leading-relaxed">130+ countries. Every language. One platform. Local compliance, global impact.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Card 1: Global Reach -->
+      <div class="glass glass-hover p-8 text-center fade-up" style="animation-delay:0.1s">
+        <div class="text-5xl mb-4">🌍</div>
+        <h3 class="font-orbitron text-xl font-bold text-white mb-3">Global Reach</h3>
+        <p class="text-gray-400 leading-relaxed">
+          Operating across <span class="text-brand font-semibold">130+ countries</span>, we bring 
+          AI-powered consulting to builders everywhere — from Silicon Valley to Southeast Asia, 
+          no borders, no barriers.
+        </p>
+        <div class="mt-6 pt-4 border-t border-white/5">
+          <span class="font-mono text-sm text-brand">130+ Jurisdictions</span>
+        </div>
       </div>
-      <div class="glow-card p-8 text-center">
-        <div class="text-4xl mb-4">⚡</div>
-        <h3 class="text-xl font-display text-brand mb-3">AI Powered</h3>
-        <p class="text-gray-400 leading-relaxed">Federal learning + LoRA fine-tuned models. Smart matching, automated vetting, 24/7 agents.</p>
+
+      <!-- Card 2: Privacy First -->
+      <div class="glass glass-hover p-8 text-center fade-up" style="animation-delay:0.2s">
+        <div class="text-5xl mb-4">🔐</div>
+        <h3 class="font-orbitron text-xl font-bold text-white mb-3">Privacy First</h3>
+        <p class="text-gray-400 leading-relaxed">
+          Your data stays yours. We employ <span class="text-purple-400 font-semibold">ZK-proof</span> 
+          architecture and on-device AI to ensure sensitive consulting data never leaves your control.
+        </p>
+        <div class="mt-6 pt-4 border-t border-white/5">
+          <span class="font-mono text-sm text-purple-400">Zero-Knowledge by Default</span>
+        </div>
       </div>
-      <div class="glow-card p-8 text-center">
-        <div class="text-4xl mb-4">🔒</div>
-        <h3 class="text-xl font-display text-brand mb-3">Trust by Code</h3>
-        <p class="text-gray-400 leading-relaxed">Smart contracts as escrow. Zero-knowledge proofs. End-to-end encryption. No middleman.</p>
+
+      <!-- Card 3: Value Returns -->
+      <div class="glass glass-hover p-8 text-center fade-up" style="animation-delay:0.3s">
+        <div class="text-5xl mb-4">💎</div>
+        <h3 class="font-orbitron text-xl font-bold text-white mb-3">Value Returns</h3>
+        <p class="text-gray-400 leading-relaxed">
+          We measure success by <span class="text-brand font-semibold">client outcomes</span>, not billable hours. 
+          Token-incentivized consulting means our incentives align perfectly with yours.
+        </p>
+        <div class="mt-6 pt-4 border-t border-white/5">
+          <span class="font-mono text-sm text-brand">Outcome-Based Model</span>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="px-6 py-20">
-    <div class="section-divider mb-16"></div>
-    <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-4">Tech <span class="gradient-text">Stack</span></h2>
-    <p class="text-gray-500 text-center mb-12 max-w-xl mx-auto">Built on battle-tested Web3 and AI infrastructure</p>
-    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#61dafb20;border:2px solid #61dafb40;"></div>
-          <h4 class="font-mono text-sm text-white">React + Next.js</h4>
-          <p class="text-xs text-gray-500 mt-1">Frontend Framework</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#36363620;border:2px solid #36363640;"></div>
-          <h4 class="font-mono text-sm text-white">Solidity</h4>
-          <p class="text-xs text-gray-500 mt-1">Smart Contracts</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#65c2cb20;border:2px solid #65c2cb40;"></div>
-          <h4 class="font-mono text-sm text-white">IPFS + Arweave</h4>
-          <p class="text-xs text-gray-500 mt-1">Decentralized Storage</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#fb8c0020;border:2px solid #fb8c0040;"></div>
-          <h4 class="font-mono text-sm text-white">Llama 3</h4>
-          <p class="text-xs text-gray-500 mt-1">AI Foundation Model</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#00000020;border:2px solid #00000040;"></div>
-          <h4 class="font-mono text-sm text-white">LayerZero</h4>
-          <p class="text-xs text-gray-500 mt-1">Cross-Chain Bridge</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#3776ab20;border:2px solid #3776ab40;"></div>
-          <h4 class="font-mono text-sm text-white">PySyft</h4>
-          <p class="text-xs text-gray-500 mt-1">Federated Learning</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#3b99fc20;border:2px solid #3b99fc40;"></div>
-          <h4 class="font-mono text-sm text-white">WalletConnect</h4>
-          <p class="text-xs text-gray-500 mt-1">Web3 Auth</p>
-        </div>
-      
-        <div class="glow-card p-5 text-center">
-          <div class="w-10 h-10 rounded-full mx-auto mb-3" style="background:#4e5ee420;border:2px solid #4e5ee440;"></div>
-          <h4 class="font-mono text-sm text-white">OpenZeppelin</h4>
-          <p class="text-xs text-gray-500 mt-1">Security Audit</p>
-        </div>
-      
+<!-- ==================== TECH STACK SECTION ==================== -->
+<section class="relative z-10 py-20 px-6 bg-black/20">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">Tech Stack</span>
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        Built on cutting-edge infrastructure spanning AI, blockchain, and security.
+      </p>
     </div>
-  </section>
 
-  <section class="px-6 py-20">
-    <div class="section-divider mb-16"></div>
-    <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-4">Core <span class="gradient-text">Team</span></h2>
-    <p class="text-gray-500 text-center mb-12">Builders, strategists, and believers in Code is Law</p>
-    <div class="max-w-5xl mx-auto grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-      
-        <div class="glow-card p-6 text-center">
-          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-display font-bold bg-brand/10 border-2 border-brand/30" style="background:rgba(0,229,255,0.1);">
-            S
+    <!-- Row 1 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 fade-up" style="animation-delay:0.1s">
+      <!-- Frontend -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">⚛️</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">Frontend</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            Next.js · React · TypeScript · Tailwind CSS · Framer Motion · Three.js · WebGL
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">Next.js 14</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">React 18</span>
           </div>
-          <h4 class="text-lg font-display text-white">Seteven</h4>
-          <p class="text-brand text-sm mb-2">Founder & Visionary</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Web3 architect. 10+ years in crypto. Believes code can replace institutions.</p>
         </div>
-      
-        <div class="glow-card p-6 text-center">
-          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-display font-bold bg-brand/10 border-2 border-brand/30" style="background:rgba(0,229,255,0.1);">
-            L
+      </div>
+      <!-- Contracts -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">📜</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">Smart Contracts</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            Solidity · Rust · Move · Anchor · Hardhat · Foundry · Slither
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">Solidity</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">Rust</span>
           </div>
-          <h4 class="text-lg font-display text-white">Dr. Lin</h4>
-          <p class="text-brand text-sm mb-2">Chief Technology Officer</p>
-          <p class="text-gray-500 text-xs leading-relaxed">Ex-Google AI. Llama fine-tuning and distributed systems expert.</p>
         </div>
-      
-        <div class="glow-card p-6 text-center">
-          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-display font-bold bg-brand/10 border-2 border-brand/30" style="background:rgba(0,229,255,0.1);">
-            M
+      </div>
+      <!-- Storage -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">🗄️</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">Storage & Data</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            IPFS · Arweave · Filecoin · The Graph · Ceramic · PostgreSQL
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">IPFS</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">Arweave</span>
           </div>
-          <h4 class="text-lg font-display text-white">Marcus Chen</h4>
-          <p class="text-brand text-sm mb-2">Chief Strategy Officer</p>
-          <p class="text-gray-500 text-xs leading-relaxed">McKinsey alum. Bridges traditional consulting with Web3 economics.</p>
         </div>
-      
-        <div class="glow-card p-6 text-center">
-          <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-display font-bold bg-brand/10 border-2 border-brand/30" style="background:rgba(0,229,255,0.1);">
-            A
-          </div>
-          <h4 class="text-lg font-display text-white">Aisha Patel</h4>
-          <p class="text-brand text-sm mb-2">Community Lead</p>
-          <p class="text-gray-500 text-xs leading-relaxed">130-country ambassador network. Speaks 7 languages.</p>
-        </div>
-      
+      </div>
     </div>
-  </section>
 
-  <section class="px-6 py-20">
-    <div class="section-divider mb-16"></div>
-    <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-4">Roadmap</h2>
-    <p class="text-gray-500 text-center mb-12">Building the future of decentralized consulting</p>
-    <div class="max-w-3xl mx-auto space-y-4">
-      
-        <div class="glow-card p-5 flex items-center gap-4">
-          <div class="w-2 h-2 rounded-full bg-brand flex-shrink-0"></div>
-          <div class="flex-1">
-            <div class="flex items-baseline gap-3">
-              <span class="font-display text-brand text-sm">Phase 1</span>
-              <span class="text-gray-500 text-xs">Q3 2026</span>
-            </div>
-            <p class="text-gray-300 text-sm mt-1">Website + NFT Mint launch</p>
+    <!-- Row 2 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-up" style="animation-delay:0.2s">
+      <!-- AI -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">🧠</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">AI & ML</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            GPT-4 · Claude · LangChain · PyTorch · TensorFlow · Vector DBs · RAG
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">GPT-4</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">LangChain</span>
           </div>
-          <span class="text-xs font-mono text-green-400">✅ Completed</span>
         </div>
-      
-        <div class="glow-card p-5 flex items-center gap-4">
-          <div class="w-2 h-2 rounded-full bg-brand flex-shrink-0"></div>
-          <div class="flex-1">
-            <div class="flex items-baseline gap-3">
-              <span class="font-display text-brand text-sm">Phase 2</span>
-              <span class="text-gray-500 text-xs">Q4 2026</span>
-            </div>
-            <p class="text-gray-300 text-sm mt-1">Dashboard + Wallet integration</p>
+      </div>
+      <!-- Wallet -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">👛</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">Wallet & Auth</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            WalletConnect · RainbowKit · Web3Auth · SIWE · MPC · Account Abstraction
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">WalletConnect</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">SIWE</span>
           </div>
-          <span class="text-xs font-mono text-gray-400">🔄 In Progress</span>
         </div>
-      
-        <div class="glow-card p-5 flex items-center gap-4">
-          <div class="w-2 h-2 rounded-full bg-brand flex-shrink-0"></div>
-          <div class="flex-1">
-            <div class="flex items-baseline gap-3">
-              <span class="font-display text-brand text-sm">Phase 3</span>
-              <span class="text-gray-500 text-xs">Q1 2027</span>
-            </div>
-            <p class="text-gray-300 text-sm mt-1">AI Customer Service + Smart Matching</p>
+      </div>
+      <!-- Security -->
+      <div class="glass glass-hover p-6 flex items-start gap-4">
+        <div class="text-3xl">🛡️</div>
+        <div>
+          <h4 class="font-orbitron text-lg font-bold text-white mb-2">Security & Audit</h4>
+          <p class="text-gray-400 text-sm leading-relaxed mb-3">
+            Mythril · Echidna · Certora · ZK-circuits · Formal Verification · Penetration Testing
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 text-xs font-mono bg-brand/10 text-brand rounded border border-brand/20">Certora</span>
+            <span class="px-2 py-1 text-xs font-mono bg-purple-400/10 text-purple-400 rounded border border-purple-400/20">ZK-circuits</span>
           </div>
-          <span class="text-xs font-mono text-gray-400">📋 Planned</span>
         </div>
-      
-        <div class="glow-card p-5 flex items-center gap-4">
-          <div class="w-2 h-2 rounded-full bg-brand flex-shrink-0"></div>
-          <div class="flex-1">
-            <div class="flex items-baseline gap-3">
-              <span class="font-display text-brand text-sm">Phase 4</span>
-              <span class="text-gray-500 text-xs">Q2 2027</span>
-            </div>
-            <p class="text-gray-300 text-sm mt-1">Agent Marketplace + Node Network</p>
-          </div>
-          <span class="text-xs font-mono text-gray-400">📋 Planned</span>
-        </div>
-      
-        <div class="glow-card p-5 flex items-center gap-4">
-          <div class="w-2 h-2 rounded-full bg-brand flex-shrink-0"></div>
-          <div class="flex-1">
-            <div class="flex items-baseline gap-3">
-              <span class="font-display text-brand text-sm">Phase 5</span>
-              <span class="text-gray-500 text-xs">Q3 2027</span>
-            </div>
-            <p class="text-gray-300 text-sm mt-1">130-Country Multi-Chain Deployment</p>
-          </div>
-          <span class="text-xs font-mono text-gray-400">🎯 Vision</span>
-        </div>
-      
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="px-6 py-20">
-    <div class="section-divider mb-16"></div>
-    <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-4">Partners & <span class="gradient-text">Investors</span></h2>
-    <p class="text-gray-500 text-center mb-12">Strategic backing from global Web3 infrastructure leaders</p>
-    <div class="max-w-4xl mx-auto grid grid-cols-3 md:grid-cols-5 gap-6">
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>1</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>2</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>3</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>4</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>5</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>6</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>7</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>8</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>9</div>
-        </div>
-      
-        <div class="glow-card p-6 flex items-center justify-center h-20 opacity-50 hover:opacity-100 transition-opacity">
-          <div class="text-gray-500 text-xs font-mono text-center">Partner<br>10</div>
-        </div>
-      
+<!-- ==================== TEAM SECTION ==================== -->
+<section class="relative z-10 py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">Core Team</span>
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        A collective of builders, researchers, and architects at the intersection of AI and Web3.
+      </p>
     </div>
-    <p class="text-center text-gray-600 text-xs mt-8 font-mono">* Announcements pending NDA clearance</p>
-  </section>
 
-  <footer class="px-6 py-12 text-center">
-    <div class="section-divider mb-8"></div>
-    <p class="text-gray-600 text-xs font-mono">CONTRA © 2026 · Singapore · Code is Law</p>
-  </footer>
-</main>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Team Member 1 -->
+      <div class="glass glass-hover p-6 text-center fade-up" style="animation-delay:0.1s">
+        <div class="avatar-placeholder mx-auto mb-5">🧬</div>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-1">Dr. Alex Rivera</h4>
+        <p class="text-brand text-sm font-semibold mb-3">Founder & CEO</p>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Ex-DeepMind researcher. 15 years in ML systems. Built 3 AI startups. 
+          Obsessed with on-chain intelligence.
+        </p>
+        <div class="mt-4 flex justify-center gap-3 text-xs font-mono text-gray-500">
+          <span>🧠 AI</span><span>⛓️ Crypto since '16</span>
+        </div>
+      </div>
 
+      <!-- Team Member 2 -->
+      <div class="glass glass-hover p-6 text-center fade-up" style="animation-delay:0.2s">
+        <div class="avatar-placeholder mx-auto mb-5">🔮</div>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-1">Maya Chen</h4>
+        <p class="text-purple-400 text-sm font-semibold mb-3">CTO · Smart Contracts</p>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Former core dev at L2 scaling team. Audited $2B+ in TVL. 
+          Rust & Solidity polyglot.
+        </p>
+        <div class="mt-4 flex justify-center gap-3 text-xs font-mono text-gray-500">
+          <span>🔐 Audits</span><span>⚡ L2</span>
+        </div>
+      </div>
+
+      <!-- Team Member 3 -->
+      <div class="glass glass-hover p-6 text-center fade-up" style="animation-delay:0.3s">
+        <div class="avatar-placeholder mx-auto mb-5">⚡</div>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-1">Kenji Tanaka</h4>
+        <p class="text-brand text-sm font-semibold mb-3">Head of AI Research</p>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          PhD in NLP. Built open-source LLM frameworks. 
+          Pioneering agentic workflows for DeFi analysis.
+        </p>
+        <div class="mt-4 flex justify-center gap-3 text-xs font-mono text-gray-500">
+          <span>🤖 Agents</span><span>📊 DeFi</span>
+        </div>
+      </div>
+
+      <!-- Team Member 4 -->
+      <div class="glass glass-hover p-6 text-center fade-up" style="animation-delay:0.4s">
+        <div class="avatar-placeholder mx-auto mb-5">🌌</div>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-1">Priya Kapoor</h4>
+        <p class="text-purple-400 text-sm font-semibold mb-3">Product & DAO Strategy</p>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Scaled community to 500K at a top-20 protocol. 
+          Tokenomics advisor for 30+ projects.
+        </p>
+        <div class="mt-4 flex justify-center gap-3 text-xs font-mono text-gray-500">
+          <span>🏛️ DAO</span><span>📈 Growth</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ROADMAP SECTION ==================== -->
+<section class="relative z-10 py-20 px-6 bg-black/20">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fade-up">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">Roadmap</span>
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        Our journey from launch to becoming the definitive AI × Web3 consulting platform.
+      </p>
+    </div>
+
+    <div class="relative">
+      <!-- Center line -->
+      <div class="timeline-line hidden md:block"></div>
+
+      <!-- Phase 1 -->
+      <div class="flex flex-col md:flex-row items-center gap-6 mb-12 fade-up" style="animation-delay:0.1s">
+        <div class="md:w-1/2 md:text-right md:pr-10">
+          <div class="glass p-6 inline-block text-left max-w-md">
+            <span class="font-mono text-xs text-brand mb-2 block">Phase 1 · Q3 2026</span>
+            <h4 class="font-orbitron text-lg font-bold text-white mb-2">Foundation</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Platform MVP launch. AI-powered smart contract audit service, 
+              wallet integration, and initial client pipeline. Core team of 4.
+            </p>
+            <ul class="mt-3 space-y-1 text-xs text-gray-500 font-mono">
+              <li>✅ Audit Engine v1</li>
+              <li>✅ Multi-chain Support</li>
+              <li>✅ Onboarding 20 Projects</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-dot hidden md:block"></div>
+        <div class="md:w-1/2 hidden md:block"></div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="flex flex-col md:flex-row items-center gap-6 mb-12 fade-up" style="animation-delay:0.2s">
+        <div class="md:w-1/2 hidden md:block"></div>
+        <div class="timeline-dot hidden md:block"></div>
+        <div class="md:w-1/2 md:pl-10">
+          <div class="glass p-6 inline-block text-left max-w-md">
+            <span class="font-mono text-xs text-brand mb-2 block">Phase 2 · Q4 2026</span>
+            <h4 class="font-orbitron text-lg font-bold text-white mb-2">AI Agent Launch</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Deploy autonomous consulting agents. AI-driven due diligence reports, 
+              continuous monitoring, and predictive risk scoring for DeFi protocols.
+            </p>
+            <ul class="mt-3 space-y-1 text-xs text-gray-500 font-mono">
+              <li>🔄 Agentic Audits</li>
+              <li>🔄 Real-time Monitoring</li>
+              <li>⏳ Token Launch Prep</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="flex flex-col md:flex-row items-center gap-6 mb-12 fade-up" style="animation-delay:0.3s">
+        <div class="md:w-1/2 md:text-right md:pr-10">
+          <div class="glass p-6 inline-block text-left max-w-md">
+            <span class="font-mono text-xs text-purple-400 mb-2 block">Phase 3 · Q1 2027</span>
+            <h4 class="font-orbitron text-lg font-bold text-white mb-2">Token & DAO</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              CONTRA token launch. Decentralized governance for protocol upgrades. 
+              Staking for premium AI reports and priority consulting access.
+            </p>
+            <ul class="mt-3 space-y-1 text-xs text-gray-500 font-mono">
+              <li>⏳ Token Generation Event</li>
+              <li>⏳ DAO Formation</li>
+              <li>⏳ Staking Mechanics</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-dot future hidden md:block"></div>
+        <div class="md:w-1/2 hidden md:block"></div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="flex flex-col md:flex-row items-center gap-6 mb-12 fade-up" style="animation-delay:0.4s">
+        <div class="md:w-1/2 hidden md:block"></div>
+        <div class="timeline-dot future hidden md:block"></div>
+        <div class="md:w-1/2 md:pl-10">
+          <div class="glass p-6 inline-block text-left max-w-md">
+            <span class="font-mono text-xs text-purple-400 mb-2 block">Phase 4 · Q2 2027</span>
+            <h4 class="font-orbitron text-lg font-bold text-white mb-2">Knowledge Protocol</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Open-source AI consulting datasets. Community-contributed models. 
+              ZK-provable audit trails on-chain. Permissionless expert marketplace.
+            </p>
+            <ul class="mt-3 space-y-1 text-xs text-gray-500 font-mono">
+              <li>⏳ Open Datasets</li>
+              <li>⏳ Expert Marketplace</li>
+              <li>⏳ ZK Audit Trails</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="flex flex-col md:flex-row items-center gap-6 fade-up" style="animation-delay:0.5s">
+        <div class="md:w-1/2 md:text-right md:pr-10">
+          <div class="glass p-6 inline-block text-left max-w-md">
+            <span class="font-mono text-xs text-purple-400 mb-2 block">Phase 5 · Q3 2027</span>
+            <h4 class="font-orbitron text-lg font-bold text-white mb-2">Autonomous Ecosystem</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Fully self-sustaining AI consulting DAO. Automated security bounties, 
+              AI-to-AI consulting, and real-time protocol insurance underwriting.
+            </p>
+            <ul class="mt-3 space-y-1 text-xs text-gray-500 font-mono">
+              <li>⏳ AI-to-AI Consulting</li>
+              <li>⏳ Insurance Protocol</li>
+              <li>⏳ 10K+ Projects Served</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-dot future hidden md:block"></div>
+        <div class="md:w-1/2 hidden md:block"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PARTNERS SECTION ==================== -->
+<section class="relative z-10 py-20 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="fade-up mb-16">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">Partners & Backers</span>
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        Building together with the leading protocols and institutions in Web3.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 fade-up" style="animation-delay:0.1s">
+      <div class="partner-box">
+        <span class="font-orbitron text-xl text-brand/40">■ CHAINLINK</span>
+      </div>
+      <div class="partner-box">
+        <span class="font-orbitron text-xl text-purple-400/40">⬡ POLYGON</span>
+      </div>
+      <div class="partner-box">
+        <span class="font-orbitron text-xl text-brand/40">◈ STARKWARE</span>
+      </div>
+      <div class="partner-box">
+        <span class="font-orbitron text-xl text-purple-400/40">◎ SOLANA</span>
+      </div>
+    </div>
+
+    <div class="mt-10 flex justify-center gap-4 text-sm text-gray-500 fade-up" style="animation-delay:0.2s">
+      <span class="px-3 py-2 glass">20+ Protocol Partners</span>
+      <span class="px-3 py-2 glass">5 Research Institutions</span>
+      <span class="px-3 py-2 glass">3 L1/L2 Ecosystems</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER / CTA ==================== -->
+<footer class="relative z-10 border-t border-white/5 bg-black/30">
+  <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <h2 class="font-orbitron text-3xl md:text-5xl font-black mb-6 hero-glow fade-up">
+      <span class="text-white">Join the </span><span class="gradient-text">Revolution</span>
+    </h2>
+    <p class="text-gray-400 text-lg max-w-xl mx-auto mb-10 fade-up" style="animation-delay:0.1s">
+      Whether you're building the next DeFi protocol or exploring AI integration — 
+      we're here to help you ship faster, safer, and smarter.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4 fade-up" style="animation-delay:0.2s">
+      <a href="contact.html" class="px-8 py-3 rounded-full font-semibold text-sm text-black bg-gradient-to-r from-brand to-purple-400 hover:shadow-lg hover:shadow-brand/20 transition-all">
+        Start a Project
+      </a>
+      <a href="services.html" class="px-8 py-3 rounded-full font-semibold text-sm text-brand border border-brand/30 hover:bg-brand/10 transition-all">
+        Explore Services
+      </a>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-xs text-gray-600 font-mono">
+      <p>&copy; 2026 CONTRA Consulting. All rights reserved.</p>
+      <div class="flex gap-6 mt-4 md:mt-0">
+        <a href="#" class="hover:text-brand transition">Twitter</a>
+        <a href="#" class="hover:text-brand transition">Discord</a>
+        <a href="#" class="hover:text-brand transition">GitHub</a>
+        <a href="#" class="hover:text-brand transition">Docs</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== STARFIELD SCRIPT ==================== -->
 <script>
-(function(){
-  const canvas = document.getElementById('starfield');
+(function() {
+  const canvas = document.getElementById('starCanvas');
   const ctx = canvas.getContext('2d');
-  let stars = [], w, h;
-  function resize(){ w=window.innerWidth; h=window.innerHeight; canvas.width=w; canvas.height=h; }
-  function initStars(){
+  let stars = [];
+  const STAR_COUNT = 180;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = document.documentElement.scrollHeight;
+  }
+
+  function createStars() {
     stars = [];
-    for(let i=0; i<200; i++){
+    for (let i = 0; i < STAR_COUNT; i++) {
       stars.push({
-        x: Math.random()*w, y: Math.random()*h,
-        r: Math.random()*1.5+0.5,
-        twinkle: Math.random()*Math.PI*2,
-        speed: Math.random()*0.02+0.005
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.6 + 0.3,
+        alpha: Math.random(),
+        alphaDelta: (Math.random() - 0.5) * 0.008,
+        hue: Math.random() < 0.15 ? 190 : (Math.random() < 0.08 ? 275 : 220),
       });
     }
   }
-  resize(); initStars();
-  window.addEventListener('resize', ()=>{ resize(); initStars(); });
-  function draw(){
-    ctx.clearRect(0,0,w,h);
-    stars.forEach(s=>{
-      s.twinkle += s.speed;
-      const alpha = 0.3 + Math.sin(s.twinkle)*0.3;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      s.alpha += s.alphaDelta;
+      if (s.alpha < 0.05 || s.alpha > 0.8) s.alphaDelta *= -1;
+      s.alpha = Math.max(0.03, Math.min(0.85, s.alpha));
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(0,229,255,${alpha})`;
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${s.hue}, 80%, 70%, ${s.alpha})`;
       ctx.fill();
-    });
+    }
     requestAnimationFrame(draw);
   }
+
+  function handleScroll() {
+    canvas.height = document.documentElement.scrollHeight;
+  }
+
+  resize();
+  createStars();
   draw();
 
-  const dot = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  let mx=0, my=0;
-  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
-  function animateCursor(){
-    dot.style.transform = `translate(${mx-3}px, ${my-3}px)`;
-    ring.style.transform = `translate(${mx-15}px, ${my-15}px)`;
-    requestAnimationFrame(animateCursor);
-  }
-  animateCursor();
-  document.querySelectorAll('a,button,.glow-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>ring.classList.add('hover'));
-    el.addEventListener('mouseleave',()=>ring.classList.remove('hover'));
+  window.addEventListener('resize', function() { resize(); createStars(); });
+  window.addEventListener('scroll', handleScroll);
+})();
+</script>
+
+<!-- ==================== INTERSECTION OBSERVER ==================== -->
+<script>
+(function() {
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    observer.observe(el);
   });
 })();
 </script>
-</body></html>
+
+</body>
+</html>
