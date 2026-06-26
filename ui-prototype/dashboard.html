@@ -296,7 +296,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(function(b){if(b.textContent.toLowerCase()===id)b.classList.add('active');});
   renderTab(id);
 }
-function showComingModal(name) {
+window.showComingModal = function(name) {
   var overlay = document.createElement("div");
   overlay.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center";
   overlay.onclick = function(){ document.body.removeChild(overlay); };
@@ -318,18 +318,31 @@ function renderTab(id) {
         '<a href="' + d.chainLink + '" class="btn-mint px-5 py-2 rounded-xl text-sm no-underline inline-block">Mint NFT</a>' +
       '</div>' +
       '<div class="grid grid-cols-1 gap-2 mb-4">' + perks + '</div>' +
-      '<div><div class="flex justify-between text-xs text-[#64748b] mb-1"><span>Total Supply</span><span>' + d.quota + '</span></div><div class="h-2 rounded-full bg-white/[0.06]"><div id="partnerProgressBar" class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:' + d.pct + '%"></div></div></div>' +
+      '<div class="grid gap-4 md:grid-cols-2 mb-4">' +
+        '<div><div class="flex justify-between text-xs text-[#64748b] mb-1"><span>Total Supply</span><span>' + d.quota + '</span></div><div class="h-2 rounded-full bg-white/[0.06]"><div id="partnerProgressBar" class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:' + d.pct + '%"></div></div></div>' +
+        '<div class="glass p-4 rounded-xl"><div class="text-xs text-gray-400 mb-2">Unclaimed CAI Rewards</div><div class="text-xl font-bold text-amber-400 mb-1" id="caiUnclaimed">-- CAI</div><div class="flex items-center justify-between"><span class="text-xs text-gray-500">Total Claimed: <span id="caiClaimedTotal">--</span></span><button onclick="window._claimCAI && window._claimCAI()" class="text-xs px-3 py-1.5 rounded-lg bg-amber-400/10 border border-amber-400/25 text-amber-400 font-bold cursor-pointer hover:bg-amber-400/20 transition">Claim</button></div></div>' +
+      '</div>' +
     '</div>';
   // Load live progress
-  fetch("http://43.159.39.85:3001/api/stats").then(function(r){return r.json()}).then(function(d){
+  fetch("/api/stats").then(function(r){return r.json()}).then(function(d){
     var pct = Math.round((d.totalMinted||0) / 500 * 100);
     var bar = document.getElementById("partnerProgressBar");
     if (bar) bar.style.width = pct + "%";
   }).catch(function(){});
+  // Also load CAI rewards
+  setTimeout(function(){
+    var balEl = document.getElementById("caiUnclaimed");
+    if (balEl) balEl.textContent = "0.00 CAI";
+    var clEl = document.getElementById("caiClaimedTotal");
+    if (clEl) clEl.textContent = "0.00 CAI";
+  }, 2000);
 }
 
 function mintIdentity(id) {
   window.location.href = "/mint";
+}
+window._claimCAI = function() {
+  window.showComingModal('Claim CAI Rewards');
 }
   `;
 }

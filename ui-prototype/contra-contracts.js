@@ -2,6 +2,7 @@
 (function() {
   'use strict';
   let account = null, signer = null;
+  window.__contra = { get account() { return account; }, get signer() { return signer; }, connectWallet: function() { return connectWallet(); } };
   const isDash = window.location.pathname.includes('dashboard');
 
   function shortAddr(a) { return a ? a.slice(0,6)+'...'+a.slice(-4) : ''; }
@@ -43,6 +44,8 @@
     updateAll();
     toast('Disconnected', 'info');
   }
+  window.connectWallet = connectWallet;
+  window.disconnectWallet = disconnect;
 
   function updateAll() {
     var connected = !!account;

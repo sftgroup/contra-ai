@@ -667,19 +667,21 @@ tailwind.config = {
       }
       // Enable approve button if wallet is connected
       var approveBtn = document.getElementById('approveBtn');
-      if (approveBtn && typeof account !== 'undefined' && account) {
+      if (approveBtn && window.__contra && window.__contra.account) {
         approveBtn.disabled = false;
       }
     }
 
     // Enable approve button when wallet connects
     var checkWallet = setInterval(function(){
-      if (typeof account !== 'undefined' && account && selectedChain) {
+      var connected = window.__contra && window.__contra.account;
+      if (connected && selectedChain) {
         var approveBtn = document.getElementById('approveBtn');
         if (approveBtn) approveBtn.disabled = false;
+        if (document.getElementById('mintBtn')) document.getElementById('mintBtn').disabled = false;
         clearInterval(checkWallet);
       }
-    }, 500);
+    }, 300);
 
     // Load live data from relay API
     fetch('http://43.159.39.85:3001/api/stats').then(function(r){return r.json()}).then(function(d){
