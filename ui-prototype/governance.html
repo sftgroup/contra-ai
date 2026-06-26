@@ -22,7 +22,6 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;min-height:100vh}
 .glass-input::placeholder{color:rgba(255,255,255,0.2)}
 .btn-gradient{background:linear-gradient(135deg,#00e5ff,#a855f7);border:none;border-radius:12px;padding:12px 28px;color:#0a0a0f;font-family:'Orbitron',monospace;font-weight:600;cursor:pointer;transition:all 0.3s ease;letter-spacing:0.5px}
 .btn-gradient:hover{box-shadow:0 0 30px rgba(0,229,255,0.3),0 0 60px rgba(168,85,247,0.15);transform:translateY(-1px)}
-.btn-gradient:disabled{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.3);cursor:not-allowed;box-shadow:none;transform:none}
 .gradient-text{background:linear-gradient(135deg,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center}
 .modal-overlay.active{display:flex}
@@ -36,9 +35,21 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;min-height:100vh}
 .badge-active{background:rgba(0,229,255,0.12);color:#00e5ff;border:1px solid rgba(0,229,255,0.3)}
 *:focus-visible{outline:2px solid #00e5ff;outline-offset:2px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}#starfield{display:none}}
+
+.gov-blur-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.gov-blur-overlay .gov-title{font-family:Orbitron,monospace;font-size:2rem;font-weight:700;color:#00e5ff;text-shadow:0 0 30px rgba(0,229,255,.3);letter-spacing:.15em}
+.gov-blur-overlay .gov-sub{color:#94a3b8;font-family:monospace;margin-top:12px;font-size:.95rem}
+.gov-blur-overlay .gov-icon{font-size:3rem;margin-bottom:16px}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
-<body>
+<body
+<div class="gov-blur-overlay">
+  <div class="gov-icon">🔒</div>
+  <div class="gov-title">DAO GOVERNANCE</div>
+  <div class="gov-sub">即将上线 · Coming Soon</div>
+</div>
+>
 <canvas id="starfield"></canvas>
 <section class="relative z-10 min-h-[50vh] flex items-center justify-center px-6 pt-20">
   <div class="text-center max-w-4xl mx-auto">
@@ -422,5 +433,8 @@ function submitProposal(e){
 document.getElementById('voteModalOverlay').addEventListener('click',function(e){if(e.target===this)closeVoteModal()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVoteModal()});
 </script>
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+  <script src="/contra-data.js"></script>
 </body>
 </html>

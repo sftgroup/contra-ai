@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contra Ai — Code is Law</title>
+<!-- Tailwind from multiple CDN fallbacks -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'deep': { DEFAULT: '#0a0a0f', lighter: '#111118' },
+        'brand': { DEFAULT: '#00e5ff', dim: '#0097a7', glow: '#00e5ff66' },
+        'gold': '#ffd700',
+        'silver': '#c0c0c0',
+        'bronze': '#cd7f32',
+      },
+      fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'monospace'],
+      },
+      backgroundImage: {
+        'mesh-grid': 'linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px)',
+      },
+      animation: {
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+        'orbit': 'orbit 20s linear infinite',
+        'twinkle': 'twinkle 2s ease-in-out infinite alternate',
+      },
+      keyframes: {
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.05)' },
+          '50%': { boxShadow: '0 0 40px rgba(0,229,255,0.4), 0 0 100px rgba(0,229,255,0.15)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        orbit: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        twinkle: {
+          '0%': { opacity: '0.3' },
+          '100%': { opacity: '1' },
+        },
+      },
+      backgroundSize: { 'mesh': '60px 60px' },
+    }
+  }
+}
+</script>
+<style>
+
+.coming-soon-overlay {
+  position: relative;
+}
+.coming-soon-overlay::after {
+  content: "Coming Soon";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+  z-index: 10;
+  color: #00e5ff;
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --brand: #00e5ff;
+    --brand-glow: rgba(0, 229, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e0e0e0;
+    overflow-x: hidden;
+    cursor: auto;
+  }
+
+    width: 30px; height: 30px; border: 1.5px solid rgba(0,229,255,0.5); border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1); transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* Starfield Canvas */
+  #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+  /* Glow Effects */
+  .glow-text {
+    text-shadow: 0 0 40px rgba(0,229,255,0.5), 0 0 80px rgba(0,229,255,0.2), 0 0 120px rgba(0,229,255,0.1);
+  }
+  .glow-border {
+    box-shadow: 0 0 20px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.05);
+  }
+  .glow-card {
+    background: rgba(17, 17, 24, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 229, 255, 0.12);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glow-card:hover {
+    border-color: rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.12), 0 8px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-4px);
+  }
+
+  /* Glass Panel */
+  .glass {
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Mesh Grid Background */
+  .mesh-bg {
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Section Divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+  }
+
+  /* Navigation */
+  .nav-blur {
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+  }
+  .nav-link {
+    position: relative;
+    color: #a0a0b0;
+    transition: color 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  .nav-link:hover { color: var(--brand); }
+  .nav-link::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+    background: var(--brand);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.4); }
+
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #00e5ff 0%, #0097a7 50%, #00e5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Pulse Ring */
+  .pulse-ring {
+    position: absolute;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 50%;
+    animation: pulseRing 3s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+
+<style>
+  .invite-card {
+    background: rgba(17, 17, 24, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    border-radius: 24px;
+    padding: 48px 32px;
+    max-width: 560px;
+    width: 100%;
+  }
+</style>
+</head>
+<body class="bg-[#0a0a0f] min-h-screen flex items-center justify-center">
+  <canvas id="starfield" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none"></canvas>
+
+  <div class="relative z-10 w-full max-w-lg px-6 py-12">
+    <div class="invite-card text-center mx-auto">
+      <div class="text-5xl mb-6">🚀</div>
+      <h1 class="font-display text-3xl md:text-4xl font-bold text-white mb-4 tracking-wide">
+        You've Been <span class="gradient-text">Invited</span>
+      </h1>
+      <p class="text-gray-400 text-sm mb-8">
+        Someone invited you to become a Founding Shareholder of Contra Ai — the world's first on-chain AI consulting protocol.
+      </p>
+
+      <div class="glass rounded-xl p-4 mb-6 text-left">
+        <div class="text-xs text-gray-500 font-mono mb-1">Invited by</div>
+        <div class="font-mono text-brand text-sm break-all" id="refAddress">—</div>
+      </div>
+
+      <div class="space-y-3 mb-6">
+        <div class="flex items-center gap-3 text-sm text-gray-400">
+          <span class="text-brand">✓</span> Mint your Founding Shareholder NFT for 10,000 USDC
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-400">
+          <span class="text-brand">✓</span> Permanent on-chain identity across 4 blockchains
+        </div>
+        <div class="flex items-center gap-3 text-sm text-gray-400">
+          <span class="text-brand">✓</span> Early access to protocol features and rewards
+        </div>
+      </div>
+
+      <a href="/mint" id="ctaLink" class="block w-full btn-mint px-8 py-3 rounded-xl text-sm font-bold text-center mb-4">
+        Accept Invitation & Mint Your NFT
+      </a>
+
+      <p class="text-xs text-gray-600">
+        By minting, you agree to the <a href="/whitepaper" class="text-brand/50 hover:text-brand">protocol terms</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Starfield -->
+  <script>
+    (function(){
+      var c = document.getElementById('starfield'), ctx = c.getContext('2d');
+      var stars = [], w, h;
+      function resize() { w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+      resize(); window.addEventListener('resize', resize);
+      for (var i = 0; i < 120; i++) stars.push({x:Math.random()*w, y:Math.random()*h, r:Math.random()*1.5+.3, a:Math.random(), s:Math.random()*.01+.005});
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i]; s.a += s.s; var alpha = Math.sin(s.a)*.5+.5;
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(0,229,255,'+alpha*.4+')'; ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+      // Parse ?ref= parameter
+      var params = new URLSearchParams(window.location.search);
+      var ref = params.get('ref');
+      var addrEl = document.getElementById('refAddress');
+      var cta = document.getElementById('ctaLink');
+      if (ref) {
+        if (addrEl) addrEl.textContent = ref;
+        if (cta) cta.href = '/mint?ref=' + encodeURIComponent(ref);
+      } else {
+        if (addrEl) addrEl.textContent = 'Direct access';
+      }
+    })();
+  </script>
+
+  <!-- Nav: scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+</body>
+</html>

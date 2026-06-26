@@ -14,10 +14,6 @@ tailwind.config={theme:{extend:{colors:{'deep':{DEFAULT:'#0a0a0f',lighter:'#1111
 :root{--brand:#00e5ff;--brand-glow:rgba(0,229,255,0.3)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden}
-.cursor{pointer-events:none;position:fixed;top:0;left:0;z-index:9999;mix-blend-mode:screen;transition:transform 0.15s ease-out}
-.cursor-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;box-shadow:0 0 12px var(--brand-glow),0 0 24px var(--brand-glow)}
-.cursor-ring{width:30px;height:30px;border:1.5px solid rgba(0,229,255,0.5);border-radius:50%;transform:translate(-50%,-50%) scale(1);transition:transform 0.2s ease,border-color 0.2s ease}
-.cursor-ring.hover{transform:translate(-50%,-50%) scale(1.8);border-color:rgba(0,229,255,0.9);background:rgba(0,229,255,0.05)}
 #starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .glow-text{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2),0 0 120px rgba(0,229,255,0.1)}
 .glow-card{background:rgba(17,17,24,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,229,255,0.12);border-radius:16px;transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
@@ -49,12 +45,11 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden}
 *:focus-visible{outline:2px solid #00e5ff;outline-offset:2px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){.cursor{display:none}#starfield{display:none}.animate-fade-in-up{animation:none;opacity:1}.animate-float{animation:none}.glow-card{transition:none}}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
 <body>
 <a href="#s1" class="skip-link">Skip to content</a>
 <div class="hamburger" id="hamburger" onclick="document.getElementById('mobile-nav').classList.toggle('open');this.classList.toggle('open')"><span></span><span></span><span></span></div>
-<div class="cursor cursor-dot" id="cursor-dot" style="transform:translate(-50%,-50%)"></div>
-<div class="cursor cursor-ring" id="cursor-ring" style="transform:translate(-50%,-50%)"></div>
 <canvas id="starfield"></canvas>
 <div class="mobile-sidebar glass border-r border-white/5" id="mobile-nav">
   <h3 class="text-brand font-display text-sm mb-6">Contents</h3>
@@ -229,7 +224,6 @@ body{background:#0a0a0f;color:#e0e0e0;overflow-x:hidden}
   window.addEventListener('resize',()=>{resize();init()});
   if(window.matchMedia("(prefers-reduced-motion:reduce)").matches){canvas.style.display="none";return}function draw(){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.twinkle+=s.speed;const a=0.3+Math.sin(s.twinkle)*0.3;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,255,'+a.toFixed(2)+')';ctx.fill()});requestAnimationFrame(draw)}
   draw();
-  const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
   let mx=0,my=0;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
   function anim(){dot.style.transform='translate('+(mx-3)+'px,'+(my-3)+'px)';ring.style.transform='translate('+(mx-15)+'px,'+(my-15)+'px)';requestAnimationFrame(anim)}
@@ -243,4 +237,7 @@ document.querySelectorAll('a,button,.glow-card,.hvr').forEach(el=>{el.addEventLi
 })();
 </script>
 
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+  <script src="/contra-data.js"></script>
 </body></html>

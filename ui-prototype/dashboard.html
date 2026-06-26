@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTRA Dashboard v6</title>
+<title>Contra Ai Dashboard v6</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-gradient(135deg,#0a0a0f,#0d1117,#0a0a0f);color:#e2e8f0}
+body{font-family:"Inter",sans-serif;min-height:100vh;background:linear-gradient(135deg,#0a0a0f,#0d1117,#0a0a0f);color:#e2e8f0}
 .jet{font-family:'JetBrains Mono',monospace}
 .glass{background:rgba(255,255,255,.03);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:16px}
 .btn-mint{background:linear-gradient(135deg,#00e5ff,#7c3aed);color:#0a0a0f;font-weight:600;border:none;cursor:pointer;transition:.3s}
@@ -22,7 +22,8 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 .bg-gold{background:#f59e0b}
 .bg-purple{background:#7c3aed}
 .tab-btn{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:6px 18px;font-size:13px;cursor:pointer;transition:.3s;color:rgba(148,163,184,.5)}
-.tab-btn.active,.tab-btn:hover{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,.15);box-shadow:0 0 12px rgba(0,229,255,.2)}
+.coming-soon-overlay::after{content:attr(data-title);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);backdrop-filter:blur(4px);border-radius:inherit;z-index:10;color:#00e5ff;font-family:Orbitron,monospace;font-size:1.2rem;font-weight:bold;letter-spacing:.15em;pointer-events:none}
+  .tab-btn.active,.tab-btn:hover{border-color:#00e5ff;color:#00e5ff;background:rgba(0,229,255,.15);box-shadow:0 0 12px rgba(0,229,255,.2)}
 .proposal-vote,.proposal-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
 .proposal-card{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;cursor:default}
 .proposal-card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.25);box-shadow:0 8px 25px rgba(0,0,0,.3),0 0 15px rgba(0,229,255,.08)}
@@ -31,6 +32,7 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 .glow{filter:url(#glow)}
 @media (max-width:768px){.glass{padding:12px}.grid-cols-4{grid-template-columns:repeat(2,1fr)}.grid-cols-2{grid-template-columns:1fr}#tabButtons{gap:6px}.tab-btn{font-size:12px;padding:5px 12px;white-space:nowrap;overflow-x:auto}.relative[style*="160px"]{transform:scale(.8);transform-origin:center center}.grid-cols-2.gap-6{gap:8px}table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.max-w-7xl>div>h2{font-size:1rem}.flex.items-center.justify-between.px-6.py-4{flex-wrap:wrap;gap:8px}.flex.items-center.gap-4.text-sm{flex-wrap:wrap;gap:4px}}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
 <body>
 
@@ -44,20 +46,13 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 <div class="flex items-center justify-between px-6 py-4 border-b border-white/[.06] max-w-7xl mx-auto">
   <div class="flex items-center gap-3">
     <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#00e5ff] to-[#7c3aed] flex items-center justify-center text-[10px] font-bold text-black">C</span>
-    <span class="font-bold text-lg">CONTRA<span class="brand"> Dashboard</span></span>
+    <span class="font-bold text-lg">Contra Ai<span class="brand"> Dashboard</span></span>
   </div>
   <div class="flex items-center gap-4 text-sm">
     <div class="glass px-3 py-1.5 flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_#00ff88]"></span>
       <span class="jet text-[#94a3b8]">0x1234...5678</span>
     </div>
-    <div class="glass px-3 py-1.5 flex items-center gap-1.5">
-      <span class="text-[#00ff88] text-xs">●</span>
-      <span class="font-semibold gold">125K <span class="text-[#94a3b8] font-normal">CONTRA</span></span>
-    </div>
-    <select class="glass px-3 py-1.5 text-sm text-[#94a3b8] bg-transparent cursor-pointer outline-none">
-      <option>Mainnet</option><option>Testnet</option><option>Devnet</option>
-    </select>
   </div>
 </div>
 
@@ -66,40 +61,38 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 
   <!-- Stats -->
   <div class="grid grid-cols-4 gap-4 fade-in">
-    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">TVL</div><div class="text-2xl font-bold">$<span class="brand">2.8</span>M</div><div class="text-xs text-green-400 mt-1">+12.4%</div></div>
-    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Staked</div><div class="text-2xl font-bold"><span class="gold">100K</span> Gold</div><div class="text-xs text-green-400 mt-1">+8.2%</div></div>
-    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">NFT #0421</div><div class="text-2xl font-bold"><span class="gold">Gold</span></div><div class="text-xs text-[#00e5ff] mt-1">Tier 3 · Active</div></div>
-    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Earned</div><div class="text-2xl font-bold"><span class="green">12.4</span>K</div><div class="text-xs text-green-400 mt-1">+2.1%</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">My NFTs</div><div class="text-2xl font-bold"><span id="myNftCount" class="brand">--</span></div><div class="text-xs text-[#00e5ff] mt-1">Founding Shareholder</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">My Invites</div><div class="text-2xl font-bold"><span id="myInviteCount" class="brand">--</span></div><div class="text-xs text-[#00e5ff] mt-1">Referrals</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Total Minted</div><div class="text-2xl font-bold"><span id="totalMinted" class="brand">--</span></div><div class="text-xs text-[#00e5ff] mt-1">/ 500</div></div>
+    <div class="glass p-4"><div class="text-xs text-[#64748b] mb-1">Progress</div><div class="text-2xl font-bold"><span id="mintProgress" class="brand">0</span>%</div><div class="text-xs text-[#00e5ff] mt-1">Total Quota</div></div>
   </div>
 
-  <!-- Revenue Ring -->
-  <div class="glass p-5 fade-in">
-    <div class="grid grid-cols-2 gap-6">
-      <div class="flex items-center justify-center">
-        <div class="relative" style="width:160px;height:160px">
-          <svg viewBox="0 0 160 160" width="160" height="160">
-            <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="12"/>
-            <circle cx="80" cy="80" r="68" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-dasharray="427.2" stroke-dashoffset="64.08" stroke-linecap="round" transform="rotate(-90 80 80)" filter="url(#glow)"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-2xl font-bold brand">85.1%</span>
-            <span class="text-xs text-[#64748b]">APR <span class="gold">12.8%</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Total Earned</div><div class="text-lg font-bold"><span class="green">12.45</span>K</div></div>
-        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Pending</div><div class="text-lg font-bold"><span class="gold">2.18</span>K</div></div>
-        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Monthly</div><div class="text-lg font-bold"><span class="brand">3.24</span>K</div></div>
-        <div class="proposal-vote"><div class="text-xs text-[#64748b]">Reward Pool</div><div class="text-lg font-bold"><span class="purple">20</span>%</div></div>
-      </div>
+  <div class="glass p-5 fade-in coming-soon-overlay" id="revenueSection"> data-title="Revenue Sharing · Coming Soon" style="position:relative;min-height:180px"></div>
+
+  
+  <!-- Referral Link -->
+  <div class="glass p-5 fade-in" id="referralSection">
+    <h2 class="text-lg font-bold mb-3">Your Referral Link</h2>
+    <div class="flex items-center gap-3">
+      <input id="refLink" type="text" readonly class="flex-1 bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-[#e2e8f0] jet" value="https://contra.ai?ref=0x0000...0000">
+      <button onclick="copyRefLink()" class="btn-mint px-4 py-2.5 rounded-xl text-sm whitespace-nowrap">Copy</button>
+    </div>
+    <div class="text-xs text-[#64748b] mt-2">Share this link to earn referral rewards</div>
+  </div>
+
+
+  <!-- NFT Assets -->
+  <div class="glass p-5 fade-in" id="nftAssetsSection">
+    <h2 class="text-lg font-bold mb-4">Your NFT Assets</h2>
+    <div id="nftAssetList" class="space-y-2">
+      <div class="text-sm text-gray-500 text-center py-8">Connect wallet to view your NFTs</div>
     </div>
   </div>
 
   <!-- NFT Tabs -->
   <div class="glass p-5 fade-in">
     <div class="flex gap-2 mb-5" id="tabButtons">
-      <button class="tab-btn" onclick="switchTab('partner')">Partner</button>
+      <button class="tab-btn active" onclick="switchTab('shareholder')">Shareholder</button>
       <button class="tab-btn" onclick="switchTab('user')">User</button>
       <button class="tab-btn" onclick="switchTab('expert')">Expert</button>
       <button class="tab-btn" onclick="switchTab('kol')">KOL</button>
@@ -108,9 +101,10 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
   </div>
 
   <!-- Governance -->
-  <div class="fade-in" id="governanceSection">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-lg font-bold">Governance Proposals</h2>
+  <div class="fade-in" id="governanceSection" style="position:relative">
+    <div class="absolute inset-0 bg-black/25 backdrop-blur-[4px] rounded-2xl z-[5] pointer-events-none"></div>
+    <div class="flex items-center justify-between mb-3 relative z-10">
+      <h2 class="text-lg font-bold">DAO Governance <span class="text-xs text-gray-500 font-normal ml-2">· Coming Soon</span></h2>
       <button id="submitProposalBtn" onclick="toggleProposalForm()" class="btn-mint text-xs px-4 py-2 rounded-xl flex items-center gap-1.5">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Submit Proposal
@@ -177,7 +171,7 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 </div>
 
 <!-- Vote Modal -->
-<div id="voteModal" class="fixed inset-0 z-50 hidden" style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
+<div id="voteModal" class="fixed inset-0 z-50 hidden" style="background:rgba(0,0,0,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
   <div class="flex items-center justify-center min-h-screen px-4">
     <div class="glass p-6 w-full max-w-md fade-in">
       <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-lg" id="voteTitle">Vote</h3><button onclick="closeVote()" class="text-[#64748b] hover:text-white text-xl leading-none">&times;</button></div>
@@ -194,62 +188,149 @@ body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:linear-g
 </div>
 
 <script>
-const identities = {
-  partner: {name:'Partner',stake:'50K CONTRA',perks:['Revenue share 12%','Priority governance','Early access'],quota:'5 / 10 minted',pct:50},
-  user: {name:'User',stake:'10K CONTRA',perks:['Voting rights','Claim rewards','Community chat'],quota:'128 / 500 minted',pct:25},
-  expert: {name:'Expert',stake:'100K CONTRA',perks:['Advisor weight x3','DAO committee seat','Fee discount 20%'],quota:'3 / 20 minted',pct:15},
-  kol: {name:'KOL',stake:'25K CONTRA',perks:['Campaign bonuses','Referral rewards','Verified badge'],quota:'18 / 100 minted',pct:18}
+
+function renderNFTs(nfts) {
+  var container = document.getElementById("nftAssetList");
+  if (!container) return;
+  if (!nfts || nfts.length === 0) {
+    container.innerHTML = '<div class="text-sm text-gray-500 text-center py-8">No NFTs found. <a href="/mint" class="text-brand hover:underline">Mint one now</a></div>';
+    return;
+  }
+  var chains = {base:"#3b82f6", bsc:"#f59e0b", eth:"#8b5cf6", solana:"#06b6d4"};
+  container.innerHTML = nfts.map(function(n){
+    var c = chains[n.chain] || "#00e5ff";
+    return '<div class="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-colors">' +
+      '<div class="flex items-center gap-3">' +
+        '<div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:'+c+'22;color:'+c+'">' + (n.chain||"").charAt(0).toUpperCase() + '</div>' +
+        '<div><div class="text-sm font-bold text-white">NFT #' + n.tokenId + '</div><div class="text-xs text-gray-500">' + (n.chain||"").toUpperCase() + '</div></div>' +
+      '</div>' +
+      '<a href="' + (n.blockExplorerLink||"#") + '" target="_blank" class="text-xs text-brand/50 hover:text-brand">View →</a>' +
+    '</div>';
+  }).join("");
+}
+
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  var tm = document.getElementById("toastMsg");
+  if (t && tm) { tm.textContent = msg; t.classList.remove("hidden"); setTimeout(function(){t.classList.add("hidden")}, 3000); }
+}
+function copyRefLink() {
+  var inp = document.getElementById("refLink");
+  if (!inp) return;
+  inp.select(); document.execCommand("copy");
+  showToast("Link copied!");
+}
+(function(){
+  var addr = (window.contraSDK && contraSDK.address) ? contraSDK.address : null;
+  if (addr) {
+    var rl = document.getElementById("refLink");
+    if (rl) rl.value = "https://contra.ai?ref=" + addr;
+  }
+  fetch("http://43.159.39.85:3001/api/stats").then(function(r){return r.json()}).then(function(d){
+    var tm = document.getElementById("totalMinted");
+    if (tm) tm.textContent = d.totalMinted || 0;
+    var mp = document.getElementById("mintProgress");
+    if (mp) mp.textContent = Math.round((d.totalMinted||0)/500*100);
+  }).catch(function(){});
+  if (addr) {
+    fetch("http://43.159.39.85:3001/api/account/"+addr+"/nfts").then(function(r){return r.json()}).then(function(d){
+      var el = document.getElementById("myNftCount");
+      if (el) el.textContent = Array.isArray(d.nfts) ? d.nfts.length : "0";
+      renderNFTs(d.nfts || []);
+    }).catch(function(){});
+    fetch("http://43.159.39.85:3001/api/account/"+addr+"/invites").then(function(r){return r.json()}).then(function(d){
+      var el = document.getElementById("myInviteCount");
+      if (el) el.textContent = d.count || 0;
+    }).catch(function(){});
+  }
+})();
+
+var identities = {
+  shareholder: {
+    name: "Founding Shareholder NFT",
+    price: "10,000 USDC",
+    chain: "Base",
+    chainLink: "/mint",
+    perks: [
+      "Permanent on-chain shareholder identity",
+      "Early access to new features and agent pools",
+      "Referral reward eligibility",
+      "Protocol governance voting (Phase 2)",
+      "Fee sharing dividends (Phase 2)"
+    ],
+    quota: "500 total supply across 4 chains",
+    pct: 0
+  }
 };
 
-const activityData = [
-  ['2026-06-24 03:12','Stake','2,500 CONTRA','0x8a3f...b2c1','Confirmed'],
-  ['2026-06-24 01:45','Vote','500 CONTRA','0xf4e2...9a07','Confirmed'],
-  ['2026-06-23 22:30','Claim','1,200 CONTRA','0x1b9c...4d8f','Confirmed'],
-  ['2026-06-23 19:14','Mint','10,000 CONTRA','0x6d2a...e3b5','Pending'],
-  ['2026-06-23 15:00','Stake','8,000 CONTRA','0xc7f1...2a6e','Confirmed'],
-  ['2026-06-23 11:48','Vote','250 CONTRA','0x3e8b...7c0d','Confirmed'],
-  ['2026-06-23 08:22','Claim','3,400 CONTRA','0x9a5c...1f4b','Pending'],
-  ['2026-06-23 04:09','Mint','5,000 CONTRA','0x2d7e...8f3a','Confirmed']
-];
+const activityData = [];
+
+
+function renderActivity(){
+  var tbody = document.getElementById("activityTable");
+  if (!tbody) return;
+  if (!activityData.length) {
+    tbody.innerHTML = "<tr><td colspan="+5+" class=\"text-center text-gray-500 text-sm py-8\">No activity yet. Mint your first NFT!</td></tr>";
+    return;
+  }
+  tbody.innerHTML = activityData.map(function(r){
+    return "<tr class=\"hover:bg-white/[0.02] transition-colors\">" +
+      "<td class=\"py-3 text-xs text-gray-500 font-mono\">"+r[0]+"</td>" +
+      "<td class=\"py-3 text-xs\"><span class=\"text-brand font-medium\">"+r[1]+"</span></td>" +
+      "<td class=\"py-3 text-xs text-right font-mono\">"+r[2]+"</td>" +
+      "<td class=\"py-3 text-xs text-gray-500 font-mono pl-4\">"+r[3]+"</td>" +
+      "<td class=\"py-3 text-xs text-right\"><span class=\"text-green-400\">"+r[4]+"</span></td></tr>";
+  }).join("");
+}
+renderActivity();
 
 let selectedVote = null;
 let voteIndex = -1;
 
 function switchTab(id) {
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>{if(b.textContent.toLowerCase()===id)b.classList.add('active')});
+  if (id !== "shareholder") {
+    showComingModal(id);
+    return;
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){if(b.textContent.toLowerCase()===id)b.classList.add('active');});
   renderTab(id);
+}
+function showComingModal(name) {
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center";
+  overlay.onclick = function(){ document.body.removeChild(overlay); };
+  var card = document.createElement("div");
+  card.style.cssText = "background:rgba(17,17,24,.95);border:1px solid rgba(0,229,255,.15);border-radius:24px;padding:40px 32px;text-align:center;max-width:360px;width:90%;box-shadow:0 0 60px rgba(0,229,255,.1)";
+  card.innerHTML = '<div style="font-size:48px;margin-bottom:16px">✨</div><h3 style="font-family:Orbitron,monospace;font-size:20px;font-weight:700;color:#00e5ff;margin-bottom:8px;letter-spacing:.1em">' + name.toUpperCase() + '</h3><p style="color:#94a3b8;font-size:14px;margin-bottom:24px">Coming Soon</p><button style="padding:8px 28px;border-radius:99px;border:1px solid rgba(0,229,255,.25);background:rgba(0,229,255,.06);color:#00e5ff;font-family:JetBrains Mono,monospace;font-size:13px;cursor:pointer">Close</button>';
+  card.querySelector("button").onclick = function(e){ e.stopPropagation(); document.body.removeChild(overlay); };
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
 }
 
 function renderTab(id) {
-  const d = identities[id];
-  const perks = d.perks.map(p=>`<span class="text-xs text-[#94a3b8]">✦ ${p}</span>`).join('');
-  document.getElementById('tabContent').innerHTML = `
-    <div class="fade-in">
-      <div class="glass p-4 mb-4 flex items-center justify-between">
-        <div><div class="text-sm text-[#64748b]">Stake Required</div><div class="text-lg font-bold gold">${d.stake}</div></div>
-        <button class="btn-mint px-5 py-2 rounded-xl text-sm" onclick="mintIdentity('${id}')">Mint ${d.name}</button>
-      </div>
-      <div class="grid grid-cols-3 gap-3 mb-4">${perks}</div>
-      <div><div class="flex justify-between text-xs text-[#64748b] mb-1"><span>Minting Quota</span><span>${d.quota}</span></div><div class="h-2 rounded-full bg-white/[.06]"><div class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:${d.pct}%"></div></div></div>
-    </div>
-  `;
+  var d = identities[id];
+  var perks = d.perks.map(function(p){ return '<span class="text-xs text-[#94a3b8]">✦ ' + p + '</span>'; }).join('');
+  document.getElementById("tabContent").innerHTML = 
+    '<div class="fade-in">' +
+      '<div class="glass p-4 mb-4 flex items-center justify-between">' +
+        '<div><div class="text-sm text-[#64748b]">Mint Price</div><div class="text-lg font-bold text-white">' + d.price + '</div></div>' +
+        '<a href="' + d.chainLink + '" class="btn-mint px-5 py-2 rounded-xl text-sm no-underline inline-block">Mint NFT</a>' +
+      '</div>' +
+      '<div class="grid grid-cols-1 gap-2 mb-4">' + perks + '</div>' +
+      '<div><div class="flex justify-between text-xs text-[#64748b] mb-1"><span>Total Supply</span><span>' + d.quota + '</span></div><div class="h-2 rounded-full bg-white/[0.06]"><div id="partnerProgressBar" class="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#7c3aed]" style="width:' + d.pct + '%"></div></div></div>' +
+    '</div>';
+  // Load live progress
+  fetch("http://43.159.39.85:3001/api/stats").then(function(r){return r.json()}).then(function(d){
+    var pct = Math.round((d.totalMinted||0) / 500 * 100);
+    var bar = document.getElementById("partnerProgressBar");
+    if (bar) bar.style.width = pct + "%";
+  }).catch(function(){});
 }
 
 function mintIdentity(id) {
-  const d = identities[id];
-  document.getElementById('tabContent').innerHTML = `
-    <div class="fade-in">
-      <div class="glass p-6 text-center">
-        <div class="text-4xl mb-3">🏆</div>
-        <div class="text-xl font-bold brand mb-1">${d.name} Identity Minted</div>
-        <p class="text-sm text-[#94a3b8] mb-4">Staked ${d.stake} · NFT #${Math.floor(Math.random()*9999)}</p>
-        <div class="flex justify-center gap-4 text-xs">
-          <span class="glass px-3 py-1.5">Weight <span class="gold">x${id==='expert'?3:id==='kol'?2:1}</span></span>
-          <span class="glass px-3 py-1.5">Rewards <span class="green">+${id==='partner'?12:id==='expert'?15:8}%</span></span>
-        </div>
-      </div>
-    </div>
+  window.location.href = "/mint";
+}
   `;
 }
 
@@ -320,5 +401,8 @@ function initActivity() {
 initActivity();
 switchTab('partner');
 </script>
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+  <script src="/contra-data.js"></script>
 </body>
 </html>

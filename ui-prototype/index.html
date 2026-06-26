@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTRA — Code is Law</title>
+<title>Contra Ai — Code is Law</title>
 <!-- Tailwind from multiple CDN fallbacks -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
@@ -61,6 +61,30 @@ tailwind.config = {
 }
 </script>
 <style>
+
+.coming-soon-overlay {
+  position: relative;
+}
+.coming-soon-overlay::after {
+  content: "Coming Soon";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+  z-index: 10;
+  color: #00e5ff;
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  pointer-events: none;
+}
+
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
   :root {
@@ -74,17 +98,12 @@ tailwind.config = {
     background: #0a0a0f;
     color: #e0e0e0;
     overflow-x: hidden;
-    cursor: none;
+    cursor: auto;
   }
 
-  /* Custom Cursor */
-  .cursor { pointer-events: none; position: fixed; top: 0; left: 0; z-index: 9999; mix-blend-mode: screen; transition: transform 0.15s ease-out; }
-  .cursor-dot { width: 6px; height: 6px; background: var(--brand); border-radius: 50%; box-shadow: 0 0 12px var(--brand-glow), 0 0 24px var(--brand-glow); }
-  .cursor-ring {
     width: 30px; height: 30px; border: 1.5px solid rgba(0,229,255,0.5); border-radius: 50%;
     transform: translate(-50%, -50%) scale(1); transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .cursor-ring.hover { transform: translate(-50%, -50%) scale(1.8); border-color: rgba(0,229,255,0.9); background: rgba(0,229,255,0.05); }
 
   /* Starfield Canvas */
   #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -141,8 +160,8 @@ tailwind.config = {
     color: #a0a0b0;
     transition: color 0.3s ease;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
   }
   .nav-link:hover { color: var(--brand); }
   .nav-link::after {
@@ -179,38 +198,61 @@ tailwind.config = {
     100% { transform: scale(1.5); opacity: 0; }
   }
 
-  .no-cursor a, .no-cursor button, .no-cursor [role="button"] { cursor: none; }
-  .no-cursor input, .no-cursor textarea, .no-cursor select { cursor: none; }
+
+  @media (max-width: 768px) {
+    nav > div {
+      flex-wrap: wrap;
+    }
+    nav > div > div {
+      flex-direction: column !important;
+      max-height: 0;
+      width: 100%;
+    }
+    #mobileMenuBtn {
+      display: inline-flex !important;
+    }
+    .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+      grid-template-columns: 1fr !important;
+    }
+    .md\:grid-cols-4, .md\:grid-cols-5 {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .text-5xl { font-size: 2rem !important; }
+    .text-4xl { font-size: 1.75rem !important; }
+    .text-3xl { font-size: 1.5rem !important; }
+    .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .max-w-7xl { max-width: 100% !important; }
+    h1 { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    h2 { font-size: 1.5rem !important; }
+  }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
 <body class="font-sans antialiased">
 
-<!-- Custom Cursor -->
-<div class="cursor cursor-dot" id="cursor-dot" style="transform: translate(-50%, -50%);"></div>
-<div class="cursor cursor-ring" id="cursor-ring" style="transform: translate(-50%, -50%);"></div>
 
 <!-- Starfield Particles Canvas -->
 <canvas id="starfield"></canvas>
 
 <!-- Navigation -->
 <nav class="nav-blur fixed top-0 left-0 w-full z-50">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
-        <span class="font-display text-white font-bold text-sm">C</span>
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
+        <span class="font-display text-white font-bold text-base">C</span>
       </div>
-      <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+      <span class="font-display font-bold text-xl tracking-wider text-white">Contra Ai</span>
     </div>
     <div class="hidden md:flex items-center gap-8">
       <a href="#hero" class="nav-link">Home</a>
       <a href="#logic" class="nav-link">Logic</a>
       <a href="#nft" class="nav-link">NFT</a>
-      <a href="#stakeholders" class="nav-link">Stakeholders</a>
-      <a href="#agent-marketplace" class="nav-link">Marketplace</a>
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/governance" class="nav-link">Governance</a>
       <a href="#milestones" class="nav-link">Milestones</a>
       <a href="#world" class="nav-link">World</a>
     </div>
-    <a href="#nft" class="no-cursor px-5 py-2 rounded-full bg-brand/10 border border-brand/30 text-brand font-mono text-sm hover:bg-brand/20 transition-all duration-300">
+    <a href="/mint" class="px-5 py-2 rounded-full bg-brand/10 border border-brand/30 text-brand font-mono text-sm hover:bg-brand/20 transition-all duration-300" style="cursor:pointer">
       Mint Now
     </a>
   </div>
@@ -273,30 +315,23 @@ tailwind.config = {
   }
   animateStars();
 
-  // === Custom Cursor ===
-  const dot = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
   let mouseX = 0, mouseY = 0;
   let dotX = 0, dotY = 0, ringX = 0, ringY = 0;
 
   document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
-  const hoverTargets = document.querySelectorAll('a, button, [role="button"], .glow-card, .no-cursor');
   hoverTargets.forEach(el => {
     el.addEventListener('mouseenter', () => ring.classList.add('hover'));
     el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
   });
 
-  function animateCursor() {
     dotX += (mouseX - dotX) * 0.3;
     dotY += (mouseY - dotY) * 0.3;
     ringX += (mouseX - ringX) * 0.08;
     ringY += (mouseY - ringY) * 0.08;
     dot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
     ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-    requestAnimationFrame(animateCursor);
   }
-  animateCursor();
 </script>
 
 
@@ -337,7 +372,7 @@ tailwind.config = {
       </div>
       <div class="text-center">
         <div class="text-3xl md:text-4xl font-display font-bold text-brand countup" data-target="420">0</div>
-        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">M CONTRACTS</div>
+        <div class="text-xs text-gray-500 font-mono tracking-wider mt-1">CONTRACTS DEPLOYED</div>
       </div>
       <div class="text-center">
         <div class="text-3xl md:text-4xl font-display font-bold text-brand countup" data-target="98">0</div>
@@ -347,10 +382,10 @@ tailwind.config = {
 
     <!-- CTA Buttons -->
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.6s;">
-      <a href="#nft" class="no-cursor px-8 py-3 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300">
+      <a href="/mint" class="px-8 py-3 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300" style="cursor:pointer">
         Mint Governance NFT
       </a>
-      <a href="#logic" class="no-cursor px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300">
+      <a href="/about" class="px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300" style="cursor:pointer">
         Explore Protocol →
       </a>
     </div>
@@ -604,7 +639,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <div class="text-center mb-16">
       <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
-        How <span class="gradient-text">CONTRA</span> Works
+        How <span class="gradient-text">Contra Ai</span> Works
       </h2>
       <p class="text-gray-500 font-mono text-sm max-w-2xl mx-auto">
         A self-executing protocol where AI agents and human experts converge to deliver borderless consulting at planetary scale.
@@ -619,7 +654,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
         </div>
         <h3 class="text-lg font-bold text-white mb-2 font-display tracking-wide">Submit</h3>
         <p class="text-gray-400 text-sm leading-relaxed">
-          Stake $CONTRA tokens and define your consulting brief. AI triage routes it to the optimal agent pool.
+          Stake Contra Ai tokens and define your consulting brief. AI triage routes it to the optimal agent pool.
         </p>
         <div class="mt-4 flex items-center gap-2 text-xs font-mono text-brand/60">
           <span>01</span><div class="flex-1 h-px bg-brand/10"></div>
@@ -705,14 +740,14 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <span class="font-mono font-bold text-white text-sm">Base</span>
         </div>
         <div class="flex items-baseline gap-2 mb-3">
-          <span class="text-2xl font-display font-bold text-white">0.05</span>
-          <span class="text-xs text-gray-500 font-mono">ETH</span>
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
         </div>
         <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
-          <div class="bg-blue-500 h-1.5 rounded-full" style="width: 34%"></div>
+          <div class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>3,400 / 10,000</span><span>34%</span>
+          <span>已铸造 -- 枚</span><span></span>
         </div>
       </div>
 
@@ -726,14 +761,14 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <span class="font-mono font-bold text-white text-sm">BSC</span>
         </div>
         <div class="flex items-baseline gap-2 mb-3">
-          <span class="text-2xl font-display font-bold text-white">0.5</span>
-          <span class="text-xs text-gray-500 font-mono">BNB</span>
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
         </div>
         <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
-          <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 51%"></div>
+          <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>10,200 / 20,000</span><span>51%</span>
+          <span>已铸造 -- 枚</span><span></span>
         </div>
       </div>
 
@@ -747,14 +782,14 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <span class="font-mono font-bold text-white text-sm">Ethereum</span>
         </div>
         <div class="flex items-baseline gap-2 mb-3">
-          <span class="text-2xl font-display font-bold text-white">0.12</span>
-          <span class="text-xs text-gray-500 font-mono">ETH</span>
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
         </div>
         <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
-          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 72%"></div>
+          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>3,600 / 5,000</span><span>72%</span>
+          <span>已铸造 -- 枚</span><span></span>
         </div>
       </div>
 
@@ -768,36 +803,41 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <span class="font-mono font-bold text-white text-sm">Solana</span>
         </div>
         <div class="flex items-baseline gap-2 mb-3">
-          <span class="text-2xl font-display font-bold text-white">2.5</span>
-          <span class="text-xs text-gray-500 font-mono">SOL</span>
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
         </div>
         <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
           <div class="bg-gradient-to-r from-purple-500 to-cyan-500 h-1.5 rounded-full" style="width: 28%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>14,000 / 50,000</span><span>28%</span>
+          <span>已铸造 -- 枚</span><span></span>
         </div>
       </div>
     </div>
 
     <!-- Total Minted Stats -->
     <div class="glass rounded-2xl p-6 md:p-8 text-center max-w-3xl mx-auto">
-      <div class="grid grid-cols-3 gap-8 mb-6">
+      <div class="grid grid-cols-2 gap-8 mb-6">
         <div>
           <div class="text-sm text-gray-500 font-mono mb-1">Total Minted</div>
-          <div class="text-2xl font-display font-bold text-white">31,200</div>
+          <div id="totalMinted" class="text-2xl font-display font-bold text-white">—</div>
         </div>
         <div>
-          <div class="text-sm text-gray-500 font-mono mb-1">Unique Holders</div>
-          <div class="text-2xl font-display font-bold text-white">8,947</div>
-        </div>
-        <div>
-          <div class="text-sm text-gray-500 font-mono mb-1">Floor Price</div>
-          <div class="text-2xl font-display font-bold text-brand">0.08 ETH</div>
+          <div class="text-sm text-gray-500 font-mono mb-1">Total Quota</div>
+          <div class="text-2xl font-display font-bold text-white">500</div>
         </div>
       </div>
-      <a href="#" class="no-cursor inline-block px-10 py-3.5 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300 animate-pulse-glow">
-        Connect Wallet to Mint
+      <div class="mb-6 max-w-md mx-auto">
+        <div class="w-full bg-white/5 rounded-full h-2.5 mb-2">
+          <div id="overallProgress" class="bg-gradient-to-r from-cyan-400 to-purple-500 h-2.5 rounded-full transition-all duration-1000 ease-out" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-mono text-gray-500">
+          <span id="progressLabel">Loading...</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </div>
+      <a href="/mint" class="inline-block px-10 py-3.5 rounded-full bg-brand text-black font-mono font-bold text-sm tracking-wider hover:shadow-xl hover:shadow-brand/30 transition-all duration-300 animate-pulse-glow" style="cursor:pointer">
+        Mint Governance NFT
       </a>
     </div>
   </div>
@@ -807,153 +847,8 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
 <section id="stakeholders" class="relative py-24 mesh-bg">
   <div class="section-divider mb-16"></div>
   <div class="max-w-6xl mx-auto px-6 relative z-10">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-6">
-        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-        <span class="font-mono text-xs text-brand tracking-widest">GOVERNANCE TIERS</span>
-      </div>
-      <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
-        Stakeholder <span class="gradient-text">Tiers</span>
-      </h2>
-      <p class="text-gray-500 font-mono text-sm max-w-2xl mx-auto">
-        Stake $CONTRA to unlock governance power, protocol fee share, and exclusive access to premium agent pools.
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-      <!-- Gold Tier -->
-      <div class="relative group">
-        <div class="absolute -inset-1 bg-gradient-to-br from-gold/40 via-gold/10 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(255,215,0,0.2);">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gold/10 to-transparent"></div>
-          <div class="flex items-center justify-between mb-6">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 flex items-center justify-center">
-              <svg class="w-7 h-7 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <span class="font-display text-gold font-bold text-lg tracking-wider">GOLD</span>
-          </div>
-          <div class="flex items-baseline gap-1 mb-2">
-            <span class="text-4xl font-display font-black text-white">10</span>
-            <span class="text-gold font-mono font-bold">%</span>
-          </div>
-          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
-          <div class="space-y-3 mb-8">
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 100,000 $CONTRA Staked</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (3x weight)</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Priority Agent Access</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Early Feature Access</div>
-          </div>
-          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
-            <div class="bg-gradient-to-r from-gold to-yellow-400 h-2 rounded-full animate-pulse-glow" style="width: 18%"></div>
-          </div>
-          <div class="flex justify-between text-xs font-mono text-gray-500">
-            <span>180 / 1,000 seats</span><span>18% filled</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Silver Tier -->
-      <div class="relative group">
-        <div class="absolute -inset-1 bg-gradient-to-br from-silver/30 via-silver/5 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(192,192,192,0.2);">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-silver/8 to-transparent"></div>
-          <div class="flex items-center justify-between mb-6">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-silver/20 to-silver/5 border border-silver/30 flex items-center justify-center">
-              <svg class="w-7 h-7 text-silver" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <span class="font-display text-silver font-bold text-lg tracking-wider">SILVER</span>
-          </div>
-          <div class="flex items-baseline gap-1 mb-2">
-            <span class="text-4xl font-display font-black text-white">5</span>
-            <span class="text-silver font-mono font-bold">%</span>
-          </div>
-          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
-          <div class="space-y-3 mb-8">
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 25,000 $CONTRA Staked</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (2x weight)</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Standard Agent Access</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-silver flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Beta Feature Access</div>
-          </div>
-          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
-            <div class="bg-gradient-to-r from-silver to-gray-300 h-2 rounded-full" style="width: 42%"></div>
-          </div>
-          <div class="flex justify-between text-xs font-mono text-gray-500">
-            <span>2,100 / 5,000 seats</span><span>42% filled</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bronze Tier -->
-      <div class="relative group">
-        <div class="absolute -inset-1 bg-gradient-to-br from-bronze/30 via-bronze/5 to-transparent rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="relative glow-card p-8 overflow-hidden" style="border-color: rgba(205,127,50,0.2);">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-bronze/8 to-transparent"></div>
-          <div class="flex items-center justify-between mb-6">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-bronze/20 to-bronze/5 border border-bronze/30 flex items-center justify-center">
-              <svg class="w-7 h-7 text-bronze" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <span class="font-display text-bronze font-bold text-lg tracking-wider">BRONZE</span>
-          </div>
-          <div class="flex items-baseline gap-1 mb-2">
-            <span class="text-4xl font-display font-black text-white">3</span>
-            <span class="text-bronze font-mono font-bold">%</span>
-          </div>
-          <p class="text-gray-400 text-sm mb-6">Protocol Fee Share</p>
-          <div class="space-y-3 mb-8">
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 5,000 $CONTRA Staked</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Governance Voting (1x weight)</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Basic Agent Access</div>
-            <div class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-bronze flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Community Voting</div>
-          </div>
-          <div class="w-full bg-white/5 rounded-full h-2 mb-2">
-            <div class="bg-gradient-to-r from-bronze to-orange-300 h-2 rounded-full" style="width: 63%"></div>
-          </div>
-          <div class="flex justify-between text-xs font-mono text-gray-500">
-            <span>6,300 / 10,000 seats</span><span>63% filled</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tier Comparison Bar -->
-    <div class="glass rounded-2xl p-6 max-w-5xl mx-auto mt-10">
-      <div class="text-sm text-gray-500 font-mono mb-4 text-center">TIER COMPARISON</div>
-      <div class="hidden md:grid grid-cols-4 gap-4 text-center text-xs font-mono text-gray-500">
-        <div class="text-left pl-4 text-gray-400">Feature</div>
-        <div class="text-bronze font-bold">BRONZE</div>
-        <div class="text-silver font-bold">SILVER</div>
-        <div class="text-gold font-bold">GOLD</div>
-      </div>
-      <div class="space-y-2 mt-3">
-        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
-          <span class="text-gray-400 pl-4">Fee Share</span>
-          <span class="text-center text-bronze font-mono">3%</span>
-          <span class="text-center text-silver font-mono">5%</span>
-          <span class="text-center text-gold font-mono">10%</span>
-        </div>
-        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
-          <span class="text-gray-400 pl-4">Vote Weight</span>
-          <span class="text-center text-bronze font-mono">1×</span>
-          <span class="text-center text-silver font-mono">2×</span>
-          <span class="text-center text-gold font-mono">3×</span>
-        </div>
-        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2 border-b border-white/5">
-          <span class="text-gray-400 pl-4">Agent Pool</span>
-          <span class="text-center text-bronze font-mono">Basic</span>
-          <span class="text-center text-silver font-mono">Standard</span>
-          <span class="text-center text-gold font-mono">Priority</span>
-        </div>
-        <div class="grid grid-cols-4 gap-4 items-center text-sm py-2">
-          <span class="text-gray-400 pl-4">Stake Required</span>
-          <span class="text-center text-bronze font-mono">5,000</span>
-          <span class="text-center text-silver font-mono">25,000</span>
-          <span class="text-center text-gold font-mono">100,000</span>
-        </div>
-      </div>
-    </div>
-  </div>
 <!-- ==================== AGENT MARKETPLACE ==================== -->
-<section id="agent-marketplace" class="relative py-24 mesh-bg">
+<section id="agent-marketplace" class="relative py-24 mesh-bg coming-soon-overlay">
   <div class="section-divider mb-16"></div>
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <!-- Section Header -->
@@ -1179,7 +1074,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
 
     <!-- Bottom CTA -->
     <div class="text-center mt-12">
-      <a href="#" class="no-cursor inline-block px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300">
+      <a href="#" class="inline-block px-8 py-3 rounded-full border border-brand/30 text-brand font-mono text-sm tracking-wider hover:bg-brand/10 transition-all duration-300">
         Become an Agent →
       </a>
     </div>
@@ -1215,7 +1110,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
             <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand shadow-lg shadow-brand/30"></div>
             <span class="font-mono text-xs text-brand/60">Q1 2026</span>
             <h4 class="text-white font-bold mt-1">Mainnet Launch</h4>
-            <p class="text-gray-500 text-sm mt-1">$CONTRA token + Governance NFT mint goes live on 4 chains simultaneously.</p>
+            <p class="text-gray-500 text-sm mt-1">Contra Ai token + Governance NFT mint goes live on 4 chains simultaneously.</p>
           </div>
           <div class="relative pl-8 pb-8 border-l border-brand/20">
             <div class="absolute left-0 top-0 w-3 h-3 -translate-x-1.5 rounded-full bg-brand/50 shadow-lg shadow-brand/10"></div>
@@ -1282,7 +1177,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
 </section>
 
 <!-- ==================== WORLD MAP + AGENT NETWORK ==================== -->
-<section id="world" class="relative py-24 mesh-bg">
+<section id="world" class="relative py-24 mesh-bg coming-soon-overlay" data-title="Global Network · Coming Soon">
   <div class="section-divider mb-16"></div>
   <div class="max-w-6xl mx-auto px-6 relative z-10">
     <div class="text-center mb-16">
@@ -1723,10 +1618,10 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
       <!-- Brand -->
       <div class="md:col-span-1">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
-            <span class="font-display text-white font-bold text-sm">C</span>
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center shadow-lg shadow-brand/20">
+            <span class="font-display text-white font-bold text-base">C</span>
           </div>
-          <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+          <span class="font-display font-bold text-xl tracking-wider text-white">Contra Ai</span>
         </div>
         <p class="text-gray-500 text-sm leading-relaxed mb-4">
           The world's first decentralized Web3 × AI consulting protocol. Code is Law. Borderless. On-chain.
@@ -1819,6 +1714,47 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
       card.style.borderColor = 'rgba(0,229,255,0.5)';
     });
   });
+</script>
+
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+  <script src="/contra-data.js"></script>
+
+<script>
+(function(){
+  if (window.contraDataLoaded) return; window.contraDataLoaded = true;
+  fetch('http://43.159.39.85:3001/api/stats').then(function(r){return r.json()}).then(function(d){
+    // Update chain cards
+    ['base','bsc','eth','solana'].forEach(function(chain){
+      var card = document.querySelector('[data-chain="'+chain+'"]');
+      if (!card) return;
+      var minted = d.byChain[chain] || 0;
+      // Update the minted count text
+      var spans = card.querySelectorAll('span.font-mono');
+      if (spans.length >= 2) {
+        spans[spans.length-2].textContent = '已铸造 ' + minted + ' 枚';
+        spans[spans.length-1].textContent = '';
+      }
+      // Update progress bar
+      var bar = card.querySelector('[style*="width"]');
+      if (bar) {
+        var pct = Math.min(100, Math.round(minted / (d.maxSupplyByChain[chain] || 200) * 100));
+        bar.style.width = pct + '%';
+      }
+    });
+    // Update total minted
+    var totalEl = document.querySelector('#totalMinted');
+    if (totalEl) totalEl.textContent = d.totalMinted;
+    // Update overall progress bar (totalMinted / 500)
+    var progBar = document.querySelector('#overallProgress');
+    if (progBar) progBar.style.width = Math.round(d.totalMinted / 500 * 100) + '%';
+    // Update progress label
+    var progLabel = document.querySelector('#progressLabel');
+    if (progLabel) progLabel.textContent = d.totalMinted + ' / 500';
+    var progPct = document.querySelector('#progressPct');
+    if (progPct) progPct.textContent = Math.round(d.totalMinted / 500 * 100) + '%';
+  }).catch(function(){});
+})();
 </script>
 
 </body>

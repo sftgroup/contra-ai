@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTRA — Mint Your Identity</title>
+<title>Contra Ai AI — Mint Your Identity</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>if(!window.tailwind){document.write('<script src="https://unpkg.com/@tailwindcss/browser@4"><\/script>')}</script>
 <script>
@@ -103,6 +103,18 @@ tailwind.config = {
   }
 
   /* Navigation */
+  
+  .coming-soon-overlay { position: relative; }
+  .coming-soon-overlay::after {
+    content: "Coming Soon";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+    border-radius: inherit; z-index: 10;
+    color: #00e5ff; font-family: Orbitron, monospace;
+    font-size: .8rem; font-weight: bold; letter-spacing: .1em;
+    pointer-events: none;
+  }
   .nav-blur {
     background: rgba(10, 10, 15, 0.75);
     backdrop-filter: blur(20px) saturate(180%);
@@ -113,8 +125,8 @@ tailwind.config = {
     color: #a0a0b0;
     transition: color 0.3s ease;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
   }
   .nav-link:hover { color: var(--brand); }
   .nav-link::after {
@@ -140,14 +152,6 @@ tailwind.config = {
   }
 
   /* Tier Card Colors */
-  .tier-member { border-color: rgba(0, 229, 255, 0.3); }
-  .tier-member.selected { border-color: #00e5ff; box-shadow: 0 0 40px rgba(0, 229, 255, 0.2), 0 0 80px rgba(0, 229, 255, 0.08); }
-  .tier-officer { border-color: rgba(59, 130, 246, 0.3); }
-  .tier-officer.selected { border-color: #3b82f6; box-shadow: 0 0 40px rgba(59, 130, 246, 0.2), 0 0 80px rgba(59, 130, 246, 0.08); }
-  .tier-partner { border-color: rgba(168, 85, 247, 0.3); }
-  .tier-partner.selected { border-color: #a855f7; box-shadow: 0 0 40px rgba(168, 85, 247, 0.2), 0 0 80px rgba(168, 85, 247, 0.08); }
-  .tier-strategist { border-color: rgba(255, 215, 0, 0.3); }
-  .tier-strategist.selected { border-color: #ffd700; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), 0 0 80px rgba(255, 215, 0, 0.08); }
 
   .tier-card {
     position: relative;
@@ -216,22 +220,46 @@ tailwind.config = {
   .btn-mint span { position: relative; z-index: 1; }
 
   /* Table styles */
-  .compare-table th, .compare-table td {
     padding: 16px 20px;
     text-align: left;
   }
-  .compare-table th:first-child, .compare-table td:first-child {
     text-align: left;
     min-width: 180px;
   }
-  .compare-table tr {
     border-bottom: 1px solid rgba(0, 229, 255, 0.06);
     transition: background 0.3s ease;
   }
-  .compare-table tr:hover {
     background: rgba(0, 229, 255, 0.03);
   }
+
+  @media (max-width: 768px) {
+    nav > div {
+      flex-wrap: wrap;
+    }
+    nav > div > div {
+      flex-direction: column !important;
+      max-height: 0;
+      width: 100%;
+    }
+    #mobileMenuBtn {
+      display: inline-flex !important;
+    }
+    .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+      grid-template-columns: 1fr !important;
+    }
+    .md\:grid-cols-4, .md\:grid-cols-5 {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .text-5xl { font-size: 2rem !important; }
+    .text-4xl { font-size: 1.75rem !important; }
+    .text-3xl { font-size: 1.5rem !important; }
+    .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .max-w-7xl { max-width: 100% !important; }
+    h1 { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    h2 { font-size: 1.5rem !important; }
+  }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
 <body class="font-sans antialiased">
 
@@ -240,12 +268,12 @@ tailwind.config = {
 
 <!-- Navigation -->
 <nav class="nav-blur fixed top-0 left-0 w-full z-50">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-[#a855f7] flex items-center justify-center shadow-lg shadow-brand/20">
-        <span class="font-display text-white font-bold text-sm">C</span>
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-[#a855f7] flex items-center justify-center shadow-lg shadow-brand/20">
+        <span class="font-display text-white font-bold text-base">C</span>
       </div>
-      <span class="font-display font-bold text-lg tracking-wider text-white">CONTRA</span>
+      <span class="font-display font-bold text-xl tracking-wider text-white">Contra Ai</span>
     </div>
     <div class="hidden md:flex items-center gap-8">
       <a href="index.html" class="nav-link">Home</a>
@@ -261,376 +289,202 @@ tailwind.config = {
 </nav>
 
 <!-- Hero Section -->
-<section class="relative z-10 min-h-[60vh] flex items-center justify-center pt-32 pb-16">
+<section class="relative z-10 min-h-[30vh] flex items-center justify-center pt-32 pb-8">
   <div class="max-w-4xl mx-auto px-6 text-center">
-    <div class="inline-flex items-center gap-3 mb-8 px-5 py-2 rounded-full glass border border-white/5">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand/20 bg-brand/5 mb-6">
       <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-      <span class="font-mono text-xs text-gray-400 tracking-wider">IDENTITY MINT LIVE</span>
-      <span class="font-mono text-xs gradient-text">ON CHAIN</span>
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">GOVERNANCE NFT</span>
     </div>
-
     <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 tracking-wider glow-text">
-      Mint Your<br><span class="gradient-text">Identity</span>
+      Mint Your <span class="gradient-text">Founding Shareholder</span> NFT
     </h1>
-
-    <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-      Choose your role in the CONTRA ecosystem. Each tier unlocks unique privileges,
-      staking rewards, and governance power. Your identity is your stake.
+    <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+      10,000 USDC per NFT across 4 chains. 500 total supply.
     </p>
-
-    <!-- Stats Bar -->
-    <div class="flex flex-wrap justify-center gap-8 mb-12">
-      <div class="text-center">
-        <div class="font-display text-3xl font-bold gradient-text">3,247</div>
-        <div class="text-xs text-gray-500 mt-1 font-mono">IDENTITIES MINTED</div>
-      </div>
-      <div class="w-px bg-gradient-to-b from-transparent via-brand/30 to-transparent hidden sm:block"></div>
-      <div class="text-center">
-        <div class="font-display text-3xl font-bold text-white">$12.4M</div>
-        <div class="text-xs text-gray-500 mt-1 font-mono">TOTAL VALUE STAKED</div>
-      </div>
-      <div class="w-px bg-gradient-to-b from-transparent via-brand/30 to-transparent hidden sm:block"></div>
-      <div class="text-center">
-        <div class="font-display text-3xl font-bold text-white">84.2%</div>
-        <div class="text-xs text-gray-500 mt-1 font-mono">STAKING APY</div>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- Tier Cards Section -->
-<section class="relative z-10 pb-20">
+<!-- Chain Selection Section -->
+<section class="relative z-10 pb-16">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-14">
-      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Choose Your Tier</span>
-      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Select Your Role</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Click a tier card to select. Each tier represents a different stake level and unlocks progressively greater benefits.</p>
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Select Chain</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Choose Your Blockchain</h2>
+      <p class="text-gray-400 max-w-xl mx-auto">All chains share the same price (10,000 USDC) and benefits. Pick the one where you hold USDC.</p>
     </div>
 
-    <!-- 2x2 Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="tier-grid">
-
-      <!-- Member Tier -->
-      <div class="tier-card tier-member glow-card rounded-[20px] p-[1px] cursor-pointer"
-           style="--tier-color: rgba(0,229,255,0.4)"
-           data-tier="member"
-           data-price="0"
-           onclick="selectTier(this)">
-        <div class="bg-deep rounded-[19px] p-8 h-full">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <span class="font-mono text-xs text-[#00e5ff] tracking-[0.15em] uppercase">Free</span>
-              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Member</h3>
-            </div>
-            <span class="text-5xl">🆓</span>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10" id="chainCards">
+      <!-- Base -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="base" onclick="selectChain('base')">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-blue-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center">
+            <span class="font-display text-blue-400 text-sm font-bold">B</span>
           </div>
-          <div class="mb-6">
-            <span class="font-display text-4xl font-bold text-white price-glow">Free</span>
-            <span class="text-gray-500 text-sm ml-2">Forever</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
-              <span>Basic AI consultation — <strong class="text-gray-300">10 queries/day</strong></span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
-              <span>Access to <strong class="text-gray-300">public community</strong> forums</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
-              <span>Browse agent marketplace (view only)</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#00e5ff] mt-0.5 flex-shrink-0">◆</span>
-              <span>Weekly ecosystem newsletter</span>
-            </li>
-          </ul>
-          <button class="w-full py-3 rounded-full border border-[#00e5ff]/30 text-[#00e5ff] font-mono text-sm hover:bg-[#00e5ff]/10 transition-all duration-300">
-            Register Free
-          </button>
+          <span class="font-mono font-bold text-white text-sm">Base</span>
         </div>
-      </div>
-
-      <!-- Officer Tier -->
-      <div class="tier-card tier-officer glow-card rounded-[20px] p-[1px] cursor-pointer"
-           style="--tier-color: rgba(59,130,246,0.4)"
-           data-tier="officer"
-           data-price="10000"
-           onclick="selectTier(this)">
-        <div class="bg-deep rounded-[19px] p-8 h-full">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <span class="font-mono text-xs text-[#3b82f6] tracking-[0.15em] uppercase">Stake 10,000 USDC</span>
-              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Officer</h3>
-            </div>
-            <span class="text-5xl">⚡</span>
-          </div>
-          <div class="mb-6">
-            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(59,130,246,0.4);">10,000</span>
-            <span class="text-gray-500 text-sm ml-2">USDC</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
-              <span>Enhanced AI — <strong class="text-gray-300">50 queries/day</strong></span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Priority matching</strong> with experts</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Staking rewards</strong> — earn yield on your stake</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
-              <span>Access to exclusive officer Discord</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#3b82f6] mt-0.5 flex-shrink-0">◆</span>
-              <span>Early access to new agent launches</span>
-            </li>
-          </ul>
-          <button class="w-full py-3 rounded-full border border-[#3b82f6]/30 text-[#3b82f6] font-mono text-sm hover:bg-[#3b82f6]/10 transition-all duration-300">
-            Mint Officer
-          </button>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
         </div>
-      </div>
-
-      <!-- Partner Tier -->
-      <div class="tier-card tier-partner glow-card rounded-[20px] p-[1px] cursor-pointer"
-           style="--tier-color: rgba(168,85,247,0.4)"
-           data-tier="partner"
-           data-price="15000"
-           onclick="selectTier(this)">
-        <div class="bg-deep rounded-[19px] p-8 h-full">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <span class="font-mono text-xs text-[#a855f7] tracking-[0.15em] uppercase">Stake 15,000 USDC</span>
-              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Partner</h3>
-            </div>
-            <span class="text-5xl">💎</span>
-          </div>
-          <div class="mb-6">
-            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(168,85,247,0.4);">15,000</span>
-            <span class="text-gray-500 text-sm ml-2">USDC</span>
-          </div>
-          <div class="mb-5 -mt-2">
-            <span class="inline-block px-3 py-1 rounded-full bg-[#a855f7]/10 border border-[#a855f7]/20 text-[#a855f7] text-xs font-mono">Most Popular</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Unlimited AI</strong> consultation</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Dedicated expert</strong> assignment</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">DAO governance</strong> voting rights</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Revenue sharing</strong> from platform fees</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span>Custom agent deployment slots</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#a855f7] mt-0.5 flex-shrink-0">◆</span>
-              <span>Co-branding partnership opportunities</span>
-            </li>
-          </ul>
-          <button class="btn-mint w-full py-3 rounded-full border border-[#a855f7]/30 text-[#a855f7] font-mono text-sm hover:text-white transition-all duration-300">
-            <span>Mint Partner</span>
-          </button>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-blue-500 h-1.5 rounded-full" style="width:0"></div>
         </div>
+        <div class="text-xs font-mono text-gray-500 chain-count">-- minted</div>
       </div>
-
-      <!-- Strategist Tier -->
-      <div class="tier-card tier-strategist glow-card rounded-[20px] p-[1px] cursor-pointer"
-           style="--tier-color: rgba(255,215,0,0.4)"
-           data-tier="strategist"
-           data-price="20000"
-           onclick="selectTier(this)">
-        <div class="bg-deep rounded-[19px] p-8 h-full">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <span class="font-mono text-xs text-[#ffd700] tracking-[0.15em] uppercase">Stake 20,000 USDC</span>
-              <h3 class="font-display text-2xl font-bold mt-2 tracking-wide">Strategist</h3>
-            </div>
-            <span class="text-5xl">👑</span>
+      <!-- BSC -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="bsc" onclick="selectChain('bsc')">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-yellow-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
+            <span class="font-display text-yellow-400 text-sm font-bold">B</span>
           </div>
-          <div class="mb-6">
-            <span class="font-display text-4xl font-bold text-white price-glow" style="text-shadow: 0 0 20px rgba(255,215,0,0.4);">20,000</span>
-            <span class="text-gray-500 text-sm ml-2">USDC</span>
-          </div>
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">All Partner benefits</strong> included</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Strategy committee</strong> seat</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Early-stage investment</strong> opportunities</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Custom concierge</strong> AI services</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">1-on-1 advisory</strong> with core team</span>
-            </li>
-            <li class="flex items-start gap-3 text-sm text-gray-400">
-              <span class="text-[#ffd700] mt-0.5 flex-shrink-0">◆</span>
-              <span><strong class="text-gray-300">Private deal flow</strong> & investor network</span>
-            </li>
-          </ul>
-          <button class="btn-mint w-full py-3 rounded-full border border-[#ffd700]/30 text-[#ffd700] font-mono text-sm hover:text-white transition-all duration-300">
-            <span>Mint Strategist</span>
-          </button>
+          <span class="font-mono font-bold text-white text-sm">BSC</span>
         </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-yellow-500 h-1.5 rounded-full" style="width:0"></div>
+        </div>
+        <div class="text-xs font-mono text-gray-500 chain-count">-- minted</div>
       </div>
-
-    </div><!-- end tier-grid -->
-
-    <!-- Selected Tier Summary -->
-    <div id="selected-summary" class="mt-10 glass rounded-2xl p-6 hidden opacity-0 transition-all duration-500 text-center">
-      <div class="flex items-center justify-center gap-4 flex-wrap">
-        <span class="text-gray-400 font-mono text-sm">Selected:</span>
-        <span id="summary-tier-name" class="font-display text-xl font-bold tracking-wide"></span>
-        <span class="text-gray-500">—</span>
-        <span id="summary-price" class="font-mono text-lg gradient-text"></span>
-        <button onclick="scrollToCTA()" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00e5ff] to-[#a855f7] text-white font-mono text-sm font-semibold hover:opacity-90 transition-opacity">
-          Proceed to Mint
-        </button>
+      <!-- ETH -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="eth" onclick="selectChain('eth')">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <span class="font-display text-purple-400 text-sm font-bold">E</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">Ethereum</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-purple-500 h-1.5 rounded-full" style="width:0"></div>
+        </div>
+        <div class="text-xs font-mono text-gray-500 chain-count">-- minted</div>
       </div>
+      <!-- Solana -->
+      <div class="glow-card p-5 cursor-pointer group relative overflow-hidden chain-card" data-chain="solana" onclick="selectChain('solana')">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 rounded-bl-3xl"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+            <span class="font-display text-cyan-400 text-sm font-bold">S</span>
+          </div>
+          <span class="font-mono font-bold text-white text-sm">Solana</span>
+        </div>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span class="text-2xl font-display font-bold text-white">10,000</span>
+          <span class="text-xs text-gray-500 font-mono">USDC</span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+          <div class="bg-gradient-to-r from-purple-500 to-cyan-500 h-1.5 rounded-full" style="width:0"></div>
+        </div>
+        <div class="text-xs font-mono text-gray-500 chain-count">-- minted</div>
+      </div>
+    </div>
+
+    <!-- Total Minted -->
+    <div class="glass rounded-2xl p-6 md:p-8 text-center max-w-3xl mx-auto">
+      <div class="text-sm text-gray-500 font-mono mb-2">Total Minted</div>
+      <div class="text-2xl font-display font-bold text-white mb-3"><span id="totalMinted">--</span> / 500</div>
+      <div class="w-full bg-white/5 rounded-full h-3 mb-1">
+        <div id="totalProgressBar" class="bg-gradient-to-r from-brand to-[#a855f7] h-3 rounded-full transition-all duration-700" style="width:0"></div>
+      </div>
+      <div class="text-xs font-mono text-gray-500 mt-1"><span id="totalPercent">0</span>% minted</div>
     </div>
   </div>
 </section>
 
-<!-- Comparison Table -->
+  <!-- Mint Operation Area -->
+  <section class="relative z-10 pb-8" id="mintOperation">
+    <div class="max-w-2xl mx-auto px-6">
+      <div class="glass rounded-2xl p-6 md:p-8">
+        <h3 class="font-display text-xl font-bold mb-6 text-center tracking-wide">
+          Complete Your <span class="gradient-text">Mint</span>
+        </h3>
+
+        <div class="space-y-4">
+          <div id="stepApprove" class="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <div class="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
+              <span class="font-mono text-brand font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-bold text-white text-sm">Approve USDC</div>
+              <div class="text-xs text-gray-500">Authorize the contract to spend 10,000 USDC</div>
+            </div>
+            <button id="approveBtn" onclick="approveUSDC()" class="btn-mint px-5 py-2.5 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed" disabled>Approve</button>
+          </div>
+          <div id="stepMint" class="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] opacity-40">
+            <div class="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center flex-shrink-0">
+              <span class="font-mono text-gray-500 font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-bold text-gray-400 text-sm">Mint NFT</div>
+              <div class="text-xs text-gray-500">Mint your Founding Shareholder NFT</div>
+            </div>
+            <button id="mintBtn" onclick="mintNFT()" class="btn-mint px-5 py-2.5 rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed" disabled>Mint</button>
+          </div>
+        </div>
+
+        <div id="mintStatus" class="mt-4 text-center text-sm text-gray-400 hidden"></div>
+        <div id="mintError" class="mt-4 text-center text-sm text-red-400 hidden"></div>
+
+        <div id="mintSuccess" class="mt-4 text-center hidden">
+          <div class="text-4xl mb-3">🎉</div>
+          <div class="text-lg font-bold text-white mb-2">NFT Minted Successfully!</div>
+          <div class="text-sm text-gray-400 mb-4">Your Founding Shareholder NFT has been minted on <span id="successChain" class="text-brand font-mono"></span></div>
+          <div class="glass inline-block px-4 py-2 rounded-xl">
+            <span class="text-xs text-gray-500 font-mono">Token ID: </span>
+            <span id="successTokenId" class="text-sm text-white font-mono font-bold">—</span>
+          </div>
+          <div class="mt-2">
+            <a id="successExplorer" href="#" target="_blank" class="text-xs text-brand hover:underline">View on Explorer →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Unified Benefits -->
 <section class="relative z-10 py-20">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-14">
-      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Full Comparison</span>
-      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">Benefits at a Glance</h2>
-      <p class="text-gray-400 max-w-xl mx-auto">Compare every feature across all four tiers to find your perfect fit.</p>
+      <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Shareholder Benefits</span>
+      <h2 class="font-display text-3xl md:text-4xl font-bold mt-3 mb-4 tracking-wide">What You Get</h2>
     </div>
-
-    <div class="glass rounded-2xl overflow-x-auto">
-      <table class="compare-table w-full text-sm">
-        <thead>
-          <tr class="border-b border-white/5">
-            <th class="font-mono text-xs text-gray-500 tracking-wider py-5">FEATURE</th>
-            <th class="text-center font-display text-sm text-[#00e5ff] tracking-wide">
-              <span class="text-lg mr-1">🆓</span> Member
-            </th>
-            <th class="text-center font-display text-sm text-[#3b82f6] tracking-wide">
-              <span class="text-lg mr-1">⚡</span> Officer
-            </th>
-            <th class="text-center font-display text-sm text-[#a855f7] tracking-wide">
-              <span class="text-lg mr-1">💎</span> Partner
-            </th>
-            <th class="text-center font-display text-sm text-[#ffd700] tracking-wide">
-              <span class="text-lg mr-1">👑</span> Strategist
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Stake Required</td>
-            <td class="text-center text-gray-500">Free</td>
-            <td class="text-center text-white font-mono">10,000 USDC</td>
-            <td class="text-center text-white font-mono">15,000 USDC</td>
-            <td class="text-center text-white font-mono">20,000 USDC</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">AI Queries / Day</td>
-            <td class="text-center text-gray-500">10</td>
-            <td class="text-center text-white">50</td>
-            <td class="text-center"><span class="text-[#a855f7]">Unlimited</span></td>
-            <td class="text-center"><span class="text-[#ffd700]">Unlimited</span></td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Community Access</td>
-            <td class="text-center text-gray-500">Public</td>
-            <td class="text-center text-white">Officer Only</td>
-            <td class="text-center text-white">Partner Only</td>
-            <td class="text-center text-white">All Access</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Expert Matching</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-white">Priority</td>
-            <td class="text-center text-white">Dedicated</td>
-            <td class="text-center text-white">Dedicated</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Staking Rewards</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#00e5ff]">✓</td>
-            <td class="text-center text-[#00e5ff]">✓</td>
-            <td class="text-center text-[#00e5ff]">✓</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">DAO Voting</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#a855f7]">1x Weight</td>
-            <td class="text-center text-[#ffd700]">3x Weight</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Revenue Share</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#a855f7]">Pro-rata</td>
-            <td class="text-center text-[#ffd700]">Pro-rata + Bonus</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Agent Deployment</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-white">1 Slot</td>
-            <td class="text-center text-white">3 Slots</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Strategy Committee</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#ffd700]">✓</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Early Investments</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#ffd700]">✓</td>
-          </tr>
-          <tr>
-            <td class="font-mono text-xs text-gray-400">Concierge Service</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-center text-[#ffd700]">✓</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div class="glass p-6 text-center">
+        <div class="text-3xl mb-3">🏛</div>
+        <div class="font-display font-bold text-white text-sm mb-2">Founding Shareholder</div>
+        <p class="text-xs text-gray-500">Permanent on-chain identity as a CONTRA founding shareholder</p>
+      </div>
+      <div class="glass p-6 text-center coming-soon-overlay" data-title="Fee Sharing · Coming Soon">
+        <div class="text-3xl mb-3">💎</div>
+        <div class="font-display font-bold text-white text-sm mb-2">Governance · Coming Soon <p class="text-xs text-gray-500">Earn protocol fee dividends (Phase 2)</p>
+      </div>
+      <div class="glass p-6 text-center coming-soon-overlay" data-title="Governance · Coming Soon">
+        <div class="text-3xl mb-3">🗳</div>
+        <div class="font-display font-bold text-white text-sm mb-2">Governance</div>
+        <p class="text-xs text-gray-500">Vote on protocol proposals (Phase 2)</p>
+      </div>
+      <div class="glass p-6 text-center">
+        <div class="text-3xl mb-3">⚡</div>
+        <div class="font-display font-bold text-white text-sm mb-2">Early Access</div>
+        <p class="text-xs text-gray-500">Priority access to new features and agent pools</p>
+      </div>
+      <div class="glass p-6 text-center">
+        <div class="text-3xl mb-3">🔗</div>
+        <div class="font-display font-bold text-white text-sm mb-2">Referral Rewards</div>
+        <p class="text-xs text-gray-500">Earn rewards for inviting new shareholders</p>
+      </div>
     </div>
   </div>
-</section>
-
-<!-- FAQ Section -->
+</section><!-- FAQ Section -->
 <section class="relative z-10 py-20">
   <div class="max-w-3xl mx-auto px-6">
     <div class="text-center mb-14">
@@ -643,12 +497,12 @@ tailwind.config = {
       <!-- FAQ 1 -->
       <div class="faq-item open" onclick="toggleFAQ(this)">
         <div class="flex items-center justify-between py-5 cursor-pointer">
-          <h3 class="font-sans font-medium text-white pr-4">What happens to my staked USDC?</h3>
+          <h3 class="font-sans font-medium text-white pr-4">What is a Founding Shareholder NFT?</h3>
           <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
         </div>
         <div class="faq-answer">
           <p class="text-gray-400 text-sm leading-relaxed pb-5">
-            Your staked USDC remains in your custody within the CONTRA protocol's smart contract. It is never locked — you can unstake at any time with a 7-day cooldown period. While staked, you earn yield through the protocol's revenue-sharing mechanism and DeFi integrations. Your principal is always protected by audited smart contracts and multi-sig governance.
+            It is your permanent on-chain identity as an early backer of the CONTRA protocol. As a founding shareholder, you gain access to exclusive benefits including fee sharing, governance rights, and early access to new features.'s smart contract. It is never locked — you can unstake at any time with a 7-day cooldown period. While staked, you earn yield through the protocol's revenue-sharing mechanism and DeFi integrations. Your principal is always protected by audited smart contracts and multi-sig governance.
           </p>
         </div>
       </div>
@@ -656,12 +510,12 @@ tailwind.config = {
       <!-- FAQ 2 -->
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="flex items-center justify-between py-5 cursor-pointer">
-          <h3 class="font-sans font-medium text-white pr-4">Can I upgrade my tier later?</h3>
+          <h3 class="font-sans font-medium text-white pr-4">Can I transfer my NFT?</h3>
           <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
         </div>
         <div class="faq-answer">
           <p class="text-gray-400 text-sm leading-relaxed pb-5">
-            Absolutely. You can upgrade your tier at any time by staking the difference in USDC. For example, moving from Officer (10,000 USDC) to Partner (15,000 USDC) requires staking an additional 5,000 USDC. Your benefits upgrade instantly upon confirmation. Downgrading is also supported — simply unstake the excess amount.
+            Yes, the Founding Shareholder NFT is a standard ERC-721 token and can be transferred to any address. However, some benefits (such as early access priority) may be tied to the original minter. 
           </p>
         </div>
       </div>
@@ -669,12 +523,12 @@ tailwind.config = {
       <!-- FAQ 3 -->
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="flex items-center justify-between py-5 cursor-pointer">
-          <h3 class="font-sans font-medium text-white pr-4">How does revenue sharing work?</h3>
+          <h3 class="font-sans font-medium text-white pr-4">How do I pay for minting?</h3>
           <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
         </div>
         <div class="faq-answer">
           <p class="text-gray-400 text-sm leading-relaxed pb-5">
-            Partner and Strategist tier holders receive a share of CONTRA's platform fees proportional to their stake relative to the total Partner+ pool. Revenue is distributed monthly in USDC directly to your connected wallet. The current distribution rate is approximately 8-12% APY, varying with platform volume. Strategist holders receive an additional bonus multiplier.
+            Minting is done with USDC (USD Coin) on your chosen blockchain. The mint price is 10,000 USDC per NFT across all 4 chains. Make sure you have enough USDC in your wallet before minting.
           </p>
         </div>
       </div>
@@ -682,12 +536,12 @@ tailwind.config = {
       <!-- FAQ 4 -->
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="flex items-center justify-between py-5 cursor-pointer">
-          <h3 class="font-sans font-medium text-white pr-4">Is there a referral program?</h3>
+          <h3 class="font-sans font-medium text-white pr-4">Are NFTs on different chains the same?</h3>
           <span class="faq-icon text-brand text-2xl font-light flex-shrink-0">+</span>
         </div>
         <div class="faq-answer">
           <p class="text-gray-400 text-sm leading-relaxed pb-5">
-            Yes! CONTRA offers a referral program where you earn 5% of the staking amount for every new member you bring in who mints an Officer tier or above. Referral rewards are paid in USDC and are claimable immediately. Your referral link is generated after you mint your own identity — share it to grow the ecosystem and earn passive rewards.
+            Yes, all Founding Shareholder NFTs have equal rights and benefits regardless of which chain you mint on. The only difference is the chain-specific token ID and contract address. Each chain has its own independent numbering.
           </p>
         </div>
       </div>
@@ -701,10 +555,10 @@ tailwind.config = {
     <div class="glass rounded-3xl p-12 md:p-16 border border-white/5">
       <span class="font-mono text-xs text-brand tracking-[0.2em] uppercase">Ready to Join?</span>
       <h2 class="font-display text-3xl md:text-5xl font-bold mt-4 mb-6 tracking-wide">
-        Stake Your Claim<br>in the <span class="gradient-text">CONTRA</span> Ecosystem
+        Stake Your Claim<br>in the <span class="gradient-text">Contra Ai</span> Ecosystem
       </h2>
       <p class="text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed">
-        Connect your wallet, select your tier, and mint your on-chain identity.
+        Connect your wallet, select your chain, approve USDC, and mint your Founding Shareholder NFT.
         Your journey from observer to strategist starts with a single transaction.
       </p>
 
@@ -735,7 +589,7 @@ tailwind.config = {
       <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-[#a855f7] flex items-center justify-center">
         <span class="font-display text-white font-bold text-xs">C</span>
       </div>
-      <span class="font-display font-bold text-base tracking-wider text-white">CONTRA</span>
+      <span class="font-display font-bold text-base tracking-wider text-white">Contra Ai</span>
     </div>
     <p class="text-gray-600 text-xs font-mono">&copy; 2026 CONTRA Protocol. Code is Law.</p>
   </div>
@@ -791,40 +645,62 @@ tailwind.config = {
   }
   animate();
 
-  // === Tier Selection ===
-  let selectedTier = null;
-  const summaryEl = document.getElementById('selected-summary');
+  // === Chain Selection + Data Load ===
+    let selectedChain = null;
+    const CHAIN_CONFIG = {
+      base:   {color:'#3b82f6', contract:'0x8bDcA9545E354EE180bB85b24D938Ea08Cf49Be6', explorer:'https://basescan.org'},
+      bsc:    {color:'#f59e0b', contract:'0x032143f87Fb5C701Bb99cD0cf6e44b8729a79F9b', explorer:'https://testnet.bscscan.com'},
+      eth:    {color:'#8b5cf6', contract:'0xeFA6EF399797C63F166376eD200A899526a95e9b', explorer:'https://sepolia.etherscan.io'},
+      solana: {color:'#06b6d4', contract:'0xAddAADCA0EB04a55485B37Ff040f37C0e79e570A', explorer:'https://sepolia.etherscan.io'}
+    };
 
-  function selectTier(el) {
-    // Remove previous selection
-    document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
-    // Add selection
-    el.classList.add('selected');
-    selectedTier = el.dataset.tier;
+    function selectChain(chain) {
+      selectedChain = chain;
+      document.querySelectorAll('.chain-card').forEach(function(card){
+        card.style.borderColor = 'rgba(255,255,255,.06)';
+        card.style.boxShadow = '';
+      });
+      var card = document.querySelector('[data-chain="'+chain+'"]');
+      if (card) {
+        card.style.borderColor = CHAIN_CONFIG[chain].color;
+        card.style.boxShadow = '0 0 30px '+CHAIN_CONFIG[chain].color+'33';
+      }
+      // Enable approve button if wallet is connected
+      var approveBtn = document.getElementById('approveBtn');
+      if (approveBtn && typeof account !== 'undefined' && account) {
+        approveBtn.disabled = false;
+      }
+    }
 
-    // Update summary
-    const tierNames = { member: 'Member 🆓', officer: 'Officer ⚡', partner: 'Partner 💎', strategist: 'Strategist 👑' };
-    const price = el.dataset.price === '0' ? 'Free' : `${parseInt(el.dataset.price).toLocaleString()} USDC`;
+    // Enable approve button when wallet connects
+    var checkWallet = setInterval(function(){
+      if (typeof account !== 'undefined' && account && selectedChain) {
+        var approveBtn = document.getElementById('approveBtn');
+        if (approveBtn) approveBtn.disabled = false;
+        clearInterval(checkWallet);
+      }
+    }, 500);
 
-    document.getElementById('summary-tier-name').textContent = tierNames[selectedTier];
-    document.getElementById('summary-tier-name').style.color =
-      selectedTier === 'member' ? '#00e5ff' :
-      selectedTier === 'officer' ? '#3b82f6' :
-      selectedTier === 'partner' ? '#a855f7' : '#ffd700';
-    document.getElementById('summary-price').textContent = price;
+    // Load live data from relay API
+    fetch('http://43.159.39.85:3001/api/stats').then(function(r){return r.json()}).then(function(d){
+      ['base','bsc','eth','solana'].forEach(function(chain){
+        var card = document.querySelector('[data-chain="'+chain+'"]');
+        if (!card) return;
+        var minted = d.byChain[chain] || 0;
+        var txt = card.querySelector('.chain-count');
+        if (txt) txt.textContent = 'Minted: ' + minted;
+        var bar = card.querySelector('[style*="width"]');
+        if (bar) bar.style.width = Math.min(100, Math.round(minted / (d.maxSupplyByChain[chain] || 200) * 100)) + '%';
+      });
+      var tm = document.getElementById('totalMinted');
+      if (tm) tm.textContent = d.totalMinted;
+      var tp = document.getElementById('totalPercent');
+      if (tp) tp.textContent = Math.round(d.totalMinted / 500 * 100);
+      var tb = document.getElementById('totalProgressBar');
+      if (tb) tb.style.width = Math.round(d.totalMinted / 500 * 100) + '%';
+    }).catch(function(){});
 
-    summaryEl.classList.remove('hidden');
-    requestAnimationFrame(() => { summaryEl.classList.add('opacity-100'); });
-
-    // Scroll summary into view
-    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function scrollToCTA() {
-    document.getElementById('cta').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  // === FAQ Accordion ===
+// === FAQ Accordion ===
   function toggleFAQ(el) {
     // Close others
     document.querySelectorAll('.faq-item').forEach(item => {
@@ -850,5 +726,8 @@ tailwind.config = {
   });
 </script>
 
+  <script src="/contra-nav.js"></script>
+  <script src="/contra-contracts.js"></script>
+  <script src="/contra-data.js"></script>
 </body>
 </html>
