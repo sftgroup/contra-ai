@@ -184,6 +184,22 @@ body{font-family:"Inter",sans-serif;min-height:100vh;background:linear-gradient(
 
 <script>
 
+
+function loadStatsForAggress(addr) {
+  fetch("/api/stats").then(function(r){return r.json()}).then(function(d){
+    document.getElementById("totalMinted") && (document.getElementById("totalMinted").textContent = d.totalMinted || 0);
+    var pct = Math.round((d.totalMinted || 0) / 500 * 100);
+    document.getElementById("mintProgress") && (document.getElementById("mintProgress").textContent = pct);
+  }).catch(function(){});
+  fetch("/api/account/" + addr + "/nfts").then(function(r){return r.json()}).then(function(d){
+    var nfts = d.nfts || d || [];
+    document.getElementById("myNftCount") && (document.getElementById("myNftCount").textContent = nfts.length);
+  }).catch(function(){});
+  fetch("/api/account/" + addr + "/invites").then(function(r){return r.json()}).then(function(d){
+    document.getElementById("myInviteCount") && (document.getElementById("myInviteCount").textContent = d.count || d.total || 0);
+  }).catch(function(){});
+}
+
 function loadNFTs() {
   if (!window.__contra || !window.__contra.account) return;
   var addr = window.__contra.account;
