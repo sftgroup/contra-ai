@@ -453,6 +453,20 @@ switchTab('shareholder');
       if (tries < 40) setTimeout(tryInit, 250);
     }
     setTimeout(tryInit, 300);
+    // Fallback: if API fails, at least update UI
+    setTimeout(function(){
+      var ph = document.getElementById("nftPlaceholder");
+      if (ph && ph.textContent === "Connect wallet to view your NFTs" && window.__contra && window.__contra.account) {
+        ph.textContent = "No NFTs found. Mint one now!";
+      }
+    }, 5000);
+    // Direct placeholder update without waiting for API
+    setTimeout(function(){
+      var ph = document.getElementById("nftPlaceholder");
+      if (ph && window.__contra && window.__contra.account) {
+        ph.textContent = "Loading your NFTs...";
+      }
+    }, 500);
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', function(accs) {
         if (accs.length > 0) tryInit();
