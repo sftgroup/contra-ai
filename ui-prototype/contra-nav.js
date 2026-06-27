@@ -65,6 +65,26 @@
   mq.addEventListener("change", handleResize);
   handleResize(mq);
 
+  // Update wallet button when account changes
+  function refreshWalletBtn() {
+    var btn = document.querySelector('.wallet-btn');
+    if (!btn) return;
+    if (window.__contra && window.__contra.account) {
+      var a = window.__contra.account;
+      btn.textContent = a.slice(0,6)+'...'+a.slice(-4);
+      btn.onclick = function(e){ e.preventDefault(); if (typeof window.disconnectWallet === 'function') window.disconnectWallet(); };
+    } else {
+      btn.textContent = 'Connect Wallet';
+      btn.onclick = function(e){ e.preventDefault(); if (typeof window.connectWallet === 'function') window.connectWallet(); };
+    }
+  }
+  // Check after contracts.js loads
+  setTimeout(function(){
+    refreshWalletBtn();
+    // Also re-check periodically
+    setInterval(refreshWalletBtn, 2000);
+  }, 800);
+
   // Re-initialize on wallet connect (nav might re-render)
   var origUpdate = window.updateAll;
   if (origUpdate) {

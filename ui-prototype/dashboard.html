@@ -85,7 +85,7 @@ body{font-family:"Inter",sans-serif;min-height:100vh;background:linear-gradient(
   <div class="glass p-5 fade-in" id="nftAssetsSection">
     <h2 class="text-lg font-bold mb-4">Your NFT Assets</h2>
     <div id="nftAssetList" class="space-y-2">
-      <div class="text-sm text-gray-500 text-center py-8">Connect wallet to view your NFTs</div>
+      <div class="text-sm text-gray-500 text-center py-8" id="nftPlaceholder">Connect wallet to view your NFTs</div>
     </div>
   </div>
 
@@ -413,6 +413,40 @@ function initActivity() {
 
 initActivity();
 switchTab('shareholder');
+
+  // Wallet state listener: refresh dashboard when wallet connects
+  function checkDashboardWallet() {
+    var connected = window.__contra && window.__contra.account;
+    var existingAddr = document.getElementById('walletAddr');
+    
+    if (connected) {
+      var addr = window.__contra.account;
+      // Update address display if present
+      if (existingAddr) existingAddr.textContent = addr.slice(0,6)+'...'+addr.slice(-4);
+      // Load NFTs
+      renderNFTs();
+      // Re-render Shareholder tab to update prices
+      var activeTab = document.querySelector('.tab-btn.active');
+      if (activeTab && activeTab.textContent.toLowerCase() === 'shareholder') {
+        renderTab('shareholder');
+      }
+    } else {
+      var placeholder = document.getElementById('nftPlaceholder');
+      if (placeholder) placeholder.textContent = 'Connect wallet to view your NFTs';
+    }
+  }
+
+  // Check on load
+  setTimeout(checkDashboardWallet, 500);
+  // Poll for wallet connection (nav button bind is async)
+  var dashWalletPoll = setInterval(function(){
+    if (window.__contra && window.__contra.account) {
+      checkDashboardWallet();
+      clearInterval(dashWalletPoll);
+    }
+  }, 500);
+  // Stop polling after 10s if wallet not connected
+  setTimeout(function(){ clearInterval(dashWalletPoll); }, 10000);
 </script>
   <script src="/contra-nav.js"></script>
   <script src="/contra-contracts.js"></script>
