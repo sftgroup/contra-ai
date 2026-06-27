@@ -423,8 +423,17 @@ switchTab('shareholder');
       var addr = window.__contra.account;
       // Update address display if present
       if (existingAddr) existingAddr.textContent = addr.slice(0,6)+'...'+addr.slice(-4);
-      // Load NFTs
-      renderNFTs();
+      // Load NFTs from relay API
+      var addr = window.__contra.account;
+      var ph = document.getElementById("nftPlaceholder");
+      if (ph) ph.textContent = "Loading your NFTs...";
+      fetch("/api/account/" + addr + "/nfts").then(function(r){return r.json()}).then(function(data){
+        var nfts = data.nfts || data || [];
+        renderNFTs(nfts);
+      }).catch(function(){
+        var ph2 = document.getElementById("nftPlaceholder");
+        if (ph2) ph2.textContent = "Connect wallet to view your NFTs";
+      });
       // Re-render Shareholder tab to update prices
       var activeTab = document.querySelector('.tab-btn.active');
       if (activeTab && activeTab.textContent.toLowerCase() === 'shareholder') {
