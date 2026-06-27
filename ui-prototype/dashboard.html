@@ -437,41 +437,29 @@ function initActivity() {
 
 initActivity();
 switchTab('shareholder');
-
-  // Wallet state listener: refresh dashboard when wallet connects
-  function checkDashboardWallet() {
-    var connected = window.__contra && window.__contra.account;
-    var existingAddr = document.getElementById('walletAddr');
-    
-    if (connected) {
-      var addr = window.__contra.account;
-      // Update address display if present
-      if (existingAddr) existingAddr.textContent = addr.slice(0,6)+'...'+addr.slice(-4);
-      loadNFTs();
-      // Re-render Shareholder tab to update prices
-      var activeTab = document.querySelector('.tab-btn.active');
-      if (activeTab && activeTab.textContent.toLowerCase() === 'shareholder') {
-        renderTab('shareholder');
-      }
-    } else {
-      var placeholder = document.getElementById('nftPlaceholder');
-      if (placeholder) placeholder.textContent = 'Connect wallet to view your NFTs';
-    }
-  }
-
-  // Check on load
-  setTimeout(checkDashboardWallet, 500);
-  // Poll for wallet connection (nav button bind is async)
-  var dashWalletPoll = setInterval(function(){
-    if (window.__contra && window.__contra.account) {
-      checkDashboardWallet();
-  if (window.__contra && window.__contra.account) { loadNFTs(); }
-      clearInterval(dashWalletPoll);
-    }
-  }, 500);
-  // Stop polling after 10s if wallet not connected
-  setTimeout(function(){ clearInterval(dashWalletPoll); }, 10000);
 </script>
+  <!-- Wallet-aware dashboard init (runs after contracts.js loads) -->
+  <script>
+  (function dashInit() {
+    var tries = 0;
+    function tryInit() {
+      if (window.__contra && window.__contra.account) {
+        var addr = window.__contra.account;
+        loadStatsForAggress(addr);
+        loadNFTs();
+        try { renderTab('shareholder'); } catch(e) {}
+      }
+      tries++;
+      if (tries < 40) setTimeout(tryInit, 250);
+    }
+    setTimeout(tryInit, 300);
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', function(accs) {
+        if (accs.length > 0) tryInit();
+      });
+    }
+  })();
+  
   <script src="/contra-nav.js"></script>
   <script src="/contra-contracts.js"></script>
   <script src="/contra-data.js"></script>
