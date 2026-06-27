@@ -46,6 +46,10 @@
   }
   window.connectWallet = connectWallet;
   window.disconnectWallet = disconnect;
+  window.getSigner = async function() {
+    try { return await (new ethers.BrowserProvider(window.ethereum)).getSigner(); }
+    catch(e) { return null; }
+  }
 
   function updateAll() {
     var connected = !!account;
@@ -140,6 +144,7 @@
     status.classList.remove("hidden"); status.textContent = "Requesting approval...";
     err.classList.add("hidden");
     try {
+      if (!signer) { signer = await (new ethers.BrowserProvider(window.ethereum)).getSigner(); }
       var usdc = new ethers.Contract(USDC_ADDR, USDC_ABI, signer);
       var contractAddr = CHAIN_CONFIG[selectedChain].contract;
       var amount = ethers.parseUnits("10000", 6);
@@ -171,6 +176,7 @@
     status.classList.remove("hidden"); status.textContent = "Sending mint transaction...";
     err.classList.add("hidden");
     try {
+      if (!signer) { signer = await (new ethers.BrowserProvider(window.ethereum)).getSigner(); }
       var nft = new ethers.Contract(CHAIN_CONFIG[selectedChain].contract, NFT_ABI, signer);
       var tx = await nft.mint();
       status.textContent = "Waiting for confirmation...";
