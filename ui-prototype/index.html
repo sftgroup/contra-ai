@@ -747,7 +747,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <div class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>已铸造 -- 枚</span><span></span>
+          <span>-- minted</span><span></span>
         </div>
       </div>
 
@@ -768,7 +768,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>已铸造 -- 枚</span><span></span>
+          <span>-- minted</span><span></span>
         </div>
       </div>
 
@@ -789,7 +789,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <div class="bg-purple-500 h-1.5 rounded-full" style="width: 0%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>已铸造 -- 枚</span><span></span>
+          <span>-- minted</span><span></span>
         </div>
       </div>
 
@@ -810,7 +810,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
           <div class="bg-gradient-to-r from-purple-500 to-cyan-500 h-1.5 rounded-full" style="width: 28%"></div>
         </div>
         <div class="flex justify-between text-xs font-mono text-gray-500">
-          <span>已铸造 -- 枚</span><span></span>
+          <span>-- minted</span><span></span>
         </div>
       </div>
     </div>
@@ -1732,7 +1732,7 @@ document.querySelectorAll('.countup').forEach(el => observer.observe(el.closest(
       // Update the minted count text
       var spans = card.querySelectorAll('span.font-mono');
       if (spans.length >= 2) {
-        spans[spans.length-2].textContent = '已铸造 ' + minted + ' 枚';
+        spans[spans.length-2].textContent = minted + " minted";
         spans[spans.length-1].textContent = '';
       }
       // Update progress bar
