@@ -48,12 +48,7 @@ body{font-family:"Inter",sans-serif;min-height:100vh;background:linear-gradient(
     <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#00e5ff] to-[#7c3aed] flex items-center justify-center text-[10px] font-bold text-black">C</span>
     <span class="font-bold text-lg">Contra Ai<span class="brand"> Dashboard</span></span>
   </div>
-  <div class="flex items-center gap-4 text-sm">
-    <div class="glass px-3 py-1.5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_#00ff88]"></span>
-      <span class="jet text-[#94a3b8]">0x1234...5678</span>
-    </div>
-  </div>
+  <!-- Wallet status shown in nav bar -->
 </div>
 
 <!-- Main -->
@@ -188,6 +183,19 @@ body{font-family:"Inter",sans-serif;min-height:100vh;background:linear-gradient(
 </div>
 
 <script>
+
+function loadNFTs() {
+  if (!window.__contra || !window.__contra.account) return;
+  var addr = window.__contra.account;
+  var ph = document.getElementById("nftPlaceholder");
+  if (ph) ph.textContent = "Loading...";
+  fetch("/api/account/" + addr + "/nfts").then(function(r){return r.json()}).then(function(data){
+    renderNFTs(data.nfts || data || []);
+  }).catch(function(){
+    var ph2 = document.getElementById("nftPlaceholder");
+    if (ph2) ph2.textContent = "No NFTs found. Mint one now!";
+  });
+}
 
 function renderNFTs(nfts) {
   var container = document.getElementById("nftAssetList");
@@ -423,17 +431,7 @@ switchTab('shareholder');
       var addr = window.__contra.account;
       // Update address display if present
       if (existingAddr) existingAddr.textContent = addr.slice(0,6)+'...'+addr.slice(-4);
-      // Load NFTs from relay API
-      var addr = window.__contra.account;
-      var ph = document.getElementById("nftPlaceholder");
-      if (ph) ph.textContent = "Loading your NFTs...";
-      fetch("/api/account/" + addr + "/nfts").then(function(r){return r.json()}).then(function(data){
-        var nfts = data.nfts || data || [];
-        renderNFTs(nfts);
-      }).catch(function(){
-        var ph2 = document.getElementById("nftPlaceholder");
-        if (ph2) ph2.textContent = "Connect wallet to view your NFTs";
-      });
+      loadNFTs();
       // Re-render Shareholder tab to update prices
       var activeTab = document.querySelector('.tab-btn.active');
       if (activeTab && activeTab.textContent.toLowerCase() === 'shareholder') {
@@ -451,6 +449,7 @@ switchTab('shareholder');
   var dashWalletPoll = setInterval(function(){
     if (window.__contra && window.__contra.account) {
       checkDashboardWallet();
+  if (window.__contra && window.__contra.account) { loadNFTs(); }
       clearInterval(dashWalletPoll);
     }
   }, 500);
